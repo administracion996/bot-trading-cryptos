@@ -1,13 +1,65 @@
 {
-  "efectivo_disponible": 800.0,
-  "total_cartera": 999.76,
+  "efectivo_disponible": 300.0,
+  "total_cartera": 1000.0,
   "posiciones_abiertas": {
     "BTC-USD": {
-      "cantidad": 0.002514,
-      "precio_entrada": 79564.79
+      "cantidad": 0.000628,
+      "precio_entrada": 79578.476562
+    },
+    "ETH-USD": {
+      "cantidad": 0.019886,
+      "precio_entrada": 2514.340088
+    },
+    "SOL-USD": {
+      "cantidad": 0.47824,
+      "precio_entrada": 104.550003
+    },
+    "ADA-USD": {
+      "cantidad": 226.121563,
+      "precio_entrada": 0.22112
+    },
+    "AVAX-USD": {
+      "cantidad": 6.250781,
+      "precio_entrada": 7.999
+    },
+    "DOT-USD": {
+      "cantidad": 42.651198,
+      "precio_entrada": 1.1723
+    },
+    "NEAR-USD": {
+      "cantidad": 19.164431,
+      "precio_entrada": 2.609
+    },
+    "ATOM-USD": {
+      "cantidad": 25.587227,
+      "precio_entrada": 1.9541
+    },
+    "XRP-USD": {
+      "cantidad": 34.835923,
+      "precio_entrada": 1.4353
+    },
+    "LTC-USD": {
+      "cantidad": 0.919929,
+      "precio_entrada": 54.352001
+    },
+    "BCH-USD": {
+      "cantidad": 0.192345,
+      "precio_entrada": 259.950012
+    },
+    "LINK-USD": {
+      "cantidad": 4.093328,
+      "precio_entrada": 12.215
+    },
+    "DOGE-USD": {
+      "cantidad": 548.546352,
+      "precio_entrada": 0.09115
+    },
+    "SHIB-USD": {
+      "cantidad": 10000000.0,
+      "precio_entrada": 5e-06
     }
   },
   "historial_operaciones": [
-    "[12:47:46] POSICI\u00d3N INICIAL: 0.002514 BTC a 79564.79\u20ac (200.00\u20ac asignados)"
+    "[13:22:11] INICIO: Asignados 50\u20ac a cada una de las 14 criptomonedas. Liquidez restante: 300.0\u20ac"
   ]
 }
