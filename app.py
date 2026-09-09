@@ -1,37 +1,24 @@
 import json
+import re
+from datetime import datetime
 import pandas as pd
 import requests
 import streamlit as st
 import yfinance as yf
 
-# Configuración de la página en modo ancho
-st.set_page_config(
-    page_title="Bot de Trading - Dashboard", page_icon="📈", layout="wide"
-)
+# Configuración de la página
+st.set_page_config(page_title="Dashboard de Trading", page_icon="📈", layout="wide")
 
 # Conexión con GitHub
 REPO = "administracion996/bot-trading-dashboard"
 FILE_PATH = "cartera.json"
 RAW_URL = f"https://raw.githubusercontent.com/{REPO}/main/{FILE_PATH}"
 
-# Lista de activos rastreados
 universo_mercado = [
-    "BTC-USD",
-    "ETH-USD",
-    "SOL-USD",
-    "ADA-USD",
-    "AVAX-USD",
-    "DOT-USD",
-    "NEAR-USD",
-    "ATOM-USD",
-    "XRP-USD",
-    "LTC-USD",
-    "BCH-USD",
-    "LINK-USD",
-    "DOGE-USD",
-    "SHIB-USD",
+    "BTC-USD", "ETH-USD", "SOL-USD", "ADA-USD", "AVAX-USD", "DOT-USD",
+    "NEAR-USD", "ATOM-USD", "XRP-USD", "LTC-USD", "BCH-USD", "LINK-USD",
+    "DOGE-USD", "SHIB-USD",
 ]
-
 
 @st.cache_data(ttl=30)
 def cargar_cartera_github():
@@ -43,32 +30,34 @@ def cargar_cartera_github():
         st.error(f"Error al conectar con GitHub: {e}")
     return None
 
+@st.cache_data(ttl=60)
+def obtener_precio_actual(ticker):
+    try:
+        df = yf.Ticker(ticker).history(period="1d", interval="15m")
+        if not df.empty:
+            return float(df['Close'].iloc[-1])
+    except:
+        pass
+    return 0.0
 
 @st.cache_data(ttl=300)
-def obtener_historial_comparativo():
+def obtener_historial_comparativo(tickers_seleccionados):
     df_precios = pd.DataFrame()
-    for ticker in universo_mercado:
+    for ticker in tickers_seleccionados:
         try:
-            historia = yf.Ticker(ticker).history(period="2d", interval="15m")[
-                "Close"
-            ]
+            historia = yf.Ticker(ticker).history(period="2d", interval="15m")["Close"]
             if len(historia) > 0:
-                # Normalización a variación porcentual desde el inicio del período
-                df_precios[ticker] = (
-                    (historia - historia.iloc[0]) / historia.iloc[0]
-                ) * 100
-        except Exception:
+                df_precios[ticker] = ((historia - historia.iloc[0]) / historia.iloc[0]) * 100
+        except:
             pass
     return df_precios
 
-
-# Encabezado principal
 st.title("📈 Panel de Control - Bot de Trading Algorítmico")
 
 cartera = cargar_cartera_github()
 
 if cartera:
-    # 1. Métricas clave de rendimiento
+    # --- 1. MÉTRICAS GLOBALES ---
     col1, col2, col3 = st.columns(3)
     valor_total = cartera.get("total_cartera", 1000.0)
     efectivo = cartera.get("efectivo_disponible", 0.0)
@@ -76,49 +65,157 @@ if cartera:
 
     col1.metric("Capital Total", f"{valor_total:.2f} €")
     col2.metric("Efectivo Libre", f"{efectivo:.2f} €")
-    col3.metric("Posiciones Activas", f"{num_posiciones} / 14")
-
+    col3.metric("Posiciones Activas", f"{num_posiciones} / {len(universo_mercado)}")
     st.markdown("---")
 
-    # 2. Gráfico único comparativo de las 14 criptomonedas
-    st.subheader("📊 Rendimiento Comparativo del Mercado (%)")
-    df_comparativo = obtener_historial_comparativo()
+    # --- 2. GRÁFICO LIMPIO E INTERACTIVO ---
+    st.subheader("📊 Gráfico de Rendimiento (%)")
+    activos_seleccionados = st.multiselect(
+        "Selecciona las criptomonedas que deseas comparar:",
+        options=universo_mercado,
+        default=["BTC-USD", "ETH-USD"] # Por defecto solo enseña 2 para no ensuciar
+    )
 
-    if not df_comparativo.empty:
-        st.line_chart(df_comparativo)
+    if activos_seleccionados:
+        df_comparativo = obtener_historial_comparativo(activos_seleccionados)
+        if not df_comparativo.empty:
+            st.line_chart(df_comparativo)
+        else:
+            st.info("Cargando datos del gráfico...")
     else:
-        st.info("Cargando métricas de mercado desde Yahoo Finance...")
+        st.warning("Selecciona al menos un activo para ver el gráfico.")
+    
+    st.markdown("---")
+
+    # --- 3. POSICIONES ABIERTAS (CON BENEFICIO EN TIEMPO REAL) ---
+    st.subheader("💼 Estado de las Posiciones")
+    posiciones = cartera.get("posiciones_abiertas", {})
+    
+    if posiciones:
+        tabla_pos = []
+        for ticker, info in posiciones.items():
+            cantidad = info.get("cantidad", 0)
+            precio_entrada = info.get("precio_entrada", 0)
+            precio_actual = obtener_precio_actual(ticker)
+            
+            if precio_actual > 0:
+                valor_actual = cantidad * precio_actual
+                inversion_inicial = cantidad * precio_entrada
+                diferencia_eur = valor_actual - inversion_inicial
+                rentabilidad_pct = (diferencia_eur / inversion_inicial) * 100 if inversion_inicial > 0 else 0
+            else:
+                precio_actual = precio_entrada
+                diferencia_eur = 0.0
+                rentabilidad_pct = 0.0
+
+            tabla_pos.append({
+                "Activo": ticker,
+                "Cantidad": cantidad,
+                "Precio Entrada (€)": precio_entrada,
+                "Precio Actual (€)": precio_actual,
+                "Diferencia (€)": diferencia_eur,
+                "Rentabilidad (%)": rentabilidad_pct
+            })
+            
+        df_posiciones = pd.DataFrame(tabla_pos)
+        
+        # Función para dar color a los beneficios (verde) y pérdidas (rojo)
+        def color_positivo_negativo(val):
+            color = 'green' if val > 0 else 'red' if val < 0 else 'gray'
+            return f'color: {color}'
+
+        st.dataframe(
+            df_posiciones.style
+            .map(color_positivo_negativo, subset=['Diferencia (€)', 'Rentabilidad (%)'])
+            .format({
+                "Precio Entrada (€)": "{:.6f}",
+                "Precio Actual (€)": "{:.6f}",
+                "Diferencia (€)": "{:.2f} €",
+                "Rentabilidad (%)": "{:.2f} %"
+            }),
+            use_container_width=True,
+            hide_index=True
+        )
+    else:
+        st.info("No hay posiciones abiertas en este momento.")
 
     st.markdown("---")
 
-    # 3. Desglose de Posiciones Abiertas e Historial
-    col_pos, col_hist = st.columns(2)
+    # --- 4. HISTORIAL ANALÍTICO CON FILTRO DE TIEMPO ---
+    st.subheader("📜 Historial y Beneficios")
+    
+    historial_crudo = cartera.get("historial_operaciones", [])
+    datos_historial = []
+    
+    # Procesar las cadenas de texto del historial para sacar fechas y euros ganados
+    for operacion in historial_crudo:
+        # Extraer fecha/hora
+        match_time = re.search(r"\[(.*?)\]", operacion)
+        fecha_str = match_time.group(1) if match_time else ""
+        
+        try:
+            # Si solo tiene la hora (ej. 14:30:00), asumimos que es de hoy
+            if len(fecha_str) <= 8:
+                hoy = datetime.now().strftime('%Y-%m-%d')
+                fecha_obj = pd.to_datetime(f"{hoy} {fecha_str}")
+            else:
+                fecha_obj = pd.to_datetime(fecha_str)
+        except:
+            fecha_obj = pd.to_datetime('today')
 
-    with col_pos:
-        st.subheader("💼 Posiciones Abiertas")
-        posiciones = cartera.get("posiciones_abiertas", {})
-        if posiciones:
-            tabla_pos = []
-            for ticker, info in posiciones.items():
-                tabla_pos.append(
-                    {
-                        "Activo": ticker,
-                        "Cantidad": info.get("cantidad", 0),
-                        "Precio Entrada (€)": info.get("precio_entrada", 0),
-                    }
-                )
-            st.dataframe(pd.DataFrame(tabla_pos), use_container_width=True)
-        else:
-            st.info("No hay posiciones abiertas en este momento.")
+        # Extraer beneficio si es una venta
+        beneficio = 0.0
+        if "Resultado:" in operacion:
+            match_pnl = re.search(r"Resultado:\s*([-0-9.]+)€", operacion)
+            if match_pnl:
+                beneficio = float(match_pnl.group(1))
 
-    with col_hist:
-        st.subheader("📜 Historial de Operaciones")
-        historial = cartera.get("historial_operaciones", [])
-        if historial:
-            for operacion in reversed(historial):
-                st.write(operacion)
+        # Determinar el tipo de operación
+        tipo = "INFO"
+        if "COMPRA" in operacion or "INICIAL" in operacion: tipo = "🟢 COMPRA"
+        elif "VENTA" in operacion: tipo = "🔴 VENTA"
+        elif "EMERGENCIA" in operacion or "STOP" in operacion: tipo = "🛑 STOP-LOSS"
+
+        datos_historial.append({
+            "Fecha": fecha_obj,
+            "Tipo": tipo,
+            "Beneficio (€)": beneficio,
+            "Detalle": operacion
+        })
+
+    df_historial = pd.DataFrame(datos_historial)
+    
+    if not df_historial.empty:
+        # Filtro de tiempo interactivo
+        opcion_tiempo = st.selectbox("Filtrar por intervalo de tiempo:", ["Hoy", "Este Mes", "Este Año", "Todo"])
+        
+        ahora = pd.to_datetime('today')
+        if opcion_tiempo == "Hoy":
+            df_filtrado = df_historial[df_historial['Fecha'].dt.date == ahora.date()]
+        elif opcion_tiempo == "Este Mes":
+            df_filtrado = df_historial[(df_historial['Fecha'].dt.year == ahora.year) & (df_historial['Fecha'].dt.month == ahora.month)]
+        elif opcion_tiempo == "Este Año":
+            df_filtrado = df_historial[df_historial['Fecha'].dt.year == ahora.year]
         else:
-            st.info("Sin registros de operaciones recientes.")
+            df_filtrado = df_historial
+            
+        # Ordenar de más reciente a más antigua
+        df_filtrado = df_filtrado.sort_values(by="Fecha", ascending=False)
+        
+        # Calcular totales del periodo
+        total_periodo = df_filtrado["Beneficio (€)"].sum()
+        
+        st.metric(label=f"Balance Neto ({opcion_tiempo})", value=f"{total_periodo:.2f} €")
+        
+        st.dataframe(
+            df_filtrado.style
+            .map(lambda val: 'color: green' if val > 0 else 'color: red' if val < 0 else 'color: gray', subset=['Beneficio (€)'])
+            .format({"Beneficio (€)": "{:.2f} €", "Fecha": lambda x: x.strftime("%Y-%m-%d %H:%M:%S")}),
+            use_container_width=True,
+            hide_index=True
+        )
+    else:
+        st.info("Sin registros de operaciones.")
 
 else:
     st.warning("Sincronizando con GitHub... Por favor, recarga en unos segundos.")
