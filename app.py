@@ -1,5 +1,7 @@
-import streamlit as st
+import json
+import os
 import pandas as pd
+import streamlit as st
 import yfinance as yf
 
 st.set_page_config(page_title="Bot Trading IA", page_icon="🤖", layout="wide")
@@ -7,29 +9,41 @@ st.set_page_config(page_title="Bot Trading IA", page_icon="🤖", layout="wide")
 st.title("🤖 Panel de Control - Bot de Trading con IA")
 st.markdown("---")
 
-# Métricas principales (Se actualizarán dinámicamente)
+# Cargar el estado real enviado desde Google Colab
+if os.path.exists("cartera.json"):
+    with open("cartera.json", "r") as f:
+        cartera = json.load(f)
+else:
+    cartera = {
+        "efectivo_disponible": 1000.0,
+        "total_cartera": 1000.0,
+        "posiciones_abiertas": {},
+        "historial_operaciones": []
+    }
+
+# Métricas conectadas a los datos de Colab
 col1, col2, col3 = st.columns(3)
-col1.metric("Capital Simulado Total", "1.000,00 €", "+0.00%")
-col2.metric("Efectivo Libre", "1.000,00 €")
-col3.metric("Posiciones Abiertas", "0")
+col1.metric("Capital Simulado Total", f"{cartera.get('total_cartera', 1000.0):,.2f} €")
+col2.metric("Efectivo Libre", f"{cartera.get('efectivo_disponible', 1000.0):,.2f} €")
+col3.metric("Posiciones Abiertas", str(len(cartera.get('posiciones_abiertas', {}))))
 
 st.markdown("---")
 
-# Visualización de mercado ajustada
+# Visualización del gráfico
 st.subheader("📊 Monitoreo del Mercado en Tiempo Real")
 ticker = st.selectbox("Selecciona un activo para analizar:", ["BTC-USD", "ETH-USD", "NVDA", "AAPL", "MSFT"])
 
-# Carga de datos
-df = yf.Ticker(ticker).history(period="1d", interval="15m")
-
-if not df.empty:
-    # Ajuste para no empezar el eje Y en cero y ver las fluctuaciones reales
-    precio_min = df['Close'].min() * 0.998
-    precio_max = df['Close'].max() * 1.002
-    
-    st.line_chart(df['Close'], y_label="Precio ($)")
+data = yf.Ticker(ticker).history(period="1d", interval="15m")
+if not data.empty:
+    st.line_chart(data['Close'])
 
 st.markdown("---")
 
-st.subheader("📜 Registro de Operaciones")
-st.info("Esperando sincronización de cartera desde Google Colab...")
+# Historial de decisiones enviado por la IA
+st.subheader("📜 Registro de Operaciones del Bot")
+historial = cartera.get("historial_operaciones", [])
+if historial:
+    for op in reversed(historial):
+        st.write(f"• {op}")
+else:
+    st.info("Sin operaciones registradas todavía.")
