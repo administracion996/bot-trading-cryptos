@@ -1,6 +1,13 @@
 {
-  "efectivo_disponible": 1000.0,
-  "total_cartera": 1000.0,
-  "posiciones_abiertas": {},
-  "historial_operaciones": []
+  "efectivo_disponible": 800.0,
+  "total_cartera": 1000.03,
+  "posiciones_abiertas": {
+    "BTC-USD": {
+      "cantidad": 0.002514,
+      "precio_entrada": 79564.79
+    }
+  },
+  "historial_operaciones": [
+    "[12:47:46] POSICI\u00d3N INICIAL: 0.002514 BTC a 79564.79\u20ac (200.00\u20ac asignados)"
+  ]
 }
