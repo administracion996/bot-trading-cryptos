@@ -1,6 +1,6 @@
 {
-  "efectivo_disponible": 200.09,
-  "total_cartera": 996.5,
+  "efectivo_disponible": 50.599999999999994,
+  "total_cartera": 996.63,
   "posiciones_abiertas": {
     "BTC-USD": {
       "cantidad": 0.000743,
@@ -47,8 +47,8 @@
       "precio_entrada": 10.166209
     },
     "DOGE-USD": {
-      "cantidad": 680.090461,
-      "precio_entrada": 0.07352
+      "cantidad": 2717.978115,
+      "precio_entrada": 0.073397
     },
     "SHIB-USD": {
       "cantidad": 12480000.0,
@@ -59,6 +59,7 @@
     "[2026-09-10 07:14:19] INICIO: Asignados 50\u20ac a cada una de las 14 criptomonedas (Precios en EUR y comisi\u00f3n descontada). Liquidez: 300.0\u20ac",
     "[2026-09-10 07:14:20] COMPRA 95.197418 de ATOM-USD a 1.571369\u20ac (149.83\u20ac inc. fee)",
     "[2026-09-10 07:44:46] COMPRA 72.08832 de NEAR-USD a 2.062494\u20ac (148.92\u20ac inc. fee)",
-    "[2026-09-10 09:19:11] \ud83d\udd34 VENTA NEAR-USD - Beneficio Neto: -0.08\u20ac"
+    "[2026-09-10 09:19:11] \ud83d\udd34 VENTA NEAR-USD - Beneficio Neto: -0.08\u20ac",
+    "[2026-09-10 09:24:26] \ud83d\udfe2 COMPRA 2037.887654 de DOGE-USD a 0.073238\u20ac (Tasa USD/EUR: 0.8591 | 149.49\u20ac inc. fee)"
   ]
 }
