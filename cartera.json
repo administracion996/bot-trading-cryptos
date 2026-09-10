@@ -1,6 +1,6 @@
 {
-  "efectivo_disponible": 150.17,
-  "total_cartera": 998.85,
+  "efectivo_disponible": 1.25,
+  "total_cartera": 992.81,
   "posiciones_abiertas": {
     "BTC-USD": {
       "cantidad": 0.000743,
@@ -27,8 +27,8 @@
       "precio_entrada": 0.951663
     },
     "NEAR-USD": {
-      "cantidad": 23.579525,
-      "precio_entrada": 2.120484
+      "cantidad": 95.667845,
+      "precio_entrada": 2.079278
     },
     "ATOM-USD": {
       "cantidad": 126.965895,
@@ -61,6 +61,7 @@
   },
   "historial_operaciones": [
     "[2026-09-10 07:14:19] INICIO: Asignados 50\u20ac a cada una de las 14 criptomonedas (Precios en EUR y comisi\u00f3n descontada). Liquidez: 300.0\u20ac",
-    "[2026-09-10 07:14:20] COMPRA 95.197418 de ATOM-USD a 1.571369\u20ac (149.83\u20ac inc. fee)"
+    "[2026-09-10 07:14:20] COMPRA 95.197418 de ATOM-USD a 1.571369\u20ac (149.83\u20ac inc. fee)",
+    "[2026-09-10 07:44:46] COMPRA 72.08832 de NEAR-USD a 2.062494\u20ac (148.92\u20ac inc. fee)"
   ]
 }
