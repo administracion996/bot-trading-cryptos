@@ -30,18 +30,31 @@ def cargar_cartera_github():
         st.error(f"Error al conectar con GitHub: {e}")
     return None
 
+@st.cache_data(ttl=600)
+def obtener_tasa_usd_eur():
+    """Descarga el tipo de cambio real de 1 Dólar a Euros"""
+    try:
+        df = yf.Ticker("EUR=X").history(period="1d")
+        if not df.empty: 
+            return float(df['Close'].iloc[-1])
+    except:
+        pass
+    return 0.92 # Respaldo
+
 @st.cache_data(ttl=60)
-def obtener_precio_actual(ticker):
+def obtener_precio_actual(ticker, tasa_eur):
+    """Obtiene el precio actual convertido a Euros reales"""
     try:
         df = yf.Ticker(ticker).history(period="1d", interval="15m")
-        if not df.empty:
-            return float(df['Close'].iloc[-1])
+        if not df.empty: 
+            return float(df['Close'].iloc[-1]) * tasa_eur
     except:
         pass
     return 0.0
 
 @st.cache_data(ttl=300)
 def obtener_historial_comparativo(tickers_seleccionados):
+    """Calcula el rendimiento porcentual para el gráfico"""
     df_precios = pd.DataFrame()
     for ticker in tickers_seleccionados:
         try:
@@ -52,9 +65,10 @@ def obtener_historial_comparativo(tickers_seleccionados):
             pass
     return df_precios
 
-st.title("📈 Panel de Control - Bot de Trading Algorítmico")
+st.title("📈 Panel de Control - Bot de Trading Algorítmico (Reales en €)")
 
 cartera = cargar_cartera_github()
+tasa_actual = obtener_tasa_usd_eur()
 
 if cartera:
     # --- 1. MÉTRICAS GLOBALES ---
@@ -63,8 +77,8 @@ if cartera:
     efectivo = cartera.get("efectivo_disponible", 0.0)
     num_posiciones = len(cartera.get("posiciones_abiertas", {}))
 
-    col1.metric("Capital Total", f"{valor_total:.2f} €")
-    col2.metric("Efectivo Libre", f"{efectivo:.2f} €")
+    col1.metric("Capital Total (€)", f"{valor_total:.2f} €")
+    col2.metric("Efectivo Libre (€)", f"{efectivo:.2f} €")
     col3.metric("Posiciones Activas", f"{num_posiciones} / {len(universo_mercado)}")
     st.markdown("---")
 
@@ -73,7 +87,7 @@ if cartera:
     activos_seleccionados = st.multiselect(
         "Selecciona las criptomonedas que deseas comparar:",
         options=universo_mercado,
-        default=["BTC-USD", "ETH-USD"] # Por defecto solo enseña 2 para no ensuciar
+        default=["BTC-USD", "ETH-USD"]
     )
 
     if activos_seleccionados:
@@ -88,7 +102,7 @@ if cartera:
     st.markdown("---")
 
     # --- 3. POSICIONES ABIERTAS (CON BENEFICIO EN TIEMPO REAL) ---
-    st.subheader("💼 Estado de las Posiciones")
+    st.subheader("💼 Estado de las Posiciones (Comisiones descontadas)")
     posiciones = cartera.get("posiciones_abiertas", {})
     
     if posiciones:
@@ -96,7 +110,7 @@ if cartera:
         for ticker, info in posiciones.items():
             cantidad = info.get("cantidad", 0)
             precio_entrada = info.get("precio_entrada", 0)
-            precio_actual = obtener_precio_actual(ticker)
+            precio_actual = obtener_precio_actual(ticker, tasa_actual)
             
             if precio_actual > 0:
                 valor_actual = cantidad * precio_actual
@@ -142,44 +156,44 @@ if cartera:
     st.markdown("---")
 
     # --- 4. HISTORIAL ANALÍTICO CON FILTRO DE TIEMPO ---
-    st.subheader("📜 Historial y Beneficios")
+    st.subheader("📜 Historial y Beneficios Netos")
     
     historial_crudo = cartera.get("historial_operaciones", [])
     datos_historial = []
     
     # Procesar las cadenas de texto del historial para sacar fechas y euros ganados
     for operacion in historial_crudo:
-        # Extraer fecha/hora
         match_time = re.search(r"\[(.*?)\]", operacion)
         fecha_str = match_time.group(1) if match_time else ""
         
         try:
-            # Si solo tiene la hora (ej. 14:30:00), asumimos que es de hoy
-            if len(fecha_str) <= 8:
-                hoy = datetime.now().strftime('%Y-%m-%d')
-                fecha_obj = pd.to_datetime(f"{hoy} {fecha_str}")
-            else:
-                fecha_obj = pd.to_datetime(fecha_str)
+            # Manejar la fecha completa (2026-09-10 09:15:00) 
+            fecha_obj = pd.to_datetime(fecha_str)
         except:
             fecha_obj = pd.to_datetime('today')
 
-        # Extraer beneficio si es una venta
+        # Extraer beneficio si es una venta o un stop-loss
         beneficio = 0.0
-        if "Resultado:" in operacion:
-            match_pnl = re.search(r"Resultado:\s*([-0-9.]+)€", operacion)
+        if "Beneficio Neto:" in operacion or "Neto:" in operacion:
+             match_pnl = re.search(r"Neto:\s*([-0-9.]+)€", operacion)
+             if match_pnl:
+                 beneficio = float(match_pnl.group(1))
+        # Extraer beneficio para el formato de stop-loss original si persiste
+        elif "Resultado de la operación:" in operacion:
+            match_pnl = re.search(r"Resultado de la operación:\s*([-0-9.]+)€", operacion)
             if match_pnl:
-                beneficio = float(match_pnl.group(1))
+                 beneficio = float(match_pnl.group(1))
 
         # Determinar el tipo de operación
         tipo = "INFO"
-        if "COMPRA" in operacion or "INICIAL" in operacion: tipo = "🟢 COMPRA"
+        if "COMPRA" in operacion or "INICIAL" in operacion or "INICIO:" in operacion: tipo = "🟢 COMPRA"
         elif "VENTA" in operacion: tipo = "🔴 VENTA"
         elif "EMERGENCIA" in operacion or "STOP" in operacion: tipo = "🛑 STOP-LOSS"
 
         datos_historial.append({
             "Fecha": fecha_obj,
             "Tipo": tipo,
-            "Beneficio (€)": beneficio,
+            "Beneficio Neto (€)": beneficio,
             "Detalle": operacion
         })
 
@@ -203,14 +217,14 @@ if cartera:
         df_filtrado = df_filtrado.sort_values(by="Fecha", ascending=False)
         
         # Calcular totales del periodo
-        total_periodo = df_filtrado["Beneficio (€)"].sum()
+        total_periodo = df_filtrado["Beneficio Neto (€)"].sum()
         
-        st.metric(label=f"Balance Neto ({opcion_tiempo})", value=f"{total_periodo:.2f} €")
+        st.metric(label=f"Balance Generado ({opcion_tiempo})", value=f"{total_periodo:.2f} €")
         
         st.dataframe(
             df_filtrado.style
-            .map(lambda val: 'color: green' if val > 0 else 'color: red' if val < 0 else 'color: gray', subset=['Beneficio (€)'])
-            .format({"Beneficio (€)": "{:.2f} €", "Fecha": lambda x: x.strftime("%Y-%m-%d %H:%M:%S")}),
+            .map(lambda val: 'color: green' if val > 0 else 'color: red' if val < 0 else 'color: gray', subset=['Beneficio Neto (€)'])
+            .format({"Beneficio Neto (€)": "{:.2f} €", "Fecha": lambda x: x.strftime("%Y-%m-%d %H:%M:%S")}),
             use_container_width=True,
             hide_index=True
         )
