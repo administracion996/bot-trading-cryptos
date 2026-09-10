@@ -87,8 +87,8 @@ if cartera:
     col3.metric("Posiciones Activas", f"{num_posiciones} / {len(universo_mercado)}")
     st.markdown("---")
 
-    # --- 2. GRÁFICO CON MARCADORES DE COMPRA EN TIEMPO REAL ---
-    st.subheader("📊 Gráfico de Rendimiento (%) con Puntos de Compra 🟢")
+    # --- 2. GRÁFICO CON MARCADORES DE COMPRA (🟢) Y VENTA (🔴) ---
+    st.subheader("📊 Gráfico de Rendimiento (%) con Puntos de Entrada 🟢 y Salida 🔴")
     activos_seleccionados = st.multiselect(
         "Selecciona las criptomonedas que deseas comparar:",
         options=universo_mercado,
@@ -105,13 +105,12 @@ if cartera:
                     period="2d", interval="15m"
                 )
                 if not df_hist.empty:
-                    # Eliminar zona horaria para coincidir limpiamente con las fechas del historial
                     df_hist.index = df_hist.index.tz_localize(None)
 
                     p0 = df_hist["Close"].iloc[0]
                     var_pct = ((df_hist["Close"] - p0) / p0) * 100
 
-                    # Trazar la línea del activo
+                    # Trazar línea de cotización
                     fig.add_trace(
                         go.Scatter(
                             x=df_hist.index,
@@ -122,44 +121,54 @@ if cartera:
                         )
                     )
 
-                    # Buscar puntos de compra para este ticker en el historial
-                    fechas_compra = []
-                    valores_compra = []
-                    textos_compra = []
+                    fechas_compra, valores_compra, textos_compra = [], [], []
+                    fechas_venta, valores_venta, textos_venta = [], [], []
 
                     for op in historial_crudo:
-                        if ("COMPRA" in op or "INICIO" in op) and (
-                            ticker in op or "INICIO" in op
-                        ):
-                            match_time = re.search(r"\[(.*?)\]", op)
-                            if match_time:
-                                f_str = match_time.group(1)
-                                try:
-                                    f_dt = pd.to_datetime(f_str)
+                        match_time = re.search(r"\[(.*?)\]", op)
+                        if not match_time:
+                            continue
+                        
+                        f_str = match_time.group(1)
+                        try:
+                            f_dt = pd.to_datetime(f_str)
+                            idx_pos = df_hist.index.get_indexer(
+                                [f_dt], method="nearest"
+                            )[0]
+                            t_cercano = df_hist.index[idx_pos]
+                            val_cercano = var_pct.iloc[idx_pos]
 
-                                    # Encontrar el timestamp más cercano en el dataframe
-                                    idx_pos = df_hist.index.get_indexer(
-                                        [f_dt], method="nearest"
-                                    )[0]
-                                    t_cercano = df_hist.index[idx_pos]
-                                    val_cercano = var_pct.iloc[idx_pos]
+                            # Puntos de COMPRA
+                            if ("COMPRA" in op or "INICIO" in op) and (ticker in op or "INICIO" in op):
+                                fechas_compra.append(t_cercano)
+                                valores_compra.append(val_cercano)
+                                textos_compra.append(
+                                    f"🟢 COMPRA {ticker}<br>Hora: {t_cercano.strftime('%H:%M:%S')}"
+                                )
 
-                                    fechas_compra.append(t_cercano)
-                                    valores_compra.append(val_cercano)
-                                    textos_compra.append(
-                                        f"🟢 COMPRA {ticker}<br>Fecha: {t_cercano.strftime('%H:%M:%S')}"
-                                    )
-                                except:
-                                    pass
+                            # Puntos de VENTA o STOP-LOSS
+                            elif ("VENTA" in op or "EMERGENCIA" in op or "STOP" in op) and ticker in op:
+                                fechas_venta.append(t_cercano)
+                                valores_venta.append(val_cercano)
+                                
+                                match_pnl = re.search(r"Neto:\s*([-0-9.]+)€", op)
+                                pnl_info = f"<br>Beneficio Neto: {match_pnl.group(1)}€" if match_pnl else ""
+                                
+                                tipo_label = "🔴 VENTA" if "VENTA" in op else "🛑 STOP-LOSS"
+                                textos_venta.append(
+                                    f"{tipo_label} {ticker}<br>Hora: {t_cercano.strftime('%H:%M:%S')}{pnl_info}"
+                                )
+                        except:
+                            pass
 
-                    # Dibujar puntos verdes en las compras
+                    # Dibujar marcadores de COMPRA (Verdes)
                     if fechas_compra:
                         fig.add_trace(
                             go.Scatter(
                                 x=fechas_compra,
                                 y=valores_compra,
                                 mode="markers",
-                                name=f"Entradas {ticker}",
+                                name=f"Compras {ticker}",
                                 marker=dict(
                                     symbol="circle",
                                     size=11,
@@ -171,7 +180,27 @@ if cartera:
                                 showlegend=False,
                             )
                         )
-            except Exception as e:
+
+                    # Dibujar marcadores de VENTA (Rojos)
+                    if fechas_venta:
+                        fig.add_trace(
+                            go.Scatter(
+                                x=fechas_venta,
+                                y=valores_venta,
+                                mode="markers",
+                                name=f"Ventas {ticker}",
+                                marker=dict(
+                                    symbol="circle",
+                                    size=11,
+                                    color="red",
+                                    line=dict(width=2, color="white"),
+                                ),
+                                hovertext=textos_venta,
+                                hoverinfo="text",
+                                showlegend=False,
+                            )
+                        )
+            except Exception:
                 pass
 
         fig.update_layout(
