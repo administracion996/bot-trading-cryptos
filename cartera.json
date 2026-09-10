@@ -1,6 +1,6 @@
 {
-  "efectivo_disponible": 50.599999999999994,
-  "total_cartera": 992.76,
+  "efectivo_disponible": -0.0,
+  "total_cartera": 993.51,
   "posiciones_abiertas": {
     "BTC-USD": {
       "cantidad": 0.000743,
@@ -39,8 +39,8 @@
       "precio_entrada": 45.25235
     },
     "BCH-USD": {
-      "cantidad": 0.232997,
-      "precio_entrada": 214.595038
+      "cantidad": 0.47184800000000005,
+      "precio_entrada": 213.204252
     },
     "LINK-USD": {
       "cantidad": 4.918254,
@@ -60,6 +60,7 @@
     "[2026-09-10 07:14:20] COMPRA 95.197418 de ATOM-USD a 1.571369\u20ac (149.83\u20ac inc. fee)",
     "[2026-09-10 07:44:46] COMPRA 72.08832 de NEAR-USD a 2.062494\u20ac (148.92\u20ac inc. fee)",
     "[2026-09-10 09:19:11] \ud83d\udd34 VENTA NEAR-USD - Beneficio Neto: -0.08\u20ac",
-    "[2026-09-10 09:24:26] \ud83d\udfe2 COMPRA 2037.887654 de DOGE-USD a 0.073238\u20ac (Tasa USD/EUR: 0.8591 | 149.49\u20ac inc. fee)"
+    "[2026-09-10 09:24:26] \ud83d\udfe2 COMPRA 2037.887654 de DOGE-USD a 0.073238\u20ac (Tasa USD/EUR: 0.8591 | 149.49\u20ac inc. fee)",
+    "[2026-09-10 10:43:48] \ud83d\udfe2 COMPRA 0.238851 de BCH-USD a 211.508406\u20ac (Tasa USD/EUR: 0.8600 | 50.6\u20ac inc. fee)"
   ]
 }
