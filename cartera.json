@@ -1,58 +1,58 @@
 {
-  "efectivo_disponible": 300.0,
-  "total_cartera": 998.89,
+  "efectivo_disponible": 150.17,
+  "total_cartera": 998.85,
   "posiciones_abiertas": {
     "BTC-USD": {
-      "cantidad": 0.000744,
-      "precio_entrada": 67204.301075
+      "cantidad": 0.000743,
+      "precio_entrada": 67294.751009
     },
     "ETH-USD": {
-      "cantidad": 0.023502,
-      "precio_entrada": 2127.478512
+      "cantidad": 0.023489,
+      "precio_entrada": 2128.655967
     },
     "SOL-USD": {
-      "cantidad": 0.572373,
-      "precio_entrada": 87.355623
+      "cantidad": 0.571933,
+      "precio_entrada": 87.422827
     },
     "ADA-USD": {
-      "cantidad": 272.292889,
-      "precio_entrada": 0.183626
+      "cantidad": 271.82732,
+      "precio_entrada": 0.18394
     },
     "AVAX-USD": {
-      "cantidad": 7.441071,
-      "precio_entrada": 6.719463
+      "cantidad": 7.440032,
+      "precio_entrada": 6.720401
     },
     "DOT-USD": {
-      "cantidad": 52.505033,
-      "precio_entrada": 0.95229
+      "cantidad": 52.539626,
+      "precio_entrada": 0.951663
     },
     "NEAR-USD": {
-      "cantidad": 23.502393,
-      "precio_entrada": 2.127443
+      "cantidad": 23.579525,
+      "precio_entrada": 2.120484
     },
     "ATOM-USD": {
-      "cantidad": 31.768255,
-      "precio_entrada": 1.573898
+      "cantidad": 126.965895,
+      "precio_entrada": 1.573887
     },
     "XRP-USD": {
-      "cantidad": 42.015428,
-      "precio_entrada": 1.190039
+      "cantidad": 41.983873,
+      "precio_entrada": 1.190933
     },
     "LTC-USD": {
-      "cantidad": 1.106806,
-      "precio_entrada": 45.175035
+      "cantidad": 1.104915,
+      "precio_entrada": 45.25235
     },
     "BCH-USD": {
-      "cantidad": 0.233082,
-      "precio_entrada": 214.51678
+      "cantidad": 0.232997,
+      "precio_entrada": 214.595038
     },
     "LINK-USD": {
-      "cantidad": 4.924767,
-      "precio_entrada": 10.152765
+      "cantidad": 4.918254,
+      "precio_entrada": 10.166209
     },
     "DOGE-USD": {
-      "cantidad": 680.730367,
-      "precio_entrada": 0.073451
+      "cantidad": 680.090461,
+      "precio_entrada": 0.07352
     },
     "SHIB-USD": {
       "cantidad": 12480000.0,
@@ -60,6 +60,7 @@
     }
   },
   "historial_operaciones": [
-    "[2026-09-10 07:08:51] INICIO: Asignados 50\u20ac a 14 activos. Aplicado 0.16% fee. Liquidez: 300.0\u20ac"
+    "[2026-09-10 07:14:19] INICIO: Asignados 50\u20ac a cada una de las 14 criptomonedas (Precios en EUR y comisi\u00f3n descontada). Liquidez: 300.0\u20ac",
+    "[2026-09-10 07:14:20] COMPRA 95.197418 de ATOM-USD a 1.571369\u20ac (149.83\u20ac inc. fee)"
   ]
 }
