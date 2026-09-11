@@ -1,6 +1,6 @@
 {
-    "efectivo_disponible": 100.0,
-    "total_cartera": 1068.48,
+    "efectivo_disponible": 68.87979859491688,
+    "total_cartera": 1068.5807324637733,
     "posiciones_abiertas": {
         "BTC-USD": {
             "cantidad": 0.000743,
@@ -19,8 +19,8 @@
             "precio_entrada": 0.180666
         },
         "AVAX-USD": {
-            "cantidad": 7.440032,
-            "precio_entrada": 6.720401
+            "cantidad": 20.89995201414876,
+            "precio_entrada": 6.482234906621624
         },
         "ATOM-USD": {
             "cantidad": 126.965895,
@@ -37,10 +37,6 @@
         "DOGE-USD": {
             "cantidad": 2717.978115,
             "precio_entrada": 0.073397
-        },
-        "SHIB-USD": {
-            "cantidad": 12480000.0,
-            "precio_entrada": 4e-06
         }
     },
     "historial_operaciones": [
@@ -55,7 +51,9 @@
         "[2026-09-11 09:06:13] \ud83d\udd34 VENTA DOT-USD a 0.998161\u20ac (Tasa USD/EUR: 0.8613) - Beneficio Neto: 2.36\u20ac",
         "[2026-09-11 09:36:21] \ud83d\udd34 VENTA LTC-USD a 45.837526\u20ac (Tasa USD/EUR: 0.8613) - Beneficio Neto: 0.57\u20ac",
         "[2026-09-11 10:05:59] \ud83d\udfe2 COMPRA 574.653649 de ADA-USD a 0.17883\u20ac (Tasa USD/EUR: 0.8615 | 102.93\u20ac inc. fee)",
-        "[2026-09-11 12:56:50] \ud83d\udcb0 INGRESO: Se han a\u00f1adido 100.00 \u20ac extra de liquidez."
+        "[2026-09-11 12:56:50] \ud83d\udcb0 INGRESO: Se han a\u00f1adido 100.00 \u20ac extra de liquidez.",
+        "[2026-09-11 12:56:52] \ud83d\udfe2 COMPRA SALVAVIDAS (DCA) AVAX-USD | Invertido: 85.48\u20ac | Nuevo Precio Medio: 6.482235\u20ac | Ca\u00edda estaba en: -5.50%",
+        "[2026-09-11 12:56:52] \ud83d\udd34 VENTA SHIB-USD | Beneficio Neto: 4.44 \u20ac | Rentabilidad: 8.89 %"
     ],
     "inyeccion_100_realizada": true
 }
