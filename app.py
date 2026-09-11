@@ -72,8 +72,8 @@ if cartera:
     col3.metric("Posiciones Activas", f"{num_posiciones} / {len(universo_mercado)}")
     st.markdown("---")
 
-    # --- SECCIÓN 2: GRÁFICO UNIFICADO ---
-    st.subheader("📊 Gráfico Comparativo de Rendimiento (%) con Precios de Entrada/Salida en €")
+    # --- SECCIÓN 2: GRÁFICO UNIFICADO (7 DÍAS) ---
+    st.subheader("📊 Gráfico Comparativo de Rendimiento (%) - Rango de 7 Días")
     activos_seleccionados = st.multiselect(
         "Selecciona las criptomonedas para comparar en la misma gráfica:",
         options=universo_mercado,
@@ -85,8 +85,10 @@ if cartera:
         historial_crudo = cartera.get("historial_operaciones", [])
 
         for ticker in activos_seleccionados:
+            ticker_simbre = ticker.split("-")[0]
             try:
-                df_hist = yf.Ticker(ticker).history(period="3d", interval="15m")
+                # Se amplía a 7 días para encontrar compras antiguas
+                df_hist = yf.Ticker(ticker).history(period="7d", interval="15m")
                 if not df_hist.empty:
                     df_hist.index = df_hist.index.tz_localize(None)
                     df_hist["Close_EUR"] = df_hist["Close"] * tasa_actual
@@ -94,7 +96,6 @@ if cartera:
                     p0 = df_hist["Close_EUR"].iloc[0]
                     var_pct = ((df_hist["Close_EUR"] - p0) / p0) * 100
 
-                    # Línea de tendencia porcentual
                     fig.add_trace(go.Scatter(
                         x=df_hist.index, y=var_pct, mode="lines", name=ticker, line=dict(width=2)
                     ))
@@ -103,43 +104,47 @@ if cartera:
                     fechas_venta, valores_venta, textos_venta = [], [], []
 
                     for op in historial_crudo:
-                        if ticker not in op:
+                        # Busca tanto "SHIB-USD" como "SHIB"
+                        if ticker not in op and ticker_simbre not in op:
                             continue
+                            
                         match_time = re.search(r"\[(.*?)\]", op)
                         if not match_time: continue
                         f_str = match_time.group(1)
                         try:
                             f_dt = pd.to_datetime(f_str)
-                            idx_pos = df_hist.index.get_indexer([f_dt], method="nearest")[0]
-                            t_cercano = df_hist.index[idx_pos]
-                            val_cercano = var_pct.iloc[idx_pos]
-                            precio_eur_momento = df_hist["Close_EUR"].iloc[idx_pos]
+                            # Verificar si la fecha está dentro del rango del DF
+                            if f_dt >= df_hist.index[0]:
+                                idx_pos = df_hist.index.get_indexer([f_dt], method="nearest")[0]
+                                t_cercano = df_hist.index[idx_pos]
+                                val_cercano = var_pct.iloc[idx_pos]
+                                precio_eur_momento = df_hist["Close_EUR"].iloc[idx_pos]
 
-                            if "COMPRA" in op or "INICIO" in op or "DCA" in op:
-                                fechas_compra.append(t_cercano)
-                                valores_compra.append(val_cercano)
-                                label_tipo = "🟢 DCA SALVAVIDAS" if "SALVAVIDAS" in op or "DCA" in op else "🟢 COMPRA INICIAL"
-                                
-                                match_precio_medio = re.search(r"Nuevo Precio Medio:\s*([-0-9.]+)", op)
-                                p_medio_str = f"<br>Precio Medio Entrada: {float(match_precio_medio.group(1)):.6f}€" if match_precio_medio else f"<br>Precio Ejecutado: {precio_eur_momento:.6f}€"
-                                
-                                textos_compra.append(f"<b>{label_tipo} {ticker}</b><br>Hora: {t_cercano.strftime('%H:%M:%S')}{p_medio_str}")
+                                if "COMPRA" in op or "INICIO" in op or "DCA" in op or "SALVAVIDAS" in op:
+                                    fechas_compra.append(t_cercano)
+                                    valores_compra.append(val_cercano)
+                                    label_tipo = "🟢 DCA SALVAVIDAS" if "SALVAVIDAS" in op or "DCA" in op else "🟢 COMPRA INICIAL"
+                                    
+                                    match_precio_medio = re.search(r"Nuevo Precio Medio:\s*([-0-9.]+)", op)
+                                    p_medio_str = f"<br>Precio Medio: {float(match_precio_medio.group(1)):.6f}€" if match_precio_medio else f"<br>Precio Ejecutado: {precio_eur_momento:.6f}€"
+                                    
+                                    textos_compra.append(f"<b>{label_tipo} {ticker}</b><br>Hora: {t_cercano.strftime('%Y-%m-%d %H:%M:%S')}{p_medio_str}")
 
-                            elif "VENTA" in op or "EMERGENCIA" in op or "STOP" in op:
-                                fechas_venta.append(t_cercano)
-                                valores_venta.append(val_cercano)
+                                elif "VENTA" in op or "EMERGENCIA" in op or "STOP" in op:
+                                    fechas_venta.append(t_cercano)
+                                    valores_venta.append(val_cercano)
 
-                                match_pnl = re.search(r"(?:Beneficio Neto:|Neto:)\s*([-0-9.]+)\s*€", op)
-                                match_pct = re.search(r"Rentabilidad:\s*([-0-9.]+)\s*%", op)
+                                    match_pnl = re.search(r"(?:Beneficio Neto:|Neto:)\s*([-0-9.]+)\s*€", op)
+                                    match_pct = re.search(r"Rentabilidad:\s*([-0-9.]+)\s*%", op)
 
-                                pnl_val = float(match_pnl.group(1)) if match_pnl else None
-                                pct_val = float(match_pct.group(1)) if match_pct else None
+                                    pnl_val = float(match_pnl.group(1)) if match_pnl else None
+                                    pct_val = float(match_pct.group(1)) if match_pct else None
 
-                                pnl_info = f"<br>Beneficio Neto: <b>{pnl_val:.2f}€</b>" if pnl_val is not None else ""
-                                pct_info = f"<br>Rentabilidad: <b>{pct_val:.2f}%</b>" if pct_val is not None else ""
-                                tipo_label = "🔴 VENTA EXITOSA" if "VENTA" in op else "🛑 STOP-LOSS"
+                                    pnl_info = f"<br>Beneficio Neto: <b>{pnl_val:.2f}€</b>" if pnl_val is not None else ""
+                                    pct_info = f"<br>Rentabilidad: <b>{pct_val:.2f}%</b>" if pct_val is not None else ""
+                                    tipo_label = "🔴 VENTA EXITOSA" if "VENTA" in op else "🛑 STOP-LOSS"
 
-                                textos_venta.append(f"<b>{tipo_label} {ticker}</b><br>Hora: {t_cercano.strftime('%H:%M:%S')}<br>Precio Venta: {precio_eur_momento:.6f}€{pnl_info}{pct_info}")
+                                    textos_venta.append(f"<b>{tipo_label} {ticker}</b><br>Hora: {t_cercano.strftime('%Y-%m-%d %H:%M:%S')}<br>Precio Venta: {precio_eur_momento:.6f}€{pnl_info}{pct_info}")
                         except:
                             pass
 
@@ -147,14 +152,14 @@ if cartera:
                         fig.add_trace(go.Scatter(
                             x=fechas_compra, y=valores_compra, mode="markers",
                             name=f"Compras {ticker}",
-                            marker=dict(symbol="circle", size=11, color="green", line=dict(width=2, color="white")),
+                            marker=dict(symbol="circle", size=12, color="green", line=dict(width=2, color="white")),
                             hovertext=textos_compra, hoverinfo="text"
                         ))
                     if fechas_venta:
                         fig.add_trace(go.Scatter(
                             x=fechas_venta, y=valores_venta, mode="markers",
                             name=f"Ventas {ticker}",
-                            marker=dict(symbol="circle", size=11, color="red", line=dict(width=2, color="white")),
+                            marker=dict(symbol="circle", size=12, color="red", line=dict(width=2, color="white")),
                             hovertext=textos_venta, hoverinfo="text"
                         ))
             except Exception as e:
@@ -174,7 +179,7 @@ if cartera:
 
     st.markdown("---")
 
-    # --- SECCIÓN 3: HISTORIAL (ARRIBA) ---
+    # --- SECCIÓN 3: HISTORIAL ---
     st.subheader("📜 Historial y Beneficios Netos")
 
     historial_crudo = cartera.get("historial_operaciones", [])
@@ -247,7 +252,7 @@ if cartera:
 
     st.markdown("---")
 
-    # --- SECCIÓN 4: POSICIONES ABIERTAS (ABAJO) ---
+    # --- SECCIÓN 4: POSICIONES ABIERTAS ---
     st.subheader("💼 Estado de las Posiciones (Comisiones descontadas)")
     posiciones = cartera.get("posiciones_abiertas", {})
 
