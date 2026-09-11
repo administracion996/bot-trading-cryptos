@@ -35,7 +35,7 @@ universo_mercado = [
 ]
 
 
-@st.cache_data(ttl=30)
+@st.cache_data(ttl=15)
 def cargar_cartera_github():
   try:
     res = requests.get(RAW_URL)
@@ -46,9 +46,8 @@ def cargar_cartera_github():
   return None
 
 
-@st.cache_data(ttl=600)
+@st.cache_data(ttl=300)
 def obtener_tasa_usd_eur():
-  """Descarga el tipo de cambio real de 1 Dólar a Euros"""
   try:
     df = yf.Ticker("EUR=X").history(period="1d")
     if not df.empty:
@@ -58,9 +57,8 @@ def obtener_tasa_usd_eur():
   return 0.92
 
 
-@st.cache_data(ttl=60)
+@st.cache_data(ttl=30)
 def obtener_precio_actual(ticker, tasa_eur):
-  """Obtiene el precio actual convertido a Euros reales"""
   try:
     df = yf.Ticker(ticker).history(period="1d", interval="15m")
     if not df.empty:
@@ -148,24 +146,29 @@ if cartera:
               ) and ticker in op:
                 fechas_venta.append(t_cercano)
                 valores_venta.append(val_cercano)
-                match_pnl = re.search(r"Neto:\s*([-0-9.]+)€", op)
+                match_pnl = re.search(
+                    r"Beneficio Neto:\s*([-0-9.]+)€|Neto:\s*([-0-9.]+)€", op
+                )
                 match_pct = re.search(r"Rentabilidad:\s*([-0-9.]+)%", op)
 
-                pnl_val = (
-                    float(match_pnl.group(1)) if match_pnl else None
-                )
-                pct_val = (
-                    float(match_pct.group(1))
-                    if match_pct
-                    else (
-                        round((pnl_val / 50.0) * 100, 2)
-                        if pnl_val is not None
-                        else None
-                    )
-                )
+                pnl_val = None
+                if match_pnl:
+                  pnl_val = float(match_pnl.group(1) or match_pnl.group(2))
 
-                pnl_info = f"<br>Beneficio: {pnl_val:.2f}€" if pnl_val else ""
-                pct_info = f"<br>Rentabilidad: {pct_val:.2f}%" if pct_val else ""
+                pct_val = None
+                if match_pct:
+                  pct_val = float(match_pct.group(1))
+                elif pnl_val is not None:
+                  pct_val = round((pnl_val / 50.0) * 100, 2)
+
+                pnl_info = (
+                    f"<br>Beneficio: {pnl_val:.2f}€" if pnl_val is not None else ""
+                )
+                pct_info = (
+                    f"<br>Rentabilidad: {pct_val:.2f}%"
+                    if pct_val is not None
+                    else ""
+                )
                 tipo_label = "🔴 VENTA" if "VENTA" in op else "🛑 STOP-LOSS"
                 textos_venta.append(
                     f"{tipo_label} {ticker}<br>Hora:"
@@ -229,7 +232,106 @@ if cartera:
 
   st.markdown("---")
 
-  # --- 3. POSICIONES ABIERTAS ---
+  # --- 3. HISTORIAL Y BENEFICIOS NETOS (SECCIÓN REORDENADA) ---
+  st.subheader("📜 Historial y Beneficios Netos")
+
+  historial_crudo = cartera.get("historial_operaciones", [])
+  datos_historial = []
+
+  for operacion in historial_crudo:
+    match_time = re.search(r"\[(.*?)\]", operacion)
+    fecha_str = match_time.group(1) if match_time else ""
+    try:
+      fecha_obj = pd.to_datetime(fecha_str)
+    except:
+      fecha_obj = pd.to_datetime("today")
+
+    # Extraer Beneficio Neto
+    beneficio = None
+    match_pnl = re.search(
+        r"Beneficio Neto:\s*([-0-9.]+)€|Neto:\s*([-0-9.]+)€", operacion
+    )
+    if match_pnl:
+      val_str = match_pnl.group(1) or match_pnl.group(2)
+      beneficio = float(val_str)
+
+    # Extraer Porcentaje de Rentabilidad
+    rentabilidad = None
+    match_rent = re.search(r"Rentabilidad:\s*([-0-9.]+)%", operacion)
+    if match_rent:
+      rentabilidad = float(match_rent.group(1))
+    elif beneficio is not None:
+      rentabilidad = round((beneficio / 50.0) * 100, 2)
+
+    tipo = "INFO"
+    if "COMPRA" in operacion or "INICIAL" in operacion or "INICIO:" in operacion:
+      tipo = "🟢 COMPRA"
+    elif "VENTA" in operacion:
+      tipo = "🔴 VENTA"
+    elif "EMERGENCIA" in operacion or "STOP" in operacion:
+      tipo = "🛑 STOP-LOSS"
+
+    datos_historial.append({
+        "Fecha": fecha_obj,
+        "Tipo": tipo,
+        "Beneficio Neto (€)": beneficio,
+        "Rentabilidad (%)": rentabilidad,
+        "Detalle": operacion,
+    })
+
+  df_historial = pd.DataFrame(datos_historial)
+
+  if not df_historial.empty:
+    opcion_tiempo = st.selectbox(
+        "Filtrar por intervalo de tiempo:",
+        ["Hoy", "Este Mes", "Este Año", "Todo"],
+    )
+    ahora = pd.to_datetime("today")
+
+    if opcion_tiempo == "Hoy":
+      df_filtrado = df_historial[df_historial["Fecha"].dt.date == ahora.date()]
+    elif opcion_tiempo == "Este Mes":
+      df_filtrado = df_historial[
+          (df_historial["Fecha"].dt.year == ahora.year)
+          & (df_historial["Fecha"].dt.month == ahora.month)
+      ]
+    elif opcion_tiempo == "Este Año":
+      df_filtrado = df_historial[df_historial["Fecha"].dt.year == ahora.year]
+    else:
+      df_filtrado = df_historial
+
+    df_filtrado = df_filtrado.sort_values(by="Fecha", ascending=False)
+    total_periodo = df_filtrado["Beneficio Neto (€)"].sum(skipna=True)
+
+    st.metric(
+        label=f"Balance Generado ({opcion_tiempo})",
+        value=f"{total_periodo:.2f} €",
+    )
+
+    def styling_logic(val):
+      if pd.isna(val) or val is None:
+        return "color: gray"
+      return (
+          "color: green" if val > 0 else "color: red" if val < 0 else "color: gray"
+      )
+
+    st.dataframe(
+        df_filtrado.style.map(
+            styling_logic, subset=["Beneficio Neto (€)", "Rentabilidad (%)"]
+        ).format({
+            "Beneficio Neto (€)": lambda x: f"{x:.2f} €" if pd.notna(x) else "-",
+            "Rentabilidad (%)": lambda x: f"{x:.2f} %" if pd.notna(x) else "-",
+            "Fecha": lambda x: x.strftime("%Y-%m-%d %H:%M:%S"),
+        }),
+        use_container_width=True,
+        hide_index=True,
+    )
+  else:
+    st.info("Sin registros de operaciones.")
+
+  st.markdown("---")
+
+  # --- 4. POSICIONES ABIERTAS (SECCIÓN MOVIDA ABAJO) ---
   st.subheader("💼 Estado de las Posiciones (Comisiones descontadas)")
   posiciones = cartera.get("posiciones_abiertas", {})
 
@@ -283,108 +385,6 @@ if cartera:
     )
   else:
     st.info("No hay posiciones abiertas en este momento.")
-
-  st.markdown("---")
-
-  # --- 4. HISTORIAL ANALÍTICO CON FILTRO DE TIEMPO ---
-  st.subheader("📜 Historial y Beneficios Netos")
-
-  historial_crudo = cartera.get("historial_operaciones", [])
-  datos_historial = []
-
-  for operacion in historial_crudo:
-    match_time = re.search(r"\[(.*?)\]", operacion)
-    fecha_str = match_time.group(1) if match_time else ""
-    try:
-      fecha_obj = pd.to_datetime(fecha_str)
-    except:
-      fecha_obj = pd.to_datetime("today")
-
-    # Extraer Beneficio Neto
-    beneficio = None
-    match_pnl = re.search(r"Neto:\s*([-0-9.]+)€", operacion)
-    if match_pnl:
-      beneficio = float(match_pnl.group(1))
-
-    # Extraer Porcentaje (o calcularlo retroactivamente si es una venta antigua)
-    rentabilidad = None
-    match_rent = re.search(r"Rentabilidad:\s*([-0-9.]+)%", operacion)
-    if match_rent:
-      rentabilidad = float(match_rent.group(1))
-    elif beneficio is not None:
-      # Asume la base de ~50€ por posición inicial para calcular rentabilidad de ventas pasadas
-      rentabilidad = round((beneficio / 50.0) * 100, 2)
-
-    tipo = "INFO"
-    if "COMPRA" in operacion or "INICIAL" in operacion or "INICIO:" in operacion:
-      tipo = "🟢 COMPRA"
-    elif "VENTA" in operacion:
-      tipo = "🔴 VENTA"
-    elif "EMERGENCIA" in operacion or "STOP" in operacion:
-      tipo = "🛑 STOP-LOSS"
-
-    datos_historial.append({
-        "Fecha": fecha_obj,
-        "Tipo": tipo,
-        "Beneficio Neto (€)": beneficio,
-        "Rentabilidad (%)": rentabilidad,
-        "Detalle": operacion,
-    })
-
-  df_historial = pd.DataFrame(datos_historial)
-
-  if not df_historial.empty:
-    opcion_tiempo = st.selectbox(
-        "Filtrar por intervalo de tiempo:",
-        ["Hoy", "Este Mes", "Este Año", "Todo"],
-    )
-    ahora = pd.to_datetime("today")
-
-    if opcion_tiempo == "Hoy":
-      df_filtrado = df_historial[df_historial["Fecha"].dt.date == ahora.date()]
-    elif opcion_tiempo == "Este Mes":
-      df_filtrado = df_historial[
-          (df_historial["Fecha"].dt.year == ahora.year)
-          & (df_historial["Fecha"].dt.month == ahora.month)
-      ]
-    elif opcion_tiempo == "Este Año":
-      df_filtrado = df_historial[df_historial["Fecha"].dt.year == ahora.year]
-    else:
-      df_filtrado = df_historial
-
-    df_filtrado = df_filtrado.sort_values(by="Fecha", ascending=False)
-    total_periodo = df_filtrado["Beneficio Neto (€)"].sum(skipna=True)
-
-    st.metric(
-        label=f"Balance Generado ({opcion_tiempo})",
-        value=f"{total_periodo:.2f} €",
-    )
-
-    def styling_logic(val):
-      if pd.isna(val):
-        return "color: gray"
-      return (
-          "color: green" if val > 0 else "color: red" if val < 0 else "color: gray"
-      )
-
-    st.dataframe(
-        df_filtrado.style.map(
-            styling_logic,
-            subset=["Beneficio Neto (€)", "Rentabilidad (%)"],
-        ).format({
-            "Beneficio Neto (€)": lambda x: f"{x:.2f} €" if pd.notna(x) else "-",
-            "Rentabilidad (%)": lambda x: (
-                f"{x:.2f} %"
-                if pd.notna(x)
-                else ("-" if "COMPRA" in str(x) else "-")
-            ),
-            "Fecha": lambda x: x.strftime("%Y-%m-%d %H:%M:%S"),
-        }),
-        use_container_width=True,
-        hide_index=True,
-    )
-  else:
-    st.info("Sin registros de operaciones.")
 
 else:
   st.warning("Sincronizando con GitHub... Por favor, recarga en unos segundos.")
