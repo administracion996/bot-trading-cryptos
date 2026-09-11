@@ -1,59 +1,59 @@
 {
-    "efectivo_disponible": 68.87979859491688,
-    "total_cartera": 1068.5807324637733,
-    "posiciones_abiertas": {
-        "BTC-USD": {
-            "cantidad": 0.000743,
-            "precio_entrada": 67294.751009
-        },
-        "ETH-USD": {
-            "cantidad": 0.023489,
-            "precio_entrada": 2128.655967
-        },
-        "SOL-USD": {
-            "cantidad": 0.571933,
-            "precio_entrada": 87.422827
-        },
-        "ADA-USD": {
-            "cantidad": 846.480969,
-            "precio_entrada": 0.180666
-        },
-        "AVAX-USD": {
-            "cantidad": 20.89995201414876,
-            "precio_entrada": 6.482234906621624
-        },
-        "ATOM-USD": {
-            "cantidad": 126.965895,
-            "precio_entrada": 1.573887
-        },
-        "XRP-USD": {
-            "cantidad": 41.983873,
-            "precio_entrada": 1.190933
-        },
-        "BCH-USD": {
-            "cantidad": 0.7089300000000001,
-            "precio_entrada": 212.517456
-        },
-        "DOGE-USD": {
-            "cantidad": 2717.978115,
-            "precio_entrada": 0.073397
-        }
+  "efectivo_disponible": 68.87979859491688,
+  "total_cartera": 1063.37,
+  "posiciones_abiertas": {
+    "BTC-USD": {
+      "cantidad": 0.000743,
+      "precio_entrada": 67294.751009
     },
-    "historial_operaciones": [
-        "[2026-09-10 07:14:19] INICIO: Asignados 50\u20ac a cada una de las 14 criptomonedas (Precios en EUR y comisi\u00f3n descontada). Liquidez: 300.0\u20ac",
-        "[2026-09-10 07:14:20] COMPRA 95.197418 de ATOM-USD a 1.571369\u20ac (149.83\u20ac inc. fee)",
-        "[2026-09-10 07:44:46] COMPRA 72.08832 de NEAR-USD a 2.062494\u20ac (148.92\u20ac inc. fee)",
-        "[2026-09-10 09:19:11] \ud83d\udd34 VENTA NEAR-USD - Beneficio Neto: -0.08\u20ac",
-        "[2026-09-10 09:24:26] \ud83d\udfe2 COMPRA 2037.887654 de DOGE-USD a 0.073238\u20ac (Tasa USD/EUR: 0.8591 | 149.49\u20ac inc. fee)",
-        "[2026-09-10 10:43:48] \ud83d\udfe2 COMPRA 0.238851 de BCH-USD a 211.508406\u20ac (Tasa USD/EUR: 0.8600 | 50.6\u20ac inc. fee)",
-        "[2026-09-10 11:44:22] \ud83d\udd34 VENTA LINK-USD a 10.194974\u20ac (Tasa USD/EUR: 0.8599) - Beneficio Neto: 0.06\u20ac",
-        "[2026-09-10 12:14:30] \ud83d\udfe2 COMPRA 0.237082 de BCH-USD a 210.81258\u20ac (Tasa USD/EUR: 0.8606 | 50.06\u20ac inc. fee)",
-        "[2026-09-11 09:06:13] \ud83d\udd34 VENTA DOT-USD a 0.998161\u20ac (Tasa USD/EUR: 0.8613) - Beneficio Neto: 2.36\u20ac",
-        "[2026-09-11 09:36:21] \ud83d\udd34 VENTA LTC-USD a 45.837526\u20ac (Tasa USD/EUR: 0.8613) - Beneficio Neto: 0.57\u20ac",
-        "[2026-09-11 10:05:59] \ud83d\udfe2 COMPRA 574.653649 de ADA-USD a 0.17883\u20ac (Tasa USD/EUR: 0.8615 | 102.93\u20ac inc. fee)",
-        "[2026-09-11 12:56:50] \ud83d\udcb0 INGRESO: Se han a\u00f1adido 100.00 \u20ac extra de liquidez.",
-        "[2026-09-11 12:56:52] \ud83d\udfe2 COMPRA SALVAVIDAS (DCA) AVAX-USD | Invertido: 85.48\u20ac | Nuevo Precio Medio: 6.482235\u20ac | Ca\u00edda estaba en: -5.50%",
-        "[2026-09-11 12:56:52] \ud83d\udd34 VENTA SHIB-USD | Beneficio Neto: 4.44 \u20ac | Rentabilidad: 8.89 %"
-    ],
-    "inyeccion_100_realizada": true
+    "ETH-USD": {
+      "cantidad": 0.023489,
+      "precio_entrada": 2128.655967
+    },
+    "SOL-USD": {
+      "cantidad": 0.571933,
+      "precio_entrada": 87.422827
+    },
+    "ADA-USD": {
+      "cantidad": 846.480969,
+      "precio_entrada": 0.180666
+    },
+    "AVAX-USD": {
+      "cantidad": 20.89995201414876,
+      "precio_entrada": 6.482234906621624
+    },
+    "ATOM-USD": {
+      "cantidad": 126.965895,
+      "precio_entrada": 1.573887
+    },
+    "XRP-USD": {
+      "cantidad": 41.983873,
+      "precio_entrada": 1.190933
+    },
+    "BCH-USD": {
+      "cantidad": 0.7089300000000001,
+      "precio_entrada": 212.517456
+    },
+    "DOGE-USD": {
+      "cantidad": 2717.978115,
+      "precio_entrada": 0.073397
+    }
+  },
+  "historial_operaciones": [
+    "[2026-09-10 07:14:19] INICIO: Asignados 50\u20ac a cada una de las 14 criptomonedas (Precios en EUR y comisi\u00f3n descontada). Liquidez: 300.0\u20ac",
+    "[2026-09-10 07:14:20] COMPRA 95.197418 de ATOM-USD a 1.571369\u20ac (149.83\u20ac inc. fee)",
+    "[2026-09-10 07:44:46] COMPRA 72.08832 de NEAR-USD a 2.062494\u20ac (148.92\u20ac inc. fee)",
+    "[2026-09-10 09:19:11] \ud83d\udd34 VENTA NEAR-USD - Beneficio Neto: -0.08\u20ac",
+    "[2026-09-10 09:24:26] \ud83d\udfe2 COMPRA 2037.887654 de DOGE-USD a 0.073238\u20ac (Tasa USD/EUR: 0.8591 | 149.49\u20ac inc. fee)",
+    "[2026-09-10 10:43:48] \ud83d\udfe2 COMPRA 0.238851 de BCH-USD a 211.508406\u20ac (Tasa USD/EUR: 0.8600 | 50.6\u20ac inc. fee)",
+    "[2026-09-10 11:44:22] \ud83d\udd34 VENTA LINK-USD a 10.194974\u20ac (Tasa USD/EUR: 0.8599) - Beneficio Neto: 0.06\u20ac",
+    "[2026-09-10 12:14:30] \ud83d\udfe2 COMPRA 0.237082 de BCH-USD a 210.81258\u20ac (Tasa USD/EUR: 0.8606 | 50.06\u20ac inc. fee)",
+    "[2026-09-11 09:06:13] \ud83d\udd34 VENTA DOT-USD a 0.998161\u20ac (Tasa USD/EUR: 0.8613) - Beneficio Neto: 2.36\u20ac",
+    "[2026-09-11 09:36:21] \ud83d\udd34 VENTA LTC-USD a 45.837526\u20ac (Tasa USD/EUR: 0.8613) - Beneficio Neto: 0.57\u20ac",
+    "[2026-09-11 10:05:59] \ud83d\udfe2 COMPRA 574.653649 de ADA-USD a 0.17883\u20ac (Tasa USD/EUR: 0.8615 | 102.93\u20ac inc. fee)",
+    "[2026-09-11 12:56:50] \ud83d\udcb0 INGRESO: Se han a\u00f1adido 100.00 \u20ac extra de liquidez.",
+    "[2026-09-11 12:56:52] \ud83d\udfe2 COMPRA SALVAVIDAS (DCA) AVAX-USD | Invertido: 85.48\u20ac | Nuevo Precio Medio: 6.482235\u20ac | Ca\u00edda estaba en: -5.50%",
+    "[2026-09-11 12:56:52] \ud83d\udd34 VENTA SHIB-USD | Beneficio Neto: 4.44 \u20ac | Rentabilidad: 8.89 %"
+  ],
+  "inyeccion_100_realizada": true
 }
