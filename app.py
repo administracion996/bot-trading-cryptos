@@ -13,8 +13,8 @@ st.set_page_config(
     page_title="Dashboard de Trading", page_icon="📈", layout="wide"
 )
 
-# 2. Conexión con GitHub
-REPO = "administracion996/bot-trading-dashboard"
+# 2. Conexión con GitHub (¡CORREGIDO!)
+REPO = "administracion996/bot-trading-cryptos"
 FILE_PATH = "cartera.json"
 RAW_URL = f"https://raw.githubusercontent.com/{REPO}/main/{FILE_PATH}"
 
@@ -55,7 +55,7 @@ def obtener_precio_actual(ticker, tasa_eur):
         pass
     return 0.0
 
-st.title("📈 Panel de Control - actualizado")
+st.title("📈 Panel de Control - Bot de Trading Algorítmico (Reales en €)")
 
 cartera = cargar_cartera_github()
 tasa_actual = obtener_tasa_usd_eur()
@@ -144,15 +144,13 @@ if cartera:
 
     st.markdown("---")
 
-
-    # --- SECCIÓN 3: HISTORIAL (PUESTO ARRIBA, DEBAJO DEL GRÁFICO) ---
+    # --- SECCIÓN 3: HISTORIAL (ARRIBA) ---
     st.subheader("📜 Historial y Beneficios Netos")
 
     historial_crudo = cartera.get("historial_operaciones", [])
     datos_historial = []
 
     for operacion in historial_crudo:
-        # 1. Sacar Fecha
         match_time = re.search(r"\[(.*?)\]", operacion)
         fecha_str = match_time.group(1) if match_time else ""
         try:
@@ -161,18 +159,15 @@ if cartera:
             fecha_obj = pd.to_datetime("today")
 
         beneficio = None
-        texto_detalle = operacion  # Esta es la frase que va en la columna
+        texto_detalle = operacion  
 
-        # 2. Sacar Beneficio y añadir Porcentaje a la frase si no lo tiene
         match_pnl = re.search(r"(?:Beneficio Neto:|Neto:)\s*([-0-9.]+)\s*€", operacion)
         if match_pnl:
             beneficio = float(match_pnl.group(1))
-            # Si es una venta antigua que no tiene "Rentabilidad:" escrito, se lo pegamos:
             if "Rentabilidad:" not in operacion and "VENTA" in operacion:
                 rentabilidad_calc = round((beneficio / 50.0) * 100, 2)
                 texto_detalle = f"{operacion} | Rentabilidad: {rentabilidad_calc}%"
 
-        # 3. Detectar Tipo
         tipo = "INFO"
         if "COMPRA" in operacion or "INICIAL" in operacion or "INICIO:" in operacion:
             tipo = "🟢 COMPRA"
@@ -181,7 +176,6 @@ if cartera:
         elif "EMERGENCIA" in operacion or "STOP" in operacion:
             tipo = "🛑 STOP-LOSS"
 
-        # Añadir solo las 4 columnas al listado
         datos_historial.append({
             "Fecha": fecha_obj,
             "Tipo": tipo,
@@ -205,7 +199,6 @@ if cartera:
 
         st.metric(label=f"Balance Generado ({opcion_tiempo})", value=f"{total_periodo:.2f} €")
 
-        # Dar color verde o rojo a la columna de beneficio
         def color_beneficio(val):
             if pd.isna(val): return ""
             return "color: green" if val > 0 else "color: red" if val < 0 else "color: gray"
@@ -222,8 +215,7 @@ if cartera:
 
     st.markdown("---")
 
-
-    # --- SECCIÓN 4: POSICIONES ABIERTAS (PUESTO ABAJO DE TODO) ---
+    # --- SECCIÓN 4: POSICIONES ABIERTAS (ABAJO) ---
     st.subheader("💼 Estado de las Posiciones (Comisiones descontadas)")
     posiciones = cartera.get("posiciones_abiertas", {})
 
