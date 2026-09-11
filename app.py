@@ -3,7 +3,6 @@ import json
 import re
 from datetime import datetime
 import pandas as pd
-import plotly.graph_objects as go
 import requests
 import streamlit as st
 import yfinance as yf
@@ -72,108 +71,7 @@ if cartera:
     col3.metric("Posiciones Activas", f"{num_posiciones} / {len(universo_mercado)}")
     st.markdown("---")
 
-    # --- SECCIÓN 2: GRÁFICO ---
-    st.subheader("📊 Gráfico de Rendimiento (%) con Puntos de Entrada 🟢 y Salida 🔴")
-    activos_seleccionados = st.multiselect(
-        "Selecciona las criptomonedas que deseas comparar:",
-        options=universo_mercado,
-        default=["BTC-USD", "ETH-USD", "AVAX-USD", "SHIB-USD"],
-    )
-
-    if activos_seleccionados:
-        fig = go.Figure()
-        historial_crudo = cartera.get("historial_operaciones", [])
-
-        for ticker in activos_seleccionados:
-            ticker_base = ticker.split("-")[0]
-            try:
-                df_hist = yf.Ticker(ticker).history(period="7d", interval="15m")
-                if not df_hist.empty:
-                    df_hist.index = df_hist.index.tz_localize(None)
-                    p0 = df_hist["Close"].iloc[0]
-                    var_pct = ((df_hist["Close"] - p0) / p0) * 100
-
-                    fig.add_trace(go.Scatter(
-                        x=df_hist.index, y=var_pct, mode="lines", name=ticker, line=dict(width=2)
-                    ))
-
-                    fechas_compra, valores_compra, textos_compra = [], [], []
-                    fechas_venta, valores_venta, textos_venta = [], [], []
-
-                    for op in historial_crudo:
-                        if ticker not in op and ticker_base not in op:
-                            continue
-
-                        match_time = re.search(r"\[(.*?)\]", op)
-                        if not match_time: 
-                            continue
-
-                        f_str = match_time.group(1)
-                        try:
-                            f_dt = pd.to_datetime(f_str)
-                            
-                            if df_hist.index[0] <= f_dt <= df_hist.index[-1]:
-                                idx_pos = df_hist.index.get_indexer([f_dt], method="nearest")[0]
-                                t_cercano = df_hist.index[idx_pos]
-                                val_cercano = var_pct.iloc[idx_pos]
-
-                                op_u = op.upper()
-                                is_buy = any(k in op_u for k in ["COMPRA", "DCA", "SALVAVIDAS", "INICIAL"])
-                                is_sell = any(k in op_u for k in ["VENTA", "STOP", "EMERGENCIA"])
-
-                                if is_buy and not is_sell:
-                                    fechas_compra.append(t_cercano)
-                                    valores_compra.append(val_cercano)
-                                    label_tipo = "🟢 DCA SALVAVIDAS" if ("SALVAVIDAS" in op_u or "DCA" in op_u) else "🟢 COMPRA"
-                                    textos_compra.append(f"{label_tipo} {ticker}<br>Hora: {f_str}")
-
-                                elif is_sell:
-                                    fechas_venta.append(t_cercano)
-                                    valores_venta.append(val_cercano)
-
-                                    match_pnl = re.search(r"(?:Beneficio Neto:|Neto:)\s*([-0-9.]+)\s*€", op)
-                                    match_pct = re.search(r"Rentabilidad:\s*([-0-9.]+)\s*%", op)
-
-                                    pnl_val = float(match_pnl.group(1)) if match_pnl else None
-                                    pct_val = float(match_pct.group(1)) if match_pct else None
-
-                                    pnl_info = f"<br>Beneficio: {pnl_val:.2f}€" if pnl_val is not None else ""
-                                    pct_info = f"<br>Rentabilidad: {pct_val:.2f}%" if pct_val is not None else ""
-                                    tipo_label = "🔴 VENTA" if "VENTA" in op_u else "🛑 STOP-LOSS"
-
-                                    textos_venta.append(f"{tipo_label} {ticker}<br>Hora: {f_str}{pnl_info}{pct_info}")
-                        except Exception:
-                            pass
-
-                    if fechas_compra:
-                        fig.add_trace(go.Scatter(
-                            x=fechas_compra, y=valores_compra, mode="markers",
-                            name=f"Compras {ticker}",
-                            marker=dict(symbol="circle", size=11, color="green", line=dict(width=2, color="white")),
-                            hovertext=textos_compra, hoverinfo="text", showlegend=False
-                        ))
-                    if fechas_venta:
-                        fig.add_trace(go.Scatter(
-                            x=fechas_venta, y=valores_venta, mode="markers",
-                            name=f"Ventas {ticker}",
-                            marker=dict(symbol="circle", size=11, color="red", line=dict(width=2, color="white")),
-                            hovertext=textos_venta, hoverinfo="text", showlegend=False
-                        ))
-            except Exception:
-                pass
-
-        fig.update_layout(
-            xaxis_title="Fecha / Hora", yaxis_title="Rendimiento (%)", hovermode="x unified",
-            legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1),
-            margin=dict(l=20, r=20, t=30, b=20), template="plotly_white"
-        )
-        st.plotly_chart(fig, use_container_width=True)
-    else:
-        st.warning("Selecciona al menos un activo para ver el gráfico.")
-
-    st.markdown("---")
-
-    # --- SECCIÓN 3: HISTORIAL ---
+    # --- SECCIÓN 2: HISTORIAL Y BENEFICIOS NETOS ---
     st.subheader("📜 Historial y Beneficios Netos")
 
     historial_crudo = cartera.get("historial_operaciones", [])
@@ -247,7 +145,7 @@ if cartera:
 
     st.markdown("---")
 
-    # --- SECCIÓN 4: POSICIONES ABIERTAS ---
+    # --- SECCIÓN 3: POSICIONES ABIERTAS ---
     st.subheader("💼 Estado de las Posiciones (Comisiones descontadas)")
     posiciones = cartera.get("posiciones_abiertas", {})
 
