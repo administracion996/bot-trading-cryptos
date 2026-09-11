@@ -55,7 +55,7 @@ def obtener_precio_actual(ticker, tasa_eur):
         pass
     return 0.0
 
-st.title("📈 Panel de Control - Bot de Trading Algorítmico (Reales en €)")
+st.title("📈 Panel de Control - actualizado")
 
 cartera = cargar_cartera_github()
 tasa_actual = obtener_tasa_usd_eur()
