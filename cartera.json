@@ -1,6 +1,6 @@
 {
-  "efectivo_disponible": 52.36,
-  "total_cartera": 975.49,
+  "efectivo_disponible": 102.93,
+  "total_cartera": 974.72,
   "posiciones_abiertas": {
     "BTC-USD": {
       "cantidad": 0.000743,
@@ -30,10 +30,6 @@
       "cantidad": 41.983873,
       "precio_entrada": 1.190933
     },
-    "LTC-USD": {
-      "cantidad": 1.104915,
-      "precio_entrada": 45.25235
-    },
     "BCH-USD": {
       "cantidad": 0.7089300000000001,
       "precio_entrada": 212.517456
@@ -56,6 +52,7 @@
     "[2026-09-10 10:43:48] \ud83d\udfe2 COMPRA 0.238851 de BCH-USD a 211.508406\u20ac (Tasa USD/EUR: 0.8600 | 50.6\u20ac inc. fee)",
     "[2026-09-10 11:44:22] \ud83d\udd34 VENTA LINK-USD a 10.194974\u20ac (Tasa USD/EUR: 0.8599) - Beneficio Neto: 0.06\u20ac",
     "[2026-09-10 12:14:30] \ud83d\udfe2 COMPRA 0.237082 de BCH-USD a 210.81258\u20ac (Tasa USD/EUR: 0.8606 | 50.06\u20ac inc. fee)",
-    "[2026-09-11 09:06:13] \ud83d\udd34 VENTA DOT-USD a 0.998161\u20ac (Tasa USD/EUR: 0.8613) - Beneficio Neto: 2.36\u20ac"
+    "[2026-09-11 09:06:13] \ud83d\udd34 VENTA DOT-USD a 0.998161\u20ac (Tasa USD/EUR: 0.8613) - Beneficio Neto: 2.36\u20ac",
+    "[2026-09-11 09:36:21] \ud83d\udd34 VENTA LTC-USD a 45.837526\u20ac (Tasa USD/EUR: 0.8613) - Beneficio Neto: 0.57\u20ac"
   ]
 }
