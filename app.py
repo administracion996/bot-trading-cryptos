@@ -9,9 +9,7 @@ import streamlit as st
 import yfinance as yf
 
 # 1. Configuración de la página
-st.set_page_config(
-    page_title="Dashboard de Trading", page_icon="📈", layout="wide"
-)
+st.set_page_config(page_title="Dashboard de Trading", page_icon="📈", layout="wide")
 
 # 2. Conexión con GitHub
 REPO = "administracion996/bot-trading-cryptos"
@@ -72,8 +70,8 @@ if cartera:
     col3.metric("Posiciones Activas", f"{num_posiciones} / {len(universo_mercado)}")
     st.markdown("---")
 
-    # --- SECCIÓN 2: GRÁFICO UNIFICADO (7 DÍAS) ---
-    st.subheader("📊 Gráfico Comparativo de Rendimiento (%) - Rango de 7 Días")
+    # --- SECCIÓN 2: GRÁFICO UNIFICADO ---
+    st.subheader("📊 Gráfico Comparativo de Rendimiento (%)")
     activos_seleccionados = st.multiselect(
         "Selecciona las criptomonedas para comparar en la misma gráfica:",
         options=universo_mercado,
@@ -85,14 +83,15 @@ if cartera:
         historial_crudo = cartera.get("historial_operaciones", [])
 
         for ticker in activos_seleccionados:
-            ticker_simbre = ticker.split("-")[0]
+            ticker_base = ticker.split("-")[0].upper()
             try:
-                # Se amplía a 7 días para encontrar compras antiguas
                 df_hist = yf.Ticker(ticker).history(period="7d", interval="15m")
                 if not df_hist.empty:
-                    df_hist.index = df_hist.index.tz_localize(None)
-                    df_hist["Close_EUR"] = df_hist["Close"] * tasa_actual
+                    # Alineación explícita de la zona horaria a España (Europe/Madrid)
+                    if df_hist.index.tz is not None:
+                        df_hist.index = df_hist.index.tz_convert("Europe/Madrid").tz_localize(None)
                     
+                    df_hist["Close_EUR"] = df_hist["Close"] * tasa_actual
                     p0 = df_hist["Close_EUR"].iloc[0]
                     var_pct = ((df_hist["Close_EUR"] - p0) / p0) * 100
 
@@ -104,8 +103,8 @@ if cartera:
                     fechas_venta, valores_venta, textos_venta = [], [], []
 
                     for op in historial_crudo:
-                        # Busca tanto "SHIB-USD" como "SHIB"
-                        if ticker not in op and ticker_simbre not in op:
+                        op_upper = op.upper()
+                        if ticker_base not in op_upper:
                             continue
                             
                         match_time = re.search(r"\[(.*?)\]", op)
@@ -113,24 +112,26 @@ if cartera:
                         f_str = match_time.group(1)
                         try:
                             f_dt = pd.to_datetime(f_str)
-                            # Verificar si la fecha está dentro del rango del DF
                             if f_dt >= df_hist.index[0]:
                                 idx_pos = df_hist.index.get_indexer([f_dt], method="nearest")[0]
                                 t_cercano = df_hist.index[idx_pos]
                                 val_cercano = var_pct.iloc[idx_pos]
                                 precio_eur_momento = df_hist["Close_EUR"].iloc[idx_pos]
 
-                                if "COMPRA" in op or "INICIO" in op or "DCA" in op or "SALVAVIDAS" in op:
+                                is_compra = any(k in op_upper for k in ["COMPRA", "INICIO", "DCA", "SALVAVIDAS"])
+                                is_venta = any(k in op_upper for k in ["VENTA", "EMERGENCIA", "STOP"])
+
+                                if is_compra:
                                     fechas_compra.append(t_cercano)
                                     valores_compra.append(val_cercano)
-                                    label_tipo = "🟢 DCA SALVAVIDAS" if "SALVAVIDAS" in op or "DCA" in op else "🟢 COMPRA INICIAL"
+                                    label_tipo = "🟢 DCA SALVAVIDAS" if ("SALVAVIDAS" in op_upper or "DCA" in op_upper) else "🟢 COMPRA INICIAL"
                                     
                                     match_precio_medio = re.search(r"Nuevo Precio Medio:\s*([-0-9.]+)", op)
                                     p_medio_str = f"<br>Precio Medio: {float(match_precio_medio.group(1)):.6f}€" if match_precio_medio else f"<br>Precio Ejecutado: {precio_eur_momento:.6f}€"
                                     
-                                    textos_compra.append(f"<b>{label_tipo} {ticker}</b><br>Hora: {t_cercano.strftime('%Y-%m-%d %H:%M:%S')}{p_medio_str}")
+                                    textos_compra.append(f"<b>{label_tipo} {ticker}</b><br>Hora: {f_str}{p_medio_str}")
 
-                                elif "VENTA" in op or "EMERGENCIA" in op or "STOP" in op:
+                                elif is_venta:
                                     fechas_venta.append(t_cercano)
                                     valores_venta.append(val_cercano)
 
@@ -142,10 +143,10 @@ if cartera:
 
                                     pnl_info = f"<br>Beneficio Neto: <b>{pnl_val:.2f}€</b>" if pnl_val is not None else ""
                                     pct_info = f"<br>Rentabilidad: <b>{pct_val:.2f}%</b>" if pct_val is not None else ""
-                                    tipo_label = "🔴 VENTA EXITOSA" if "VENTA" in op else "🛑 STOP-LOSS"
+                                    tipo_label = "🔴 VENTA EXITOSA" if "VENTA" in op_upper else "🛑 STOP-LOSS"
 
-                                    textos_venta.append(f"<b>{tipo_label} {ticker}</b><br>Hora: {t_cercano.strftime('%Y-%m-%d %H:%M:%S')}<br>Precio Venta: {precio_eur_momento:.6f}€{pnl_info}{pct_info}")
-                        except:
+                                    textos_venta.append(f"<b>{tipo_label} {ticker}</b><br>Hora: {f_str}<br>Precio Venta: {precio_eur_momento:.6f}€{pnl_info}{pct_info}")
+                        except Exception as e_inner:
                             pass
 
                     if fechas_compra:
@@ -174,6 +175,11 @@ if cartera:
             template="plotly_white"
         )
         st.plotly_chart(fig, use_container_width=True)
+
+        with st.expander("🔍 Ver registros de compras/ventas detectados en el archivo del bot"):
+            for op in historial_crudo:
+                st.write(op)
+
     else:
         st.warning("Selecciona al menos un activo para ver el gráfico.")
 
@@ -204,13 +210,13 @@ if cartera:
                 texto_detalle = f"{operacion} | Rentabilidad: {rentabilidad_calc}%"
 
         tipo = "INFO"
-        if "SALVAVIDAS" in operacion or "DCA" in operacion:
+        if "SALVAVIDAS" in operacion.upper() or "DCA" in operacion.upper():
             tipo = "🟢 DCA SALVAVIDAS"
-        elif "COMPRA" in operacion or "INICIAL" in operacion or "INICIO:" in operacion:
+        elif "COMPRA" in operacion.upper() or "INICIAL" in operacion.upper() or "INICIO:" in operacion.upper():
             tipo = "🟢 COMPRA"
-        elif "VENTA" in operacion:
+        elif "VENTA" in operacion.upper():
             tipo = "🔴 VENTA"
-        elif "EMERGENCIA" in operacion or "STOP" in operacion:
+        elif "EMERGENCIA" in operacion.upper() or "STOP" in operacion.upper():
             tipo = "🛑 STOP-LOSS"
 
         datos_historial.append({
