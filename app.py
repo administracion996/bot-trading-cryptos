@@ -1,3 +1,4 @@
+import base64
 import json
 import re
 from datetime import datetime
@@ -35,7 +36,7 @@ universo_mercado = [
 ]
 
 
-@st.cache_data(ttl=15)
+@st.cache_data(ttl=5)
 def cargar_cartera_github():
   try:
     res = requests.get(RAW_URL)
@@ -74,7 +75,7 @@ cartera = cargar_cartera_github()
 tasa_actual = obtener_tasa_usd_eur()
 
 if cartera:
-  # --- 1. MÉTRICAS GLOBALES ---
+  # 1. MÉTRICAS GLOBALES
   col1, col2, col3 = st.columns(3)
   valor_total = cartera.get("total_cartera", 1000.0)
   efectivo = cartera.get("efectivo_disponible", 0.0)
@@ -85,7 +86,7 @@ if cartera:
   col3.metric("Posiciones Activas", f"{num_posiciones} / {len(universo_mercado)}")
   st.markdown("---")
 
-  # --- 2. GRÁFICO CON MARCADORES ---
+  # 2. GRÁFICO CON MARCADORES
   st.subheader(
       "📊 Gráfico de Rendimiento (%) con Puntos de Entrada 🟢 y Salida 🔴"
   )
@@ -147,26 +148,16 @@ if cartera:
                 fechas_venta.append(t_cercano)
                 valores_venta.append(val_cercano)
                 match_pnl = re.search(
-                    r"Beneficio Neto:\s*([-0-9.]+)€|Neto:\s*([-0-9.]+)€", op
+                    r"(?:Beneficio Neto:|Neto:)\s*([-0-9.]+)\s*€", op
                 )
-                match_pct = re.search(r"Rentabilidad:\s*([-0-9.]+)%", op)
-
-                pnl_val = None
-                if match_pnl:
-                  pnl_val = float(match_pnl.group(1) or match_pnl.group(2))
-
-                pct_val = None
-                if match_pct:
-                  pct_val = float(match_pct.group(1))
-                elif pnl_val is not None:
-                  pct_val = round((pnl_val / 50.0) * 100, 2)
+                match_pct = re.search(r"Rentabilidad:\s*([-0-9.]+)\s*%", op)
 
                 pnl_info = (
-                    f"<br>Beneficio: {pnl_val:.2f}€" if pnl_val is not None else ""
+                    f"<br>Beneficio: {match_pnl.group(1)}€" if match_pnl else ""
                 )
                 pct_info = (
-                    f"<br>Rentabilidad: {pct_val:.2f}%"
-                    if pct_val is not None
+                    f"<br>Rentabilidad: {match_pct.group(1)}%"
+                    if match_pct
                     else ""
                 )
                 tipo_label = "🔴 VENTA" if "VENTA" in op else "🛑 STOP-LOSS"
@@ -227,12 +218,10 @@ if cartera:
         template="plotly_white",
     )
     st.plotly_chart(fig, use_container_width=True)
-  else:
-    st.warning("Selecciona al menos un activo para ver el gráfico.")
 
   st.markdown("---")
 
-  # --- 3. HISTORIAL Y BENEFICIOS NETOS (SECCIÓN REORDENADA) ---
+  # 3. HISTORIAL Y BENEFICIOS NETOS (POSICIONADO ARRIBA)
   st.subheader("📜 Historial y Beneficios Netos")
 
   historial_crudo = cartera.get("historial_operaciones", [])
@@ -246,22 +235,23 @@ if cartera:
     except:
       fecha_obj = pd.to_datetime("today")
 
-    # Extraer Beneficio Neto
-    beneficio = None
-    match_pnl = re.search(
-        r"Beneficio Neto:\s*([-0-9.]+)€|Neto:\s*([-0-9.]+)€", operacion
-    )
-    if match_pnl:
-      val_str = match_pnl.group(1) or match_pnl.group(2)
-      beneficio = float(val_str)
+    beneficio_str = "-"
+    rentabilidad_str = "-"
 
-    # Extraer Porcentaje de Rentabilidad
-    rentabilidad = None
-    match_rent = re.search(r"Rentabilidad:\s*([-0-9.]+)%", operacion)
-    if match_rent:
-      rentabilidad = float(match_rent.group(1))
-    elif beneficio is not None:
-      rentabilidad = round((beneficio / 50.0) * 100, 2)
+    # Extracción de Beneficio
+    match_pnl = re.search(r"(?:Beneficio Neto:|Neto:)\s*([-0-9.]+)\s*€", operacion)
+    if match_pnl:
+      val_pnl = float(match_pnl.group(1))
+      beneficio_str = f"{val_pnl:.2f} €"
+
+      # Extracción o cálculo automático de Rentabilidad
+      match_rent = re.search(r"Rentabilidad:\s*([-0-9.]+)\s*%", operacion)
+      if match_rent:
+        val_rent = float(match_rent.group(1))
+        rentabilidad_str = f"{val_rent:.2f} %"
+      else:
+        val_rent = round((val_pnl / 50.0) * 100, 2)
+        rentabilidad_str = f"{val_rent:.2f} %"
 
     tipo = "INFO"
     if "COMPRA" in operacion or "INICIAL" in operacion or "INICIO:" in operacion:
@@ -274,8 +264,8 @@ if cartera:
     datos_historial.append({
         "Fecha": fecha_obj,
         "Tipo": tipo,
-        "Beneficio Neto (€)": beneficio,
-        "Rentabilidad (%)": rentabilidad,
+        "Beneficio Neto (€)": beneficio_str,
+        "Rentabilidad (%)": rentabilidad_str,
         "Detalle": operacion,
     })
 
@@ -301,37 +291,15 @@ if cartera:
       df_filtrado = df_historial
 
     df_filtrado = df_filtrado.sort_values(by="Fecha", ascending=False)
-    total_periodo = df_filtrado["Beneficio Neto (€)"].sum(skipna=True)
+    df_filtrado["Fecha"] = df_filtrado["Fecha"].dt.strftime("%Y-%m-%d %H:%M:%S")
 
-    st.metric(
-        label=f"Balance Generado ({opcion_tiempo})",
-        value=f"{total_periodo:.2f} €",
-    )
-
-    def styling_logic(val):
-      if pd.isna(val) or val is None:
-        return "color: gray"
-      return (
-          "color: green" if val > 0 else "color: red" if val < 0 else "color: gray"
-      )
-
-    st.dataframe(
-        df_filtrado.style.map(
-            styling_logic, subset=["Beneficio Neto (€)", "Rentabilidad (%)"]
-        ).format({
-            "Beneficio Neto (€)": lambda x: f"{x:.2f} €" if pd.notna(x) else "-",
-            "Rentabilidad (%)": lambda x: f"{x:.2f} %" if pd.notna(x) else "-",
-            "Fecha": lambda x: x.strftime("%Y-%m-%d %H:%M:%S"),
-        }),
-        use_container_width=True,
-        hide_index=True,
-    )
+    st.dataframe(df_filtrado, use_container_width=True, hide_index=True)
   else:
     st.info("Sin registros de operaciones.")
 
   st.markdown("---")
 
-  # --- 4. POSICIONES ABIERTAS (SECCIÓN MOVIDA ABAJO) ---
+  # 4. ESTADO DE LAS POSICIONES (MOVIDO ABAJO)
   st.subheader("💼 Estado de las Posiciones (Comisiones descontadas)")
   posiciones = cartera.get("posiciones_abiertas", {})
 
@@ -359,30 +327,14 @@ if cartera:
       tabla_pos.append({
           "Activo": ticker,
           "Cantidad": cantidad,
-          "Precio Entrada (€)": precio_entrada,
-          "Precio Actual (€)": precio_actual,
-          "Diferencia (€)": diferencia_eur,
-          "Rentabilidad (%)": rentabilidad_pct,
+          "Precio Entrada (€)": f"{precio_entrada:.6f}",
+          "Precio Actual (€)": f"{precio_actual:.6f}",
+          "Diferencia (€)": f"{diferencia_eur:.2f} €",
+          "Rentabilidad (%)": f"{rentabilidad_pct:.2f} %",
       })
 
     df_posiciones = pd.DataFrame(tabla_pos)
-
-    def color_positivo_negativo(val):
-      color = "green" if val > 0 else "red" if val < 0 else "gray"
-      return f"color: {color}"
-
-    st.dataframe(
-        df_posiciones.style.map(
-            color_positivo_negativo, subset=["Diferencia (€)", "Rentabilidad (%)"]
-        ).format({
-            "Precio Entrada (€)": "{:.6f}",
-            "Precio Actual (€)": "{:.6f}",
-            "Diferencia (€)": "{:.2f} €",
-            "Rentabilidad (%)": "{:.2f} %",
-        }),
-        use_container_width=True,
-        hide_index=True,
-    )
+    st.dataframe(df_posiciones, use_container_width=True, hide_index=True)
   else:
     st.info("No hay posiciones abiertas en este momento.")
 
