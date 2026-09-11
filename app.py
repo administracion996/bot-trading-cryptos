@@ -72,33 +72,31 @@ if cartera:
     col3.metric("Posiciones Activas", f"{num_posiciones} / {len(universo_mercado)}")
     st.markdown("---")
 
-    # --- SECCIÓN 2: GRÁFICO DE PRECIOS REALES EN € ---
-    st.subheader("📊 Gráficos de Precio Real (€) y Puntos de Operación")
+    # --- SECCIÓN 2: GRÁFICO UNIFICADO ---
+    st.subheader("📊 Gráfico Comparativo de Rendimiento (%) con Precios de Entrada/Salida en €")
     activos_seleccionados = st.multiselect(
-        "Selecciona las criptomonedas para ver su gráfica de precio real:",
+        "Selecciona las criptomonedas para comparar en la misma gráfica:",
         options=universo_mercado,
-        default=["AVAX-USD", "SHIB-USD"],
+        default=["AVAX-USD", "SHIB-USD", "BTC-USD"],
     )
 
     if activos_seleccionados:
+        fig = go.Figure()
         historial_crudo = cartera.get("historial_operaciones", [])
 
         for ticker in activos_seleccionados:
             try:
-                df_hist = yf.Ticker(ticker).history(period="2d", interval="15m")
+                df_hist = yf.Ticker(ticker).history(period="3d", interval="15m")
                 if not df_hist.empty:
                     df_hist.index = df_hist.index.tz_localize(None)
                     df_hist["Close_EUR"] = df_hist["Close"] * tasa_actual
+                    
+                    p0 = df_hist["Close_EUR"].iloc[0]
+                    var_pct = ((df_hist["Close_EUR"] - p0) / p0) * 100
 
-                    fig = go.Figure()
-
-                    # Línea de precio real en €
+                    # Línea de tendencia porcentual
                     fig.add_trace(go.Scatter(
-                        x=df_hist.index,
-                        y=df_hist["Close_EUR"],
-                        mode="lines",
-                        name=f"Precio {ticker} (€)",
-                        line=dict(width=2, color="#1f77b4")
+                        x=df_hist.index, y=var_pct, mode="lines", name=ticker, line=dict(width=2)
                     ))
 
                     fechas_compra, valores_compra, textos_compra = [], [], []
@@ -114,13 +112,18 @@ if cartera:
                             f_dt = pd.to_datetime(f_str)
                             idx_pos = df_hist.index.get_indexer([f_dt], method="nearest")[0]
                             t_cercano = df_hist.index[idx_pos]
-                            val_cercano = df_hist["Close_EUR"].iloc[idx_pos]
+                            val_cercano = var_pct.iloc[idx_pos]
+                            precio_eur_momento = df_hist["Close_EUR"].iloc[idx_pos]
 
                             if "COMPRA" in op or "INICIO" in op or "DCA" in op:
                                 fechas_compra.append(t_cercano)
                                 valores_compra.append(val_cercano)
                                 label_tipo = "🟢 DCA SALVAVIDAS" if "SALVAVIDAS" in op or "DCA" in op else "🟢 COMPRA INICIAL"
-                                textos_compra.append(f"{label_tipo} {ticker}<br>Hora: {t_cercano.strftime('%H:%M:%S')}<br>Precio: {val_cercano:.6f}€")
+                                
+                                match_precio_medio = re.search(r"Nuevo Precio Medio:\s*([-0-9.]+)", op)
+                                p_medio_str = f"<br>Precio Medio Entrada: {float(match_precio_medio.group(1)):.6f}€" if match_precio_medio else f"<br>Precio Ejecutado: {precio_eur_momento:.6f}€"
+                                
+                                textos_compra.append(f"<b>{label_tipo} {ticker}</b><br>Hora: {t_cercano.strftime('%H:%M:%S')}{p_medio_str}")
 
                             elif "VENTA" in op or "EMERGENCIA" in op or "STOP" in op:
                                 fechas_venta.append(t_cercano)
@@ -132,11 +135,11 @@ if cartera:
                                 pnl_val = float(match_pnl.group(1)) if match_pnl else None
                                 pct_val = float(match_pct.group(1)) if match_pct else None
 
-                                pnl_info = f"<br>Beneficio: {pnl_val:.2f}€" if pnl_val is not None else ""
-                                pct_info = f"<br>Rentabilidad: {pct_val:.2f}%" if pct_val is not None else ""
-                                tipo_label = "🔴 VENTA" if "VENTA" in op else "🛑 STOP-LOSS"
+                                pnl_info = f"<br>Beneficio Neto: <b>{pnl_val:.2f}€</b>" if pnl_val is not None else ""
+                                pct_info = f"<br>Rentabilidad: <b>{pct_val:.2f}%</b>" if pct_val is not None else ""
+                                tipo_label = "🔴 VENTA EXITOSA" if "VENTA" in op else "🛑 STOP-LOSS"
 
-                                textos_venta.append(f"{tipo_label} {ticker}<br>Hora: {t_cercano.strftime('%H:%M:%S')}{pnl_info}{pct_info}<br>Precio: {val_cercano:.6f}€")
+                                textos_venta.append(f"<b>{tipo_label} {ticker}</b><br>Hora: {t_cercano.strftime('%H:%M:%S')}<br>Precio Venta: {precio_eur_momento:.6f}€{pnl_info}{pct_info}")
                         except:
                             pass
 
@@ -144,30 +147,30 @@ if cartera:
                         fig.add_trace(go.Scatter(
                             x=fechas_compra, y=valores_compra, mode="markers",
                             name=f"Compras {ticker}",
-                            marker=dict(symbol="circle", size=12, color="green", line=dict(width=2, color="white")),
+                            marker=dict(symbol="circle", size=11, color="green", line=dict(width=2, color="white")),
                             hovertext=textos_compra, hoverinfo="text"
                         ))
                     if fechas_venta:
                         fig.add_trace(go.Scatter(
                             x=fechas_venta, y=valores_venta, mode="markers",
                             name=f"Ventas {ticker}",
-                            marker=dict(symbol="circle", size=12, color="red", line=dict(width=2, color="white")),
+                            marker=dict(symbol="circle", size=11, color="red", line=dict(width=2, color="white")),
                             hovertext=textos_venta, hoverinfo="text"
                         ))
-
-                    fig.update_layout(
-                        title=f"Cotización Real: {ticker} (€)",
-                        xaxis_title="Fecha / Hora",
-                        yaxis_title="Precio (€)",
-                        hovermode="x unified",
-                        margin=dict(l=20, r=20, t=40, b=20),
-                        template="plotly_white"
-                    )
-                    st.plotly_chart(fig, use_container_width=True)
             except Exception as e:
-                st.error(f"Error al generar gráfica para {ticker}: {e}")
+                pass
+
+        fig.update_layout(
+            xaxis_title="Fecha / Hora",
+            yaxis_title="Variación del Mercado (%)",
+            hovermode="x unified",
+            legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1),
+            margin=dict(l=20, r=20, t=30, b=20),
+            template="plotly_white"
+        )
+        st.plotly_chart(fig, use_container_width=True)
     else:
-        st.warning("Selecciona al menos un activo para visualizar su gráfica.")
+        st.warning("Selecciona al menos un activo para ver el gráfico.")
 
     st.markdown("---")
 
