@@ -73,7 +73,7 @@ if cartera:
     st.markdown("---")
 
     # --- SECCIÓN 2: GRÁFICO ---
-    st.subheader("📊 Gráfico de Rendimiento Histórico Completo (%)")
+    st.subheader("📊 Gráfico de Rendimiento (%) con Puntos de Entrada 🟢 y Salida 🔴")
     activos_seleccionados = st.multiselect(
         "Selecciona las criptomonedas que deseas comparar:",
         options=universo_mercado,
@@ -85,10 +85,10 @@ if cartera:
         historial_crudo = cartera.get("historial_operaciones", [])
 
         for ticker in activos_seleccionados:
-            ticker_simbolo = ticker.split("-")[0]
+            ticker_base = ticker.split("-")[0]
             try:
-                # Descarga 1 mes completo para abarcar toda la historia del bot
-                df_hist = yf.Ticker(ticker).history(period="1mo", interval="15m")
+                # Se utiliza period="7d" para mantener la precisión de 15m sin que falle Yahoo Finance
+                df_hist = yf.Ticker(ticker).history(period="7d", interval="15m")
                 if not df_hist.empty:
                     df_hist.index = df_hist.index.tz_localize(None)
                     p0 = df_hist["Close"].iloc[0]
@@ -102,7 +102,7 @@ if cartera:
                     fechas_venta, valores_venta, textos_venta = [], [], []
 
                     for op in historial_crudo:
-                        if ticker not in op and ticker_simbolo not in op:
+                        if ticker not in op and ticker_base not in op:
                             continue
 
                         match_time = re.search(r"\[(.*?)\]", op)
@@ -118,14 +118,14 @@ if cartera:
                                 t_cercano = df_hist.index[idx_pos]
                                 val_cercano = var_pct.iloc[idx_pos]
 
-                                op_upper = op.upper()
-                                if any(k in op_upper for k in ["COMPRA", "INICIO", "DCA", "SALVAVIDAS"]):
+                                op_u = op.upper()
+                                if any(k in op_u for k in ["COMPRA", "INICIO", "DCA", "SALVAVIDAS"]):
                                     fechas_compra.append(t_cercano)
                                     valores_compra.append(val_cercano)
-                                    label_tipo = "🟢 DCA SALVAVIDAS" if ("SALVAVIDAS" in op_upper or "DCA" in op_upper) else "🟢 COMPRA"
-                                    textos_compra.append(f"{label_tipo} {ticker}<br>Fecha: {f_str}")
+                                    label_tipo = "🟢 DCA SALVAVIDAS" if ("SALVAVIDAS" in op_u or "DCA" in op_u) else "🟢 COMPRA"
+                                    textos_compra.append(f"{label_tipo} {ticker}<br>Hora: {f_str}")
 
-                                elif any(k in op_upper for k in ["VENTA", "EMERGENCIA", "STOP"]):
+                                elif any(k in op_u for k in ["VENTA", "EMERGENCIA", "STOP"]):
                                     fechas_venta.append(t_cercano)
                                     valores_venta.append(val_cercano)
 
@@ -137,9 +137,9 @@ if cartera:
 
                                     pnl_info = f"<br>Beneficio: {pnl_val:.2f}€" if pnl_val is not None else ""
                                     pct_info = f"<br>Rentabilidad: {pct_val:.2f}%" if pct_val is not None else ""
-                                    tipo_label = "🔴 VENTA" if "VENTA" in op_upper else "🛑 STOP-LOSS"
+                                    tipo_label = "🔴 VENTA" if "VENTA" in op_u else "🛑 STOP-LOSS"
 
-                                    textos_venta.append(f"{tipo_label} {ticker}<br>Fecha: {f_str}{pnl_info}{pct_info}")
+                                    textos_venta.append(f"{tipo_label} {ticker}<br>Hora: {f_str}{pnl_info}{pct_info}")
                         except Exception:
                             pass
 
