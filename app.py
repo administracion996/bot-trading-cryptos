@@ -72,7 +72,7 @@ if cartera:
     col3.metric("Posiciones Activas", f"{num_posiciones} / {len(universo_mercado)}")
     st.markdown("---")
 
-    # --- SECCIÓN 2: GRÁFICO DE BARRAS AGRUPADAS (COMPRA VS VENTA) ---
+    # --- SECCIÓN 2: GRÁFICO DE BARRAS AGRUPADAS (COMPRA VS VENTA POR ACCIÓN) ---
     st.subheader("📊 Volumen Operado por Acción (Compra vs Venta)")
 
     col_f1, col_f2 = st.columns([1, 2])
@@ -85,7 +85,7 @@ if cartera:
         activos_grafico = st.multiselect(
             "Filtrar por acción / criptomoneda:",
             options=universo_mercado,
-            default=universo_mercado[:6],
+            default=universo_mercado[:8],
         )
 
     historial_crudo = cartera.get("historial_operaciones", [])
@@ -110,23 +110,33 @@ if cartera:
                 if ticker in op or ticker_base in op:
                     op_u = op.upper()
                     
-                    # Extracción del monto operado en euros
-                    match_invertido = re.search(r"Invertido:\s*([\d.]+)", op)
-                    match_inc_fee = re.search(r"([\d.]+)\s*€\s*inc\. fee", op)
-                    match_monto_gen = re.search(r"(\d+\.?\d*)\s*€", op)
+                    is_buy = any(k in op_u for k in ["COMPRA", "DCA", "SALVAVIDAS", "INICIAL"]) and not any(k in op_u for k in ["VENTA", "STOP", "EMERGENCIA"])
+                    is_sell = any(k in op_u for k in ["VENTA", "STOP", "EMERGENCIA"])
 
-                    if match_invertido:
-                        monto = float(match_invertido.group(1))
-                    elif match_inc_fee:
-                        monto = float(match_inc_fee.group(1))
-                    elif match_monto_gen:
-                        monto = float(match_monto_gen.group(1))
-                    else:
-                        monto = 50.0
+                    # Extracción precisa del importe en Euros ignorando la cotización por unidad ("a XXX€")
+                    match_inv = re.search(r"(?:Invertido|Inversión):\s*([\d.]+)", op, re.IGNORECASE)
+                    match_fee = re.search(r"([\d.]+)\s*€\s*inc\. fee", op, re.IGNORECASE)
+                    match_neto = re.search(r"(?:Neto|Recuperado):\s*([\d.]+)\s*€", op, re.IGNORECASE)
+                    match_pnl = re.search(r"Beneficio Neto:\s*([-0-9.]+)\s*€", op, re.IGNORECASE)
 
-                    if any(k in op_u for k in ["COMPRA", "DCA", "SALVAVIDAS", "INICIAL"]) and not any(k in op_u for k in ["VENTA", "STOP", "EMERGENCIA"]):
+                    if is_buy:
+                        if match_inv:
+                            monto = float(match_inv.group(1))
+                        elif match_fee:
+                            monto = float(match_fee.group(1))
+                        elif "INICIO:" in op_u or "ASIGNADOS 50€" in op_u:
+                            monto = 50.0
+                        else:
+                            monto = 50.0
                         datos_barras[ticker]["Compra"] += monto
-                    elif any(k in op_u for k in ["VENTA", "STOP", "EMERGENCIA"]):
+
+                    elif is_sell:
+                        if match_neto:
+                            monto = float(match_neto.group(1))
+                        elif match_pnl:
+                            monto = 50.0 + float(match_pnl.group(1))
+                        else:
+                            monto = 50.0
                         datos_barras[ticker]["Venta"] += monto
 
     df_barras = pd.DataFrame(datos_barras).T.reset_index()
@@ -135,24 +145,24 @@ if cartera:
     if not df_barras.empty and (df_barras["Compra"].sum() > 0 or df_barras["Venta"].sum() > 0):
         fig_barras = go.Figure()
 
-        # Barra de Compras (Verde) con etiquetas numéricas arriba
+        # Barra de Compras (Verde)
         fig_barras.add_trace(
             go.Bar(
                 x=df_barras["Activo"],
                 y=df_barras["Compra"],
-                name="Compra (€)",
+                name="Compras (€)",
                 marker_color="#27ae60",
                 text=df_barras["Compra"].apply(lambda v: f"{v:.1f}€" if v > 0 else ""),
                 textposition="outside",
             )
         )
 
-        # Barra de Ventas (Roja) con etiquetas numéricas arriba
+        # Barra de Ventas (Roja)
         fig_barras.add_trace(
             go.Bar(
                 x=df_barras["Activo"],
                 y=df_barras["Venta"],
-                name="Venta (€)",
+                name="Ventas (€)",
                 marker_color="#e74c3c",
                 text=df_barras["Venta"].apply(lambda v: f"{v:.1f}€" if v > 0 else ""),
                 textposition="outside",
@@ -165,7 +175,7 @@ if cartera:
             barmode="group",
             xaxis_title="Criptomoneda / Activo",
             yaxis_title="Monto Acumulado (€)",
-            yaxis=dict(range=[0, max_val * 1.2]),
+            yaxis=dict(range=[0, max_val * 1.25]),
             legend=dict(
                 orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1
             ),
