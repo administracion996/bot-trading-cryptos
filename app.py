@@ -19,55 +19,41 @@ FILE_PATH = "cartera.json"
 RAW_URL = f"https://raw.githubusercontent.com/{REPO}/main/{FILE_PATH}"
 
 universo_mercado = [
-    "BTC-USD",
-    "ETH-USD",
-    "SOL-USD",
-    "ADA-USD",
-    "AVAX-USD",
-    "DOT-USD",
-    "NEAR-USD",
-    "ATOM-USD",
-    "XRP-USD",
-    "LTC-USD",
-    "BCH-USD",
-    "LINK-USD",
-    "DOGE-USD",
-    "SHIB-USD",
+    "BTC-USD", "ETH-USD", "SOL-USD", "ADA-USD",
+    "AVAX-USD", "DOT-USD", "NEAR-USD", "ATOM-USD",
+    "XRP-USD", "LTC-USD", "BCH-USD", "LINK-USD",
+    "DOGE-USD", "SHIB-USD",
 ]
-
 
 @st.cache_data(ttl=5)
 def cargar_cartera_github():
-  try:
-    res = requests.get(RAW_URL)
-    if res.status_code == 200:
-      return res.json()
-  except Exception as e:
-    st.error(f"Error al conectar con GitHub: {e}")
-  return None
-
+    try:
+        res = requests.get(RAW_URL)
+        if res.status_code == 200:
+            return res.json()
+    except Exception as e:
+        st.error(f"Error al conectar con GitHub: {e}")
+    return None
 
 @st.cache_data(ttl=300)
 def obtener_tasa_usd_eur():
-  try:
-    df = yf.Ticker("EUR=X").history(period="1d")
-    if not df.empty:
-      return float(df["Close"].iloc[-1])
-  except:
-    pass
-  return 0.92
-
+    try:
+        df = yf.Ticker("EUR=X").history(period="1d")
+        if not df.empty:
+            return float(df["Close"].iloc[-1])
+    except:
+        pass
+    return 0.92
 
 @st.cache_data(ttl=30)
 def obtener_precio_actual(ticker, tasa_eur):
-  try:
-    df = yf.Ticker(ticker).history(period="1d", interval="15m")
-    if not df.empty:
-      return float(df["Close"].iloc[-1]) * tasa_eur
-  except:
-    pass
-  return 0.0
-
+    try:
+        df = yf.Ticker(ticker).history(period="1d", interval="15m")
+        if not df.empty:
+            return float(df["Close"].iloc[-1]) * tasa_eur
+    except:
+        pass
+    return 0.0
 
 st.title("📈 Panel de Control - Bot de Trading Algorítmico (Reales en €)")
 
@@ -75,282 +61,263 @@ cartera = cargar_cartera_github()
 tasa_actual = obtener_tasa_usd_eur()
 
 if cartera:
-  # --- SECCIÓN 1: MÉTRICAS GLOBALES ---
-  col1, col2, col3 = st.columns(3)
-  valor_total = cartera.get("total_cartera", 1000.0)
-  efectivo = cartera.get("efectivo_disponible", 0.0)
-  num_posiciones = len(cartera.get("posiciones_abiertas", {}))
+    # --- SECCIÓN 1: MÉTRICAS GLOBALES ---
+    col1, col2, col3 = st.columns(3)
+    valor_total = cartera.get("total_cartera", 1000.0)
+    efectivo = cartera.get("efectivo_disponible", 0.0)
+    num_posiciones = len(cartera.get("posiciones_abiertas", {}))
 
-  col1.metric("Capital Total (€)", f"{valor_total:.2f} €")
-  col2.metric("Efectivo Libre (€)", f"{efectivo:.2f} €")
-  col3.metric("Posiciones Activas", f"{num_posiciones} / {len(universo_mercado)}")
-  st.markdown("---")
+    col1.metric("Capital Total (€)", f"{valor_total:.2f} €")
+    col2.metric("Efectivo Libre (€)", f"{efectivo:.2f} €")
+    col3.metric("Posiciones Activas", f"{num_posiciones} / {len(universo_mercado)}")
+    st.markdown("---")
 
-  # --- SECCIÓN 2: GRÁFICO DE BARRAS (COMPRA VS VENTA POR ACCIÓN) ---
-  st.subheader("📊 Volumen Operado por Acción (Compra vs Venta)")
+    # --- SECCIÓN 2: GRÁFICO DE BARRAS (COMPRA VS VENTA POR ACCIÓN) ---
+    st.subheader("📊 Volumen Operado por Acción (Compra vs Venta)")
 
-  col_f1, col_f2 = st.columns([1, 2])
-  with col_f1:
-    fechas_seleccionadas = st.date_input(
-        "Filtrar por rango de fechas:",
-        value=(datetime.now().date() - timedelta(days=7), datetime.now().date()),
-    )
-  with col_f2:
-    activos_grafico = st.multiselect(
-        "Filtrar por acción / criptomoneda:",
-        options=universo_mercado,
-        default=universo_mercado[:6],
-    )
-
-  historial_crudo = cartera.get("historial_operaciones", [])
-
-  # Procesamiento para la gráfica de barras
-  datos_barras = {
-      t: {"Compra": 0.0, "Venta": 0.0} for t in activos_seleccionados_base
-      if len(activos_grafico) > 0
-  }
-  datos_barras = {t: {"Compra": 0.0, "Venta": 0.0} for t in activos_grafico}
-
-  if isinstance(fechas_seleccionadas, (tuple, list)) and len(
-      fechas_seleccionadas
-  ) == 2:
-    f_inicio = pd.to_datetime(fechas_seleccionadas[0])
-    f_fin = pd.to_datetime(fechas_seleccionadas[1]) + pd.Timedelta(
-        days=1, microseconds=-1
-    )
-  else:
-    f_inicio = pd.to_datetime("2000-01-01")
-    f_fin = pd.to_datetime("2099-12-31")
-
-  for op in historial_crudo:
-    match_time = re.search(r"\[(.*?)\]", op)
-    if not match_time:
-      continue
-    f_op = pd.to_datetime(match_time.group(1))
-
-    if f_inicio <= f_op <= f_fin:
-      for ticker in activos_grafico:
-        ticker_base = ticker.split("-")[0]
-        if ticker in op or ticker_base in op:
-          op_u = op.upper()
-          # Extracción del monto invertido/recuperado en euros
-          match_monto = re.search(
-              r"(\d+\.?\d*)\s*€|\|\s*(\d+\.?\d*)\s*€|\:\s*(\d+\.?\d*)\s*€", op
-          )
-          monto = 50.0  # Valor base estimado si no se encuentra en el log
-          if match_monto:
-            for g in match_monto.groups():
-              if g:
-                try:
-                  monto = float(g)
-                  break
-                except:
-                  pass
-
-          if any(
-              k in op_u for k in ["COMPRA", "DCA", "SALVAVIDAS", "INICIAL"]
-          ) and not any(k in op_u for k in ["VENTA", "STOP", "EMERGENCIA"]):
-            datos_barras[ticker]["Compra"] += monto
-          elif any(k in op_u for k in ["VENTA", "STOP", "EMERGENCIA"]):
-            datos_barras[ticker]["Venta"] += monto
-
-  df_barras = pd.DataFrame(datos_barras).T.reset_index()
-  df_barras.columns = ["Activo", "Compra", "Venta"]
-
-  if not df_barras.empty and (
-      df_barras["Compra"].sum() > 0 or df_barras["Venta"].sum() > 0
-  ):
-    fig_barras = go.Figure()
-    fig_barras.add_trace(
-        go.Bar(
-            x=df_barras["Activo"],
-            y=df_barras["Compra"],
-            name="Compras (€)",
-            marker_color="#2ca02c",
+    col_f1, col_f2 = st.columns([1, 2])
+    with col_f1:
+        fechas_seleccionadas = st.date_input(
+            "Filtrar por rango de fechas:",
+            value=(datetime.now().date() - timedelta(days=7), datetime.now().date()),
         )
-    )
-    fig_barras.add_trace(
-        go.Bar(
-            x=df_barras["Activo"],
-            y=df_barras["Venta"],
-            name="Ventas (€)",
-            marker_color="#d62728",
+    with col_f2:
+        activos_grafico = st.multiselect(
+            "Filtrar por acción / criptomoneda:",
+            options=universo_mercado,
+            default=universo_mercado[:6],
         )
-    )
 
-    fig_barras.update_layout(
-        barmode="group",
-        xaxis_title="Acción / Criptomoneda",
-        yaxis_title="Monto Acumulado (€)",
-        legend=dict(
-            orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1
-        ),
-        margin=dict(l=20, r=20, t=30, b=20),
-        template="plotly_white",
-    )
-    st.plotly_chart(fig_barras, use_container_width=True)
-  else:
-    st.info(
-        "No se registraron operaciones para los activos y rango de fechas"
-        " seleccionados."
-    )
+    historial_crudo = cartera.get("historial_operaciones", [])
 
-  st.markdown("---")
+    # Inicialización limpia sin referencias ambiguas
+    datos_barras = {t: {"Compra": 0.0, "Venta": 0.0} for t in activos_grafico}
 
-  # --- SECCIÓN 3: HISTORIAL Y BENEFICIOS NETOS ---
-  st.subheader("📜 Historial y Beneficios Netos")
-
-  datos_historial = []
-  for operacion in historial_crudo:
-    match_time = re.search(r"\[(.*?)\]", operacion)
-    fecha_str = match_time.group(1) if match_time else ""
-    try:
-      fecha_obj = pd.to_datetime(fecha_str)
-    except:
-      fecha_obj = pd.to_datetime("today")
-
-    beneficio = None
-    texto_detalle = operacion
-
-    match_pnl = re.search(
-        r"(?:Beneficio Neto:|Neto:)\s*([-0-9.]+)\s*€", operacion
-    )
-    if match_pnl:
-      beneficio = float(match_pnl.group(1))
-      if "Rentabilidad:" not in operacion and "VENTA" in operacion:
-        rentabilidad_calc = round((beneficio / 50.0) * 100, 2)
-        texto_detalle = f"{operacion} | Rentabilidad: {rentabilidad_calc}%"
-
-    tipo = "INFO"
-    op_u = operacion.upper()
-    if "SALVAVIDAS" in op_u or "DCA" in op_u:
-      tipo = "🟢 DCA SALVAVIDAS"
-    elif "COMPRA" in op_u or "INICIAL" in op_u or "INICIO:" in op_u:
-      tipo = "🟢 COMPRA"
-    elif "VENTA" in op_u:
-      tipo = "🔴 VENTA"
-    elif "EMERGENCIA" in op_u or "STOP" in op_u:
-      tipo = "🛑 STOP-LOSS"
-
-    datos_historial.append({
-        "Fecha": fecha_obj,
-        "Tipo": tipo,
-        "Beneficio Neto (€)": beneficio,
-        "Detalle": texto_detalle,
-    })
-
-  df_historial = pd.DataFrame(datos_historial)
-
-  if not df_historial.empty:
-    opcion_tiempo = st.selectbox(
-        "Filtrar por intervalo de tiempo:",
-        ["Hoy", "Esta Semana", "Este Mes", "Este Año", "Todo"],
-    )
-    ahora = pd.to_datetime("today")
-
-    if opcion_tiempo == "Hoy":
-      df_filtrado = df_historial[df_historial["Fecha"].dt.date == ahora.date()]
-    elif opcion_tiempo == "Esta Semana":
-      inicio_semana = (ahora - pd.Timedelta(days=ahora.dayofweek)).replace(
-          hour=0, minute=0, second=0, microsecond=0
-      )
-      df_filtrado = df_historial[df_historial["Fecha"] >= inicio_semana]
-    elif opcion_tiempo == "Este Mes":
-      df_filtrado = df_historial[
-          (df_historial["Fecha"].dt.year == ahora.year)
-          & (df_historial["Fecha"].dt.month == ahora.month)
-      ]
-    elif opcion_tiempo == "Este Año":
-      df_filtrado = df_historial[df_historial["Fecha"].dt.year == ahora.year]
+    if isinstance(fechas_seleccionadas, (tuple, list)) and len(fechas_seleccionadas) == 2:
+        f_inicio = pd.to_datetime(fechas_seleccionadas[0])
+        f_fin = pd.to_datetime(fechas_seleccionadas[1]) + pd.Timedelta(days=1, microseconds=-1)
     else:
-      df_filtrado = df_historial
+        f_inicio = pd.to_datetime("2000-01-01")
+        f_fin = pd.to_datetime("2099-12-31")
 
-    df_filtrado = df_filtrado.sort_values(by="Fecha", ascending=False)
-    total_periodo = df_filtrado["Beneficio Neto (€)"].sum(skipna=True)
+    for op in historial_crudo:
+        match_time = re.search(r"\[(.*?)\]", op)
+        if not match_time:
+            continue
+        f_op = pd.to_datetime(match_time.group(1))
 
-    st.metric(
-        label=f"Balance Generado ({opcion_tiempo})", value=f"{total_periodo:.2f} €"
-    )
+        if f_inicio <= f_op <= f_fin:
+            for ticker in activos_grafico:
+                ticker_base = ticker.split("-")[0]
+                if ticker in op or ticker_base in op:
+                    op_u = op.upper()
+                    match_monto = re.search(r"(\d+\.?\d*)\s*€", op)
+                    monto = 50.0
+                    if match_monto:
+                        try:
+                            monto = float(match_monto.group(1))
+                        except:
+                            pass
 
-    def color_beneficio(val):
-      if pd.isna(val):
-        return ""
-      return (
-          "color: green" if val > 0 else "color: red" if val < 0 else "color: gray"
-      )
+                    if any(k in op_u for k in ["COMPRA", "DCA", "SALVAVIDAS", "INICIAL"]) and not any(k in op_u for k in ["VENTA", "STOP", "EMERGENCIA"]):
+                        datos_barras[ticker]["Compra"] += monto
+                    elif any(k in op_u for k in ["VENTA", "STOP", "EMERGENCIA"]):
+                        datos_barras[ticker]["Venta"] += monto
 
-    st.dataframe(
-        df_filtrado.style.map(
-            color_beneficio, subset=["Beneficio Neto (€)"]
-        ).format({
-            "Beneficio Neto (€)": (
-                lambda x: f"{x:.2f} €" if pd.notna(x) else "-"
-            ),
-            "Fecha": lambda x: x.strftime("%Y-%m-%d %H:%M:%S"),
-        }),
-        use_container_width=True,
-        hide_index=True,
-    )
-  else:
-    st.info("Sin registros de operaciones.")
+    df_barras = pd.DataFrame(datos_barras).T.reset_index()
+    df_barras.columns = ["Activo", "Compra", "Venta"]
 
-  st.markdown("---")
-
-  # --- SECCIÓN 4: POSICIONES ABIERTAS ---
-  st.subheader("💼 Estado de las Posiciones (Comisiones descontadas)")
-  posiciones = cartera.get("posiciones_abiertas", {})
-
-  if posiciones:
-    tabla_pos = []
-    for ticker, info in posiciones.items():
-      cantidad = info.get("cantidad", 0)
-      precio_entrada = info.get("precio_entrada", 0)
-      precio_actual = obtener_precio_actual(ticker, tasa_actual)
-
-      if precio_actual > 0:
-        valor_actual = cantidad * precio_actual
-        inversion_inicial = cantidad * precio_entrada
-        diferencia_eur = valor_actual - inversion_inicial
-        rentabilidad_pct = (
-            (diferencia_eur / inversion_inicial) * 100
-            if inversion_inicial > 0
-            else 0
+    if not df_barras.empty and (df_barras["Compra"].sum() > 0 or df_barras["Venta"].sum() > 0):
+        fig_barras = go.Figure()
+        fig_barras.add_trace(
+            go.Bar(
+                x=df_barras["Activo"],
+                y=df_barras["Compra"],
+                name="Compras (€)",
+                marker_color="#2ca02c",
+            )
         )
-      else:
-        precio_actual = precio_entrada
-        diferencia_eur = 0.0
-        rentabilidad_pct = 0.0
+        fig_barras.add_trace(
+            go.Bar(
+                x=df_barras["Activo"],
+                y=df_barras["Venta"],
+                name="Ventas (€)",
+                marker_color="#d62728",
+            )
+        )
 
-      tabla_pos.append({
-          "Activo": ticker,
-          "Cantidad": cantidad,
-          "Precio Entrada (€)": precio_entrada,
-          "Precio Actual (€)": precio_actual,
-          "Diferencia (€)": diferencia_eur,
-          "Rentabilidad (%)": rentabilidad_pct,
-      })
+        fig_barras.update_layout(
+            barmode="group",
+            xaxis_title="Acción / Criptomoneda",
+            yaxis_title="Monto Acumulado (€)",
+            legend=dict(
+                orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1
+            ),
+            margin=dict(l=20, r=20, t=30, b=20),
+            template="plotly_white",
+        )
+        st.plotly_chart(fig_barras, use_container_width=True)
+    else:
+        st.info(
+            "No se registraron operaciones para los activos y rango de fechas seleccionados."
+        )
 
-    df_posiciones = pd.DataFrame(tabla_pos)
+    st.markdown("---")
 
-    def color_posiciones(val):
-      return (
-          "color: green" if val > 0 else "color: red" if val < 0 else "color: gray"
-      )
+    # --- SECCIÓN 3: HISTORIAL Y BENEFICIOS NETOS ---
+    st.subheader("📜 Historial y Beneficios Netos")
 
-    st.dataframe(
-        df_posiciones.style.map(
-            color_posiciones, subset=["Diferencia (€)", "Rentabilidad (%)"]
-        ).format({
-            "Precio Entrada (€)": "{:.6f}",
-            "Precio Actual (€)": "{:.6f}",
-            "Diferencia (€)": "{:.2f} €",
-            "Rentabilidad (%)": "{:.2f} %",
-        }),
-        use_container_width=True,
-        hide_index=True,
-    )
-  else:
-    st.info("No hay posiciones abiertas en este momento.")
+    datos_historial = []
+    for operacion in historial_crudo:
+        match_time = re.search(r"\[(.*?)\]", operacion)
+        fecha_str = match_time.group(1) if match_time else ""
+        try:
+            fecha_obj = pd.to_datetime(fecha_str)
+        except:
+            fecha_obj = pd.to_datetime("today")
+
+        beneficio = None
+        texto_detalle = operacion
+
+        match_pnl = re.search(
+            r"(?:Beneficio Neto:|Neto:)\s*([-0-9.]+)\s*€", operacion
+        )
+        if match_pnl:
+            beneficio = float(match_pnl.group(1))
+            if "Rentabilidad:" not in operacion and "VENTA" in operacion:
+                rentabilidad_calc = round((beneficio / 50.0) * 100, 2)
+                texto_detalle = f"{operacion} | Rentabilidad: {rentabilidad_calc}%"
+
+        tipo = "INFO"
+        op_u = operacion.upper()
+        if "SALVAVIDAS" in op_u or "DCA" in op_u:
+            tipo = "🟢 DCA SALVAVIDAS"
+        elif "COMPRA" in op_u or "INICIAL" in op_u or "INICIO:" in op_u:
+            tipo = "🟢 COMPRA"
+        elif "VENTA" in op_u:
+            tipo = "🔴 VENTA"
+        elif "EMERGENCIA" in op_u or "STOP" in op_u:
+            tipo = "🛑 STOP-LOSS"
+
+        datos_historial.append({
+            "Fecha": fecha_obj,
+            "Tipo": tipo,
+            "Beneficio Neto (€)": beneficio,
+            "Detalle": texto_detalle,
+        })
+
+    df_historial = pd.DataFrame(datos_historial)
+
+    if not df_historial.empty:
+        opcion_tiempo = st.selectbox(
+            "Filtrar por intervalo de tiempo:",
+            ["Hoy", "Esta Semana", "Este Mes", "Este Año", "Todo"],
+        )
+        ahora = pd.to_datetime("today")
+
+        if opcion_tiempo == "Hoy":
+            df_filtrado = df_historial[df_historial["Fecha"].dt.date == ahora.date()]
+        elif opcion_tiempo == "Esta Semana":
+            inicio_semana = (ahora - pd.Timedelta(days=ahora.dayofweek)).replace(
+                hour=0, minute=0, second=0, microsecond=0
+            )
+            df_filtrado = df_historial[df_historial["Fecha"] >= inicio_semana]
+        elif opcion_tiempo == "Este Mes":
+            df_filtrado = df_historial[
+                (df_historial["Fecha"].dt.year == ahora.year)
+                & (df_historial["Fecha"].dt.month == ahora.month)
+            ]
+        elif opcion_tiempo == "Este Año":
+            df_filtrado = df_historial[df_historial["Fecha"].dt.year == ahora.year]
+        else:
+            df_filtrado = df_historial
+
+        df_filtrado = df_filtrado.sort_values(by="Fecha", ascending=False)
+        total_periodo = df_filtrado["Beneficio Neto (€)"].sum(skipna=True)
+
+        st.metric(
+            label=f"Balance Generado ({opcion_tiempo})", value=f"{total_periodo:.2f} €"
+        )
+
+        def color_beneficio(val):
+            if pd.isna(val):
+                return ""
+            return (
+                "color: green" if val > 0 else "color: red" if val < 0 else "color: gray"
+            )
+
+        st.dataframe(
+            df_filtrado.style.map(
+                color_beneficio, subset=["Beneficio Neto (€)"]
+            ).format({
+                "Beneficio Neto (€)": (
+                    lambda x: f"{x:.2f} €" if pd.notna(x) else "-"
+                ),
+                "Fecha": lambda x: x.strftime("%Y-%m-%d %H:%M:%S"),
+            }),
+            use_container_width=True,
+            hide_index=True,
+        )
+    else:
+        st.info("Sin registros de operaciones.")
+
+    st.markdown("---")
+
+    # --- SECCIÓN 4: POSICIONES ABIERTAS ---
+    st.subheader("💼 Estado de las Posiciones (Comisiones descontadas)")
+    posiciones = cartera.get("posiciones_abiertas", {})
+
+    if posiciones:
+        tabla_pos = []
+        for ticker, info in posiciones.items():
+            cantidad = info.get("cantidad", 0)
+            precio_entrada = info.get("precio_entrada", 0)
+            precio_actual = obtener_precio_actual(ticker, tasa_actual)
+
+            if precio_actual > 0:
+                valor_actual = cantidad * precio_actual
+                inversion_inicial = cantidad * precio_entrada
+                diferencia_eur = valor_actual - inversion_inicial
+                rentabilidad_pct = (
+                    (diferencia_eur / inversion_inicial) * 100
+                    if inversion_inicial > 0
+                    else 0
+                )
+            else:
+                precio_actual = precio_entrada
+                diferencia_eur = 0.0
+                rentabilidad_pct = 0.0
+
+            tabla_pos.append({
+                "Activo": ticker,
+                "Cantidad": cantidad,
+                "Precio Entrada (€)": precio_entrada,
+                "Precio Actual (€)": precio_actual,
+                "Diferencia (€)": diferencia_eur,
+                "Rentabilidad (%)": rentabilidad_pct,
+            })
+
+        df_posiciones = pd.DataFrame(tabla_pos)
+
+        def color_posiciones(val):
+            return (
+                "color: green" if val > 0 else "color: red" if val < 0 else "color: gray"
+            )
+
+        st.dataframe(
+            df_posiciones.style.map(
+                color_posiciones, subset=["Diferencia (€)", "Rentabilidad (%)"]
+            ).format({
+                "Precio Entrada (€)": "{:.6f}",
+                "Precio Actual (€)": "{:.6f}",
+                "Diferencia (€)": "{:.2f} €",
+                "Rentabilidad (%)": "{:.2f} %",
+            }),
+            use_container_width=True,
+            hide_index=True,
+        )
+    else:
+        st.info("No hay posiciones abiertas en este momento.")
 
 else:
-  st.warning("Sincronizando con GitHub... Por favor, recarga en unos segundos.")
+    st.warning("Sincronizando con GitHub... Por favor, recarga en unos segundos.")
