@@ -78,7 +78,6 @@ if cartera:
     hoy = datetime.now().date()
     col_f1, col_f2 = st.columns([1, 2])
     with col_f1:
-        # Configurado por defecto al día de hoy
         fechas_seleccionadas = st.date_input(
             "Filtrar por rango de fechas:",
             value=(hoy, hoy),
@@ -149,7 +148,6 @@ if cartera:
     if not df_barras.empty and (df_barras["Compra"].sum() > 0 or df_barras["Venta"].sum() > 0):
         fig_barras = go.Figure()
 
-        # Barra de Compras (Verde)
         fig_barras.add_trace(
             go.Bar(
                 x=df_barras["Activo"],
@@ -161,7 +159,6 @@ if cartera:
             )
         )
 
-        # Barra de Ventas (Roja)
         fig_barras.add_trace(
             go.Bar(
                 x=df_barras["Activo"],
@@ -302,9 +299,10 @@ if cartera:
             precio_entrada = info.get("precio_entrada", 0)
             precio_actual = obtener_precio_actual(ticker, tasa_actual)
 
+            inversion_inicial = cantidad * precio_entrada
+
             if precio_actual > 0:
                 valor_actual = cantidad * precio_actual
-                inversion_inicial = cantidad * precio_entrada
                 diferencia_eur = valor_actual - inversion_inicial
                 rentabilidad_pct = (
                     (diferencia_eur / inversion_inicial) * 100
@@ -313,7 +311,7 @@ if cartera:
                 )
             else:
                 precio_actual = precio_entrada
-                valor_actual = cantidad * precio_entrada
+                valor_actual = inversion_inicial
                 diferencia_eur = 0.0
                 rentabilidad_pct = 0.0
 
@@ -322,7 +320,8 @@ if cartera:
                 "Cantidad": cantidad,
                 "Precio Entrada (€)": precio_entrada,
                 "Precio Actual (€)": precio_actual,
-                "Valor Total (€)": valor_actual,
+                "Valor Total Compra (€)": inversion_inicial,
+                "Valor Total Actual (€)": valor_actual,
                 "Diferencia (€)": diferencia_eur,
                 "Rentabilidad (%)": rentabilidad_pct,
             })
@@ -340,7 +339,8 @@ if cartera:
             ).format({
                 "Precio Entrada (€)": "{:.6f}",
                 "Precio Actual (€)": "{:.6f}",
-                "Valor Total (€)": "{:.2f} €",
+                "Valor Total Compra (€)": "{:.2f} €",
+                "Valor Total Actual (€)": "{:.2f} €",
                 "Diferencia (€)": "{:.2f} €",
                 "Rentabilidad (%)": "{:.2f} %",
             }),
