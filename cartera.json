@@ -1,22 +1,18 @@
 {
-  "efectivo_disponible": 50.14,
-  "total_cartera": 1068.45,
+  "efectivo_disponible": 153.88,
+  "total_cartera": 1068.24,
   "posiciones_abiertas": {
     "BTC-USD": {
       "cantidad": 0.000743,
       "precio_entrada": 67294.751009
-    },
-    "ADA-USD": {
-      "cantidad": 846.480969,
-      "precio_entrada": 0.180666
     },
     "AVAX-USD": {
       "cantidad": 20.89995201414876,
       "precio_entrada": 6.482234906621624
     },
     "ATOM-USD": {
-      "cantidad": 248.88169,
-      "precio_entrada": 1.484239
+      "cantidad": 284.960678,
+      "precio_entrada": 1.472273
     },
     "BCH-USD": {
       "cantidad": 0.7089300000000001,
@@ -46,7 +42,9 @@
     "[2026-09-14 08:51:35] \ud83d\udfe2 COMPRA SALVAVIDAS (DCA) 85.842967 de ATOM-USD a 1.387521\u20ac | Ca\u00edda: -11.84% | Invertido: 119.29979859491688\u20ac | Nuevo precio medio: 1.499608\u20ac",
     "[2026-09-14 08:52:57] \ud83d\udd34 VENTA XRP-USD a 1.199392\u20ac (Tasa USD/EUR: 0.8653) - Beneficio Neto: 0.27\u20ac",
     "[2026-09-14 09:23:05] \ud83d\udfe2 COMPRA SALVAVIDAS (DCA) 36.072828 de ATOM-USD a 1.39134\u20ac | Ca\u00edda: -7.22% | Invertido: 50.27\u20ac | Nuevo precio medio: 1.484239\u20ac",
-    "[2026-09-14 09:23:05] \ud83d\udd34 VENTA SOL-USD a 87.816306\u20ac (Tasa USD/EUR: 0.8651) - Beneficio Neto: 0.14\u20ac"
+    "[2026-09-14 09:23:05] \ud83d\udd34 VENTA SOL-USD a 87.816306\u20ac (Tasa USD/EUR: 0.8651) - Beneficio Neto: 0.14\u20ac",
+    "[2026-09-14 09:53:15] \ud83d\udfe2 COMPRA SALVAVIDAS (DCA) 36.078988 de ATOM-USD a 1.387505\u20ac | Ca\u00edda: -6.52% | Invertido: 50.14\u20ac | Nuevo precio medio: 1.472273\u20ac",
+    "[2026-09-14 09:53:15] \ud83d\udd34 VENTA ADA-USD a 0.182077\u20ac (Tasa USD/EUR: 0.8660) - Beneficio Neto: 0.95\u20ac"
   ],
   "inyeccion_100_realizada": true
 }
