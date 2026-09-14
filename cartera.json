@@ -1,6 +1,6 @@
 {
-  "efectivo_disponible": 135.7,
-  "total_cartera": 1054.77,
+  "efectivo_disponible": 0.0,
+  "total_cartera": 1046.95,
   "posiciones_abiertas": {
     "ATOM-USD": {
       "cantidad": 395.293876,
@@ -13,6 +13,10 @@
     "DOGE-USD": {
       "cantidad": 2717.978115,
       "precio_entrada": 0.073397
+    },
+    "ETH-USD": {
+      "cantidad": 0.0626,
+      "precio_entrada": 2167.731629
     }
   },
   "historial_operaciones": [
@@ -40,7 +44,8 @@
     "[2026-09-14 10:23:22] \ud83d\udfe2 COMPRA SALVAVIDAS (DCA) 110.333198 de ATOM-USD a 1.392453\u20ac | Ca\u00edda: -5.42% | Invertido: 153.88\u20ac | Nuevo precio medio: 1.450617\u20ac",
     "[2026-09-14 12:10:12] \ud83d\udd34 VENTA BTC-USD a 67597.387973\u20ac (Tasa USD/EUR: 0.8663) - Beneficio Neto: 0.14\u20ac",
     "[2026-09-14 12:40:20] \ud83d\udfe2 COMPRA SALVAVIDAS (DCA) 0.258463 de BCH-USD a 193.682319\u20ac | Ca\u00edda: -8.86% | Invertido: 50.14\u20ac | Nuevo precio medio: 207.568176\u20ac",
-    "[2026-09-14 14:40:47] \ud83d\udd34 VENTA AVAX-USD a 6.503367\u20ac (Tasa USD/EUR: 0.8670) - Beneficio Neto: 0.22\u20ac"
+    "[2026-09-14 14:40:47] \ud83d\udd34 VENTA AVAX-USD a 6.503367\u20ac (Tasa USD/EUR: 0.8670) - Beneficio Neto: 0.22\u20ac",
+    "[2026-09-14 15:10:56] \ud83d\udfe2 COMPRA 0.0626 de ETH-USD a 2164.259304\u20ac (Tasa USD/EUR: 0.8669 | 135.7\u20ac inc. fee)"
   ],
   "inyeccion_100_realizada": true
 }
