@@ -72,7 +72,7 @@ if cartera:
     col3.metric("Posiciones Activas", f"{num_posiciones} / {len(universo_mercado)}")
     st.markdown("---")
 
-    # --- SECCIÓN 2: GRÁFICO DE BARRAS (COMPRA VS VENTA POR ACCIÓN) ---
+    # --- SECCIÓN 2: GRÁFICO DE BARRAS AGRUPADAS (COMPRA VS VENTA) ---
     st.subheader("📊 Volumen Operado por Acción (Compra vs Venta)")
 
     col_f1, col_f2 = st.columns([1, 2])
@@ -89,8 +89,6 @@ if cartera:
         )
 
     historial_crudo = cartera.get("historial_operaciones", [])
-
-    # Inicialización limpia sin referencias ambiguas
     datos_barras = {t: {"Compra": 0.0, "Venta": 0.0} for t in activos_grafico}
 
     if isinstance(fechas_seleccionadas, (tuple, list)) and len(fechas_seleccionadas) == 2:
@@ -111,13 +109,20 @@ if cartera:
                 ticker_base = ticker.split("-")[0]
                 if ticker in op or ticker_base in op:
                     op_u = op.upper()
-                    match_monto = re.search(r"(\d+\.?\d*)\s*€", op)
-                    monto = 50.0
-                    if match_monto:
-                        try:
-                            monto = float(match_monto.group(1))
-                        except:
-                            pass
+                    
+                    # Extracción del monto operado en euros
+                    match_invertido = re.search(r"Invertido:\s*([\d.]+)", op)
+                    match_inc_fee = re.search(r"([\d.]+)\s*€\s*inc\. fee", op)
+                    match_monto_gen = re.search(r"(\d+\.?\d*)\s*€", op)
+
+                    if match_invertido:
+                        monto = float(match_invertido.group(1))
+                    elif match_inc_fee:
+                        monto = float(match_inc_fee.group(1))
+                    elif match_monto_gen:
+                        monto = float(match_monto_gen.group(1))
+                    else:
+                        monto = 50.0
 
                     if any(k in op_u for k in ["COMPRA", "DCA", "SALVAVIDAS", "INICIAL"]) and not any(k in op_u for k in ["VENTA", "STOP", "EMERGENCIA"]):
                         datos_barras[ticker]["Compra"] += monto
@@ -129,38 +134,47 @@ if cartera:
 
     if not df_barras.empty and (df_barras["Compra"].sum() > 0 or df_barras["Venta"].sum() > 0):
         fig_barras = go.Figure()
+
+        # Barra de Compras (Verde) con etiquetas numéricas arriba
         fig_barras.add_trace(
             go.Bar(
                 x=df_barras["Activo"],
                 y=df_barras["Compra"],
-                name="Compras (€)",
-                marker_color="#2ca02c",
+                name="Compra (€)",
+                marker_color="#27ae60",
+                text=df_barras["Compra"].apply(lambda v: f"{v:.1f}€" if v > 0 else ""),
+                textposition="outside",
             )
         )
+
+        # Barra de Ventas (Roja) con etiquetas numéricas arriba
         fig_barras.add_trace(
             go.Bar(
                 x=df_barras["Activo"],
                 y=df_barras["Venta"],
-                name="Ventas (€)",
-                marker_color="#d62728",
+                name="Venta (€)",
+                marker_color="#e74c3c",
+                text=df_barras["Venta"].apply(lambda v: f"{v:.1f}€" if v > 0 else ""),
+                textposition="outside",
             )
         )
 
+        max_val = max(df_barras["Compra"].max(), df_barras["Venta"].max(), 10)
+
         fig_barras.update_layout(
             barmode="group",
-            xaxis_title="Acción / Criptomoneda",
+            xaxis_title="Criptomoneda / Activo",
             yaxis_title="Monto Acumulado (€)",
+            yaxis=dict(range=[0, max_val * 1.2]),
             legend=dict(
                 orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1
             ),
-            margin=dict(l=20, r=20, t=30, b=20),
+            margin=dict(l=20, r=20, t=40, b=20),
             template="plotly_white",
         )
         st.plotly_chart(fig_barras, use_container_width=True)
     else:
-        st.info(
-            "No se registraron operaciones para los activos y rango de fechas seleccionados."
-        )
+        st.info("No se registraron operaciones para los activos y rango de fechas seleccionados.")
 
     st.markdown("---")
 
