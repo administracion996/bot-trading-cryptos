@@ -75,11 +75,13 @@ if cartera:
     # --- SECCIÓN 2: GRÁFICO DE BARRAS AGRUPADAS (COMPRA VS VENTA POR ACCIÓN) ---
     st.subheader("📊 Volumen Operado por Acción (Compra vs Venta)")
 
+    hoy = datetime.now().date()
     col_f1, col_f2 = st.columns([1, 2])
     with col_f1:
+        # Configurado por defecto al día de hoy
         fechas_seleccionadas = st.date_input(
             "Filtrar por rango de fechas:",
-            value=(datetime.now().date() - timedelta(days=7), datetime.now().date()),
+            value=(hoy, hoy),
         )
     with col_f2:
         activos_grafico = st.multiselect(
@@ -94,9 +96,12 @@ if cartera:
     if isinstance(fechas_seleccionadas, (tuple, list)) and len(fechas_seleccionadas) == 2:
         f_inicio = pd.to_datetime(fechas_seleccionadas[0])
         f_fin = pd.to_datetime(fechas_seleccionadas[1]) + pd.Timedelta(days=1, microseconds=-1)
+    elif isinstance(fechas_seleccionadas, (tuple, list)) and len(fechas_seleccionadas) == 1:
+        f_inicio = pd.to_datetime(fechas_seleccionadas[0])
+        f_fin = pd.to_datetime(fechas_seleccionadas[0]) + pd.Timedelta(days=1, microseconds=-1)
     else:
-        f_inicio = pd.to_datetime("2000-01-01")
-        f_fin = pd.to_datetime("2099-12-31")
+        f_inicio = pd.to_datetime(hoy)
+        f_fin = pd.to_datetime(hoy) + pd.Timedelta(days=1, microseconds=-1)
 
     for op in historial_crudo:
         match_time = re.search(r"\[(.*?)\]", op)
@@ -113,7 +118,6 @@ if cartera:
                     is_buy = any(k in op_u for k in ["COMPRA", "DCA", "SALVAVIDAS", "INICIAL"]) and not any(k in op_u for k in ["VENTA", "STOP", "EMERGENCIA"])
                     is_sell = any(k in op_u for k in ["VENTA", "STOP", "EMERGENCIA"])
 
-                    # Extracción precisa del importe en Euros ignorando la cotización por unidad ("a XXX€")
                     match_inv = re.search(r"(?:Invertido|Inversión):\s*([\d.]+)", op, re.IGNORECASE)
                     match_fee = re.search(r"([\d.]+)\s*€\s*inc\. fee", op, re.IGNORECASE)
                     match_neto = re.search(r"(?:Neto|Recuperado):\s*([\d.]+)\s*€", op, re.IGNORECASE)
@@ -309,6 +313,7 @@ if cartera:
                 )
             else:
                 precio_actual = precio_entrada
+                valor_actual = cantidad * precio_entrada
                 diferencia_eur = 0.0
                 rentabilidad_pct = 0.0
 
@@ -317,6 +322,7 @@ if cartera:
                 "Cantidad": cantidad,
                 "Precio Entrada (€)": precio_entrada,
                 "Precio Actual (€)": precio_actual,
+                "Valor Total (€)": valor_actual,
                 "Diferencia (€)": diferencia_eur,
                 "Rentabilidad (%)": rentabilidad_pct,
             })
@@ -334,6 +340,7 @@ if cartera:
             ).format({
                 "Precio Entrada (€)": "{:.6f}",
                 "Precio Actual (€)": "{:.6f}",
+                "Valor Total (€)": "{:.2f} €",
                 "Diferencia (€)": "{:.2f} €",
                 "Rentabilidad (%)": "{:.2f} %",
             }),
