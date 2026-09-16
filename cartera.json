@@ -1,6 +1,6 @@
 {
-  "efectivo_disponible": 808.47,
-  "total_cartera": 1010.11,
+  "efectivo_disponible": 757.98,
+  "total_cartera": 1009.78,
   "posiciones_abiertas": {
     "XLM-USD": {
       "cantidad": 331.727722,
@@ -21,6 +21,11 @@
       "cantidad": 0.487263,
       "precio_entrada": 103.660651,
       "timestamp_entrada": "2026-09-16 12:07:14"
+    },
+    "FIL-USD": {
+      "cantidad": 72.169258,
+      "precio_entrada": 0.699605,
+      "timestamp_entrada": "2026-09-16 12:12:18"
     }
   },
   "inyeccion_100_realizada": true,
@@ -101,6 +106,7 @@
     "[2026-09-16 12:02:05] \ud83d\udd34 VENTA ICP-USD por ROTACI\u00d3N ULTRA-R\u00c1PIDA (25.5m transcurridos). Neto: 50.37\u20ac | PnL: -0.16\u20ac",
     "[2026-09-16 12:02:05] \ud83d\udfe2 COMPRA 385.868356 de FET-USD a 0.130716\u20ac (50.52\u20ac)",
     "[2026-09-16 12:07:14] \ud83d\udd34 VENTA DOT-USD por ROTACI\u00d3N ULTRA-R\u00c1PIDA (25.6m transcurridos). Neto: 50.59\u20ac | PnL: +0.06\u20ac",
-    "[2026-09-16 12:07:14] \ud83d\udfe2 COMPRA 0.487263 de AAVE-USD a 103.494765\u20ac (50.51\u20ac)"
+    "[2026-09-16 12:07:14] \ud83d\udfe2 COMPRA 0.487263 de AAVE-USD a 103.494765\u20ac (50.51\u20ac)",
+    "[2026-09-16 12:12:18] \ud83d\udfe2 COMPRA 72.169258 de FIL-USD a 0.698486\u20ac (50.49\u20ac)"
   ]
 }
