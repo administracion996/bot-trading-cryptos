@@ -1,12 +1,7 @@
 {
-  "efectivo_disponible": 555.83,
-  "total_cartera": 1010.64,
+  "efectivo_disponible": 555.65,
+  "total_cartera": 1010.81,
   "posiciones_abiertas": {
-    "SHIB-USD": {
-      "cantidad": 12609792.0,
-      "precio_entrada": 4e-06,
-      "timestamp_entrada": "2026-09-16 10:43:40"
-    },
     "FET-USD": {
       "cantidad": 391.063356,
       "precio_entrada": 0.129161,
@@ -46,6 +41,11 @@
       "cantidad": 24.289971,
       "precio_entrada": 2.080282,
       "timestamp_entrada": "2026-09-16 11:23:35"
+    },
+    "LTC-USD": {
+      "cantidad": 1.14801,
+      "precio_entrada": 44.024007,
+      "timestamp_entrada": "2026-09-16 11:28:40"
     }
   },
   "inyeccion_100_realizada": true,
@@ -103,6 +103,8 @@
     "[2026-09-16 11:18:30] \ud83d\udd34 VENTA FIL-USD por TIME-STOP / ROTACI\u00d3N DE CAPITAL (45.1m transcurridos). Neto: 50.47\u20ac | PnL: -0.07\u20ac",
     "[2026-09-16 11:18:30] \ud83d\udfe2 COMPRA 0.490252 de AAVE-USD a 102.904559\u20ac (50.53\u20ac)",
     "[2026-09-16 11:23:35] \ud83d\udd34 VENTA DOGE-USD por TIME-STOP / ROTACI\u00d3N DE CAPITAL (45.1m transcurridos). Neto: 50.7\u20ac | PnL: +0.17\u20ac",
-    "[2026-09-16 11:23:35] \ud83d\udfe2 COMPRA 24.289971 de NEAR-USD a 2.076954\u20ac (50.53\u20ac)"
+    "[2026-09-16 11:23:35] \ud83d\udfe2 COMPRA 24.289971 de NEAR-USD a 2.076954\u20ac (50.53\u20ac)",
+    "[2026-09-16 11:28:40] \ud83d\udd34 VENTA SHIB-USD por TIME-STOP / ROTACI\u00d3N DE CAPITAL (45.1m transcurridos). Neto: 50.36\u20ac | PnL: -0.08\u20ac",
+    "[2026-09-16 11:28:40] \ud83d\udfe2 COMPRA 1.14801 de LTC-USD a 43.953585\u20ac (50.54\u20ac)"
   ]
 }
