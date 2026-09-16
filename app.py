@@ -9,42 +9,21 @@ import requests
 import streamlit as st
 import yfinance as yf
 
+# Configuración de página
 st.set_page_config(
-    page_title="Crypto Scalper Dashboard", page_icon="🤖", layout="wide"
+    page_title="Crypto Sniper Dashboard", page_icon="🎯", layout="wide"
 )
 
+# Configuración GitHub
 REPO = "administracion996/bot-trading-dashboard"
 FILE_PATH = "cartera.json"
 GITHUB_TOKEN = st.secrets.get("GITHUB_TOKEN", "")
 
 UNIVERSO_MERCADO = [
-    "BTC-USD",
-    "ETH-USD",
-    "SOL-USD",
-    "BNB-USD",
-    "XRP-USD",
-    "ADA-USD",
-    "AVAX-USD",
-    "DOT-USD",
-    "NEAR-USD",
-    "ATOM-USD",
-    "MATIC-USD",
-    "LTC-USD",
-    "BCH-USD",
-    "ETC-USD",
-    "LINK-USD",
-    "AAVE-USD",
-    "INJ-USD",
-    "FET-USD",
-    "ALGO-USD",
-    "XLM-USD",
-    "TRX-USD",
-    "DOGE-USD",
-    "SHIB-USD",
-    "BONK-USD",
-    "FLOKI-USD",
-    "FIL-USD",
-    "ICP-USD",
+    "BTC-USD", "ETH-USD", "SOL-USD", "BNB-USD", "XRP-USD", "ADA-USD", "AVAX-USD",
+    "DOT-USD", "NEAR-USD", "ATOM-USD", "MATIC-USD", "LTC-USD", "BCH-USD", "ETC-USD",
+    "LINK-USD", "AAVE-USD", "INJ-USD", "FET-USD", "ALGO-USD", "XLM-USD", "TRX-USD",
+    "DOGE-USD", "SHIB-USD", "BONK-USD", "FLOKI-USD", "FIL-USD", "ICP-USD",
 ]
 
 
@@ -65,6 +44,7 @@ def cargar_cartera():
 
 
 def parsear_historial(historial_raw):
+  """Reconstruye el PnL y detecta los nuevos barridos de reserva."""
   registros = []
   compras_memoria = {}
 
@@ -78,7 +58,7 @@ def parsear_historial(historial_raw):
     ticker = (
         match_ticker.group(1).replace("-USD", "")
         if match_ticker
-        else "DESCONOCIDO"
+        else ("EUR" if "BARRIDO" in log else "DESCONOCIDO")
     )
 
     val_matches = re.findall(r"(\d+(?:\.\d+)?)\s*€", log)
@@ -126,6 +106,16 @@ def parsear_historial(historial_raw):
           "Log": log,
       })
 
+    elif "BARRIDO" in log:
+      registros.append({
+          "Fecha": fecha_dt,
+          "Tipo": "BARRIDO 🏦",
+          "Ticker": ticker,
+          "Valor (€)": valor,
+          "PnL (€)": 0.0,
+          "Log": log,
+      })
+
   return pd.DataFrame(registros)
 
 
@@ -136,12 +126,7 @@ def aplicar_filtros_grafica(df, key_prefix):
   c1, c2, c3 = st.columns([2, 2, 4])
   with c1:
     opciones_fecha = [
-        "Todo",
-        "Hoy",
-        "Ayer",
-        "Esta semana",
-        "Semana pasada",
-        "Personalizado",
+        "Todo", "Hoy", "Ayer", "Esta semana", "Semana pasada", "Personalizado",
     ]
     sel_fecha = st.selectbox(
         "📅 Filtro de Fecha", opciones_fecha, key=f"f_fecha_{key_prefix}"
@@ -196,28 +181,46 @@ def aplicar_filtros_grafica(df, key_prefix):
   return df_filtrado
 
 
-# --- ESTRUCTURA DEL DASHBOARD ---
+# --- BUCLE PRINCIPAL DASHBOARD ---
 cartera = cargar_cartera()
-st.title("🤖 Dashboard Bot Trading Hiperactivo")
+st.title("🎯 Dashboard Crypto Sniper & Vault")
 
 if cartera:
   efectivo = round(float(cartera.get("efectivo_disponible", 0.0)), 2)
-  total = round(float(cartera.get("total_cartera", 0.0)), 2)
+  total_activo = round(float(cartera.get("total_cartera", 0.0)), 2)
+  reserva = round(float(cartera.get("reserva_intocable", 0.0)), 2)
+  
+  saldo_inicio = round(float(cartera.get("saldo_inicio_dia", 0.0)), 2)
+  meta_dia = round(float(cartera.get("meta_eur_dia", 0.0)), 2)
+  barrido = cartera.get("barrido_realizado", False)
+  
   posiciones = cartera.get("posiciones_abiertas", {})
   historial_raw = cartera.get("historial_operaciones", [])
 
   df_historial_completo = parsear_historial(historial_raw)
 
-  # 1. MÉTRICAS GLOBALES
+  # =======================================================
+  # 1. MÉTRICAS GLOBALES (Destacando la Hucha y el Progreso)
+  # =======================================================
   col1, col2, col3, col4 = st.columns(4)
-  col1.metric("Cartera Total", f"{total:.2f} €")
+  col1.metric("Capital Activo (Trabajo)", f"{total_activo:.2f} €")
   col2.metric("Efectivo Libre", f"{efectivo:.2f} €")
-  col3.metric("Posiciones Abiertas", len(posiciones))
-  col4.metric("Total Ops. Históricas", len(historial_raw))
+  col3.metric("🏦 Reserva Intocable", f"{reserva:.2f} €")
+  
+  if barrido:
+      col4.metric("🎯 Progreso Diario", "✅ Conseguido")
+  else:
+      if saldo_inicio > 0:
+          pnl_hoy = total_activo - saldo_inicio
+          col4.metric("🎯 Progreso Meta (+5%)", f"{pnl_hoy:+.2f} € / {meta_dia:.2f} €")
+      else:
+          col4.metric("🎯 Progreso Meta (+5%)", "Esperando cierre...")
 
   st.divider()
 
+  # =======================================================
   # 2. VOLUMEN OPERADO (COMPRAS VS VENTAS)
+  # =======================================================
   st.subheader("📊 Volumen Operado: Compras vs Ventas")
   df_grafica = aplicar_filtros_grafica(
       df_historial_completo, key_prefix="grafica_volumen"
@@ -227,6 +230,9 @@ if cartera:
     df_agrupado = (
         df_grafica.groupby(["Ticker", "Tipo"])["Valor (€)"].sum().reset_index()
     )
+    # Filtrar BARRIDO del gráfico para no ensuciar la estadística de trading
+    df_agrupado = df_agrupado[df_agrupado["Tipo"] != "BARRIDO 🏦"]
+    
     fig_barras = px.bar(
         df_agrupado,
         x="Ticker",
@@ -248,7 +254,9 @@ if cartera:
 
   st.divider()
 
+  # =======================================================
   # 3. TABLA DE POSICIONES DETALLADA CON PNL REAL
+  # =======================================================
   st.subheader("📌 Posiciones Actuales en Cartera")
   if posiciones:
     pos_tickers = list(posiciones.keys())
@@ -256,7 +264,7 @@ if cartera:
 
     try:
       df_live = yf.download(
-          pos_tickers, period="1d", interval="5m", progress=False
+          pos_tickers, period="1d", interval="15m", progress=False
       )["Close"]
       tasa_eur = 0.92
       try:
@@ -307,18 +315,15 @@ if cartera:
 
   st.divider()
 
-  # 4. HISTORIAL DE OPERACIONES CON SCROLL
-  st.subheader("📜 Historial de Operaciones")
+  # =======================================================
+  # 4. HISTORIAL DE OPERACIONES (CON SCROLL)
+  # =======================================================
+  st.subheader("📜 Historial de Operaciones y Movimientos")
 
   c1, c2 = st.columns([3, 3])
   with c1:
     opciones_fecha_h = [
-        "Todo",
-        "Hoy",
-        "Ayer",
-        "Esta semana",
-        "Semana pasada",
-        "Personalizado",
+        "Todo", "Hoy", "Ayer", "Esta semana", "Semana pasada", "Personalizado",
     ]
     sel_fecha_h = st.selectbox(
         "📅 Filtro de Fecha (Historial)",
@@ -373,7 +378,7 @@ if cartera:
   )
 
   col_m1, col_m2 = st.columns(2)
-  col_m1.metric("💰 PnL Realizado en Rango", f"{pnl_acumulado:+.2f} €")
+  col_m1.metric("💰 PnL Realizado en Rango (Trading)", f"{pnl_acumulado:+.2f} €")
   col_m2.metric("🔄 Ventas Ejecutadas", ventas_cerradas)
 
   st.write("")
@@ -418,7 +423,9 @@ if cartera:
 
   st.divider()
 
+  # =======================================================
   # 5. GRÁFICA LINEAL TENDENCIA 24H
+  # =======================================================
   st.subheader("📈 Fluctuación del Mercado (Últimas 24 Horas %)")
   seleccionadas_linea = st.multiselect(
       "🪙 Activos a comparar:",
@@ -430,7 +437,7 @@ if cartera:
   if seleccionadas_linea:
     try:
       df_precios = yf.download(
-          seleccionadas_linea, period="1d", interval="5m", progress=False
+          seleccionadas_linea, period="1d", interval="15m", progress=False
       )["Close"]
       if not df_precios.empty:
         if isinstance(df_precios, pd.Series):
