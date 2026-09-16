@@ -11,12 +11,12 @@ st.set_page_config(
     page_title="Crypto Scalper Dashboard", page_icon="🤖", layout="wide"
 )
 
-# Configuration GitHub
+# Configuración de GitHub
 REPO = "administracion996/bot-trading-dashboard"
 FILE_PATH = "cartera.json"
 GITHUB_TOKEN = st.secrets.get("GITHUB_TOKEN", "")
 
-# Universo de 34 Cryptos
+# Universo actualizado y verificado (28 activos)
 UNIVERSO_MERCADO = [
     "BTC-USD",
     "ETH-USD",
@@ -28,30 +28,24 @@ UNIVERSO_MERCADO = [
     "DOT-USD",
     "NEAR-USD",
     "ATOM-USD",
-    "POL-USD",
-    "APT-USD",
-    "SUI-USD",
-    "OP-USD",
-    "ARB-USD",
-    "SEI-USD",
-    "LINK-USD",
-    "UNI-USD",
-    "AAVE-USD",
-    "INJ-USD",
-    "FET-USD",
-    "RENDER-USD",
-    "DOGE-USD",
-    "SHIB-USD",
-    "PEPE-USD",
-    "BONK-USD",
-    "FLOKI-USD",
-    "WIF-USD",
+    "MATIC-USD",
     "LTC-USD",
     "BCH-USD",
     "ETC-USD",
+    "LINK-USD",
+    "AAVE-USD",
+    "INJ-USD",
+    "FET-USD",
+    "ALGO-USD",
+    "XLM-USD",
+    "TRX-USD",
+    "DOGE-USD",
+    "SHIB-USD",
+    "PEPE24478-USD",
+    "BONK-USD",
+    "FLOKI-USD",
     "FIL-USD",
     "ICP-USD",
-    "TIA-USD",
 ]
 
 
@@ -71,18 +65,17 @@ def cargar_cartera():
   return None
 
 
-@st.cache_data(ttl=60)
+@st.cache_data(ttl=120)
 def obtener_historico_fluctuacion():
-  """Descarga precios de las últimas 24h y calcula la variación porcentual acumulada."""
+  """Descarga historico de 24h y calcula el rendimiento en porcentaje (%)."""
   data = yf.download(
       UNIVERSO_MERCADO, period="1d", interval="15m", progress=False
   )["Close"]
-  # Normalizar a variación porcentual desde el inicio del periodo (0%)
   data_pct = ((data - data.iloc[0]) / data.iloc[0]) * 100
   return data_pct
 
 
-# --- Cargar Datos ---
+# --- CARGA DE DATOS ---
 cartera = cargar_cartera()
 
 st.title("🤖 Dashboard Bot Trading Hiperactivo")
@@ -110,52 +103,49 @@ if cartera:
 
   st.divider()
 
-  # Historial Reciente
-  st.subheader("📜 ÚLTIMOS MOVIMIENTOS")
+  # Historial de Operaciones
+  st.subheader("📜 Historial de Operaciones")
   historial = cartera.get("historial_operaciones", [])
-  for item in reversed(historial[-10:]):
+  for item in reversed(historial[-15:]):
     st.caption(item)
 
   st.divider()
 
-  # --- NUEVA GRÁFICA LINEAL DE FLUCTUACIÓN ---
+  # --- NUEVA GRÁFICA DE FLUCTUACIÓN EN EL PIE DEL DASHBOARD ---
   st.subheader("📈 Fluctuación del Mercado (Últimas 24 Horas %)")
 
   seleccionadas = st.multiselect(
-      "Selecciona activo(s) para comparar en la gráfica:",
+      "Selecciona criptomonedas para comparar:",
       options=UNIVERSO_MERCADO,
-      default=[
-          "BTC-USD",
-          "ETH-USD",
-          "SOL-USD",
-          "DOGE-USD",
-          "PEPE-USD",
-      ],  # Selección inicial
+      default=["BTC-USD", "ETH-USD", "SOL-USD", "DOGE-USD", "LINK-USD"],
   )
 
   if seleccionadas:
-    df_hist = obtener_historico_fluctuacion()
+    try:
+      df_hist = obtener_historico_fluctuacion()
+      fig = go.Figure()
 
-    fig = go.Figure()
-    for ticker in seleccionadas:
-      if ticker in df_hist.columns:
-        fig.add_trace(
-            go.Scatter(
-                x=df_hist.index,
-                y=df_hist[ticker],
-                mode="lines",
-                name=ticker.replace("-USD", ""),
-            )
-        )
+      for ticker in seleccionadas:
+        if ticker in df_hist.columns:
+          fig.add_trace(
+              go.Scatter(
+                  x=df_hist.index,
+                  y=df_hist[ticker],
+                  mode="lines",
+                  name=ticker.replace("-USD", ""),
+              )
+          )
 
-    fig.update_layout(
-        xaxis_title="Hora",
-        yaxis_title="Variación (%)",
-        hovermode="x unified",
-        template="plotly_dark",
-        margin=dict(l=20, r=20, t=30, b=20),
-    )
-    st.plotly_chart(fig, use_container_width=True)
+      fig.update_layout(
+          xaxis_title="Hora",
+          yaxis_title="Variación (%)",
+          hovermode="x unified",
+          template="plotly_dark",
+          margin=dict(l=20, r=20, t=30, b=20),
+      )
+      st.plotly_chart(fig, use_container_width=True)
+    except Exception as e:
+      st.warning(f"Cargando gráfico de precios... ({e})")
 
 else:
-  st.warning("Cargando datos de GitHub o archivo no encontrado...")
+  st.warning("Conectando con GitHub para obtener el estado actual...")
