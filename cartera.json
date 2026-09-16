@@ -1,12 +1,7 @@
 {
-  "efectivo_disponible": 756.52,
-  "total_cartera": 1008.0,
+  "efectivo_disponible": 807.3,
+  "total_cartera": 1009.08,
   "posiciones_abiertas": {
-    "FIL-USD": {
-      "cantidad": 71.934226,
-      "precio_entrada": 0.701335,
-      "timestamp_entrada": "2026-09-16 12:55:44"
-    },
     "NEAR-USD": {
       "cantidad": 23.772808,
       "precio_entrada": 2.123014,
@@ -17,15 +12,15 @@
       "precio_entrada": 0.131238,
       "timestamp_entrada": "2026-09-16 13:05:56"
     },
-    "ICP-USD": {
-      "cantidad": 23.081408,
-      "precio_entrada": 2.184442,
-      "timestamp_entrada": "2026-09-16 13:11:02"
-    },
     "BTC-USD": {
       "cantidad": 0.000766,
       "precio_entrada": 65796.344648,
       "timestamp_entrada": "2026-09-16 13:16:15"
+    },
+    "DOT-USD": {
+      "cantidad": 60.506183,
+      "precio_entrada": 0.833799,
+      "timestamp_entrada": "2026-09-16 13:21:23"
     }
   },
   "inyeccion_100_realizada": true,
@@ -133,6 +128,9 @@
     "[2026-09-16 13:11:02] \ud83d\udd34 VENTA DOT-USD por ROTACI\u00d3N ULTRA-R\u00c1PIDA (25.7m transcurridos). Neto: 50.18\u20ac | PnL: -0.30\u20ac",
     "[2026-09-16 13:11:02] \ud83d\udfe2 COMPRA 23.081408 de ICP-USD a 2.180947\u20ac (50.42\u20ac)",
     "[2026-09-16 13:16:15] \ud83d\udd34 VENTA LTC-USD por ROTACI\u00d3N ULTRA-R\u00c1PIDA (25.9m transcurridos). Neto: 50.21\u20ac | PnL: -0.26\u20ac",
-    "[2026-09-16 13:16:15] \ud83d\udfe2 COMPRA 0.000766 de BTC-USD a 65726.647989\u20ac (50.4\u20ac)"
+    "[2026-09-16 13:16:15] \ud83d\udfe2 COMPRA 0.000766 de BTC-USD a 65726.647989\u20ac (50.4\u20ac)",
+    "[2026-09-16 13:21:23] \ud83d\udd34 VENTA FIL-USD por ROTACI\u00d3N ULTRA-R\u00c1PIDA (25.7m transcurridos). Neto: 50.53\u20ac | PnL: +0.08\u20ac",
+    "[2026-09-16 13:21:23] \ud83d\udd34 VENTA ICP-USD por TAKE-PROFIT R\u00c1PIDO (+0.71%). Neto: 50.7\u20ac | PnL: +0.28\u20ac",
+    "[2026-09-16 13:21:23] \ud83d\udfe2 COMPRA 60.506183 de DOT-USD a 0.832465\u20ac (50.45\u20ac)"
   ]
 }
