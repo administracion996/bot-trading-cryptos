@@ -1,27 +1,7 @@
 {
-  "efectivo_disponible": 555.65,
-  "total_cartera": 1010.81,
+  "efectivo_disponible": 706.92,
+  "total_cartera": 1010.21,
   "posiciones_abiertas": {
-    "FET-USD": {
-      "cantidad": 391.063356,
-      "precio_entrada": 0.129161,
-      "timestamp_entrada": "2026-09-16 10:48:45"
-    },
-    "ATOM-USD": {
-      "cantidad": 39.295356,
-      "precio_entrada": 1.285394,
-      "timestamp_entrada": "2026-09-16 10:53:52"
-    },
-    "ALGO-USD": {
-      "cantidad": 663.630381,
-      "precio_entrada": 0.076157,
-      "timestamp_entrada": "2026-09-16 10:58:58"
-    },
-    "AVAX-USD": {
-      "cantidad": 8.073507,
-      "precio_entrada": 6.263697,
-      "timestamp_entrada": "2026-09-16 11:03:15"
-    },
     "BNB-USD": {
       "cantidad": 0.082381,
       "precio_entrada": 613.855136,
@@ -46,6 +26,11 @@
       "cantidad": 1.14801,
       "precio_entrada": 44.024007,
       "timestamp_entrada": "2026-09-16 11:28:40"
+    },
+    "INJ-USD": {
+      "cantidad": 10.821351,
+      "precio_entrada": 4.667624,
+      "timestamp_entrada": "2026-09-16 11:31:31"
     }
   },
   "inyeccion_100_realizada": true,
@@ -105,6 +90,11 @@
     "[2026-09-16 11:23:35] \ud83d\udd34 VENTA DOGE-USD por TIME-STOP / ROTACI\u00d3N DE CAPITAL (45.1m transcurridos). Neto: 50.7\u20ac | PnL: +0.17\u20ac",
     "[2026-09-16 11:23:35] \ud83d\udfe2 COMPRA 24.289971 de NEAR-USD a 2.076954\u20ac (50.53\u20ac)",
     "[2026-09-16 11:28:40] \ud83d\udd34 VENTA SHIB-USD por TIME-STOP / ROTACI\u00d3N DE CAPITAL (45.1m transcurridos). Neto: 50.36\u20ac | PnL: -0.08\u20ac",
-    "[2026-09-16 11:28:40] \ud83d\udfe2 COMPRA 1.14801 de LTC-USD a 43.953585\u20ac (50.54\u20ac)"
+    "[2026-09-16 11:28:40] \ud83d\udfe2 COMPRA 1.14801 de LTC-USD a 43.953585\u20ac (50.54\u20ac)",
+    "[2026-09-16 11:31:31] \ud83d\udd34 VENTA FET-USD por TAKE-PROFIT R\u00c1PIDO (+0.60%). Neto: 50.73\u20ac | PnL: +0.22\u20ac",
+    "[2026-09-16 11:31:31] \ud83d\udd34 VENTA ATOM-USD por ROTACI\u00d3N ULTRA-R\u00c1PIDA (37.7m transcurridos). Neto: 50.56\u20ac | PnL: +0.05\u20ac",
+    "[2026-09-16 11:31:31] \ud83d\udd34 VENTA ALGO-USD por STOP-LOSS PROTECTOR (-1.21%). Neto: 49.85\u20ac | PnL: -0.69\u20ac",
+    "[2026-09-16 11:31:31] \ud83d\udd34 VENTA AVAX-USD por ROTACI\u00d3N ULTRA-R\u00c1PIDA (28.3m transcurridos). Neto: 50.64\u20ac | PnL: +0.07\u20ac",
+    "[2026-09-16 11:31:31] \ud83d\udfe2 COMPRA 10.821351 de INJ-USD a 4.660156\u20ac (50.51\u20ac)"
   ]
 }
