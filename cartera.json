@@ -1,12 +1,7 @@
 {
-  "efectivo_disponible": 756.45,
+  "efectivo_disponible": 756.25,
   "total_cartera": 1008.17,
   "posiciones_abiertas": {
-    "INJ-USD": {
-      "cantidad": 10.752855,
-      "precio_entrada": 4.688987,
-      "timestamp_entrada": "2026-09-16 13:36:40"
-    },
     "ICP-USD": {
       "cantidad": 22.897238,
       "precio_entrada": 2.201139,
@@ -26,6 +21,11 @@
       "cantidad": 0.593036,
       "precio_entrada": 85.003271,
       "timestamp_entrada": "2026-09-16 13:57:04"
+    },
+    "ATOM-USD": {
+      "cantidad": 38.415007,
+      "precio_entrada": 1.312248,
+      "timestamp_entrada": "2026-09-16 14:02:14"
     }
   },
   "inyeccion_100_realizada": true,
@@ -149,6 +149,8 @@
     "[2026-09-16 13:46:54] \ud83d\udfe2 COMPRA 380.844982 de FET-USD a 0.132178\u20ac (50.42\u20ac)",
     "[2026-09-16 13:51:59] \ud83d\udd34 VENTA FIL-USD por ROTACI\u00d3N ULTRA-R\u00c1PIDA (25.6m transcurridos). Neto: 50.21\u20ac | PnL: -0.21\u20ac",
     "[2026-09-16 13:51:59] \ud83d\udfe2 COMPRA 23.514535 de NEAR-USD a 2.140775\u20ac (50.42\u20ac)",
-    "[2026-09-16 13:57:04] \ud83d\udfe2 COMPRA 0.593036 de SOL-USD a 84.867262\u20ac (50.41\u20ac)"
+    "[2026-09-16 13:57:04] \ud83d\udfe2 COMPRA 0.593036 de SOL-USD a 84.867262\u20ac (50.41\u20ac)",
+    "[2026-09-16 14:02:14] \ud83d\udd34 VENTA INJ-USD por ROTACI\u00d3N ULTRA-R\u00c1PIDA (25.6m transcurridos). Neto: 50.21\u20ac | PnL: -0.21\u20ac",
+    "[2026-09-16 14:02:14] \ud83d\udfe2 COMPRA 38.415007 de ATOM-USD a 1.310148\u20ac (50.41\u20ac)"
   ]
 }
