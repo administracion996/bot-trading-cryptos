@@ -1,7 +1,13 @@
 {
-  "efectivo_disponible": 1014.56,
-  "total_cartera": 1014.64,
-  "posiciones_abiertas": {},
+  "efectivo_disponible": 963.83,
+  "total_cartera": 1014.56,
+  "posiciones_abiertas": {
+    "INJ-USD": {
+      "cantidad": 10.742971,
+      "precio_entrada": 4.722157,
+      "timestamp_entrada": "2026-09-16 09:04:22"
+    }
+  },
   "inyeccion_100_realizada": true,
   "historial_operaciones": [
     "[2026-09-16 08:18:21] \ud83d\udd04 REINICIO TOTAL: Todas las posiciones liquidadas a mercado. Liquidez total disponible: 1015.4 \u20ac",
@@ -18,6 +24,7 @@
     "[2026-09-16 08:42:55] \ud83d\udfe2 COMPRA 5.433661 de LINK-USD a 9.319471\u20ac (50.72\u20ac inc. fee)",
     "[2026-09-16 08:47:49] \ud83d\udd34 VENTA LINK-USD a 9.344792\u20ac - PnL: -0.02\u20ac",
     "[2026-09-16 08:52:58] \ud83d\udfe2 COMPRA 5.431643 de LINK-USD a 9.322934\u20ac (50.72\u20ac inc. fee)",
-    "[2026-09-16 09:03:11] \ud83d\udd34 VENTA LINK-USD a 9.378994\u20ac - PnL: 0.14\u20ac"
+    "[2026-09-16 09:03:11] \ud83d\udd34 VENTA LINK-USD a 9.378994\u20ac - PnL: 0.14\u20ac",
+    "[2026-09-16 09:04:22] \ud83d\udfe2 COMPRA 10.742971 de INJ-USD a 4.714602\u20ac (50.73\u20ac inc. fee)"
   ]
 }
