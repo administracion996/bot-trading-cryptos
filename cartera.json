@@ -1,7 +1,13 @@
 {
-  "efectivo_disponible": 1014.44,
-  "total_cartera": 1014.53,
-  "posiciones_abiertas": {},
+  "efectivo_disponible": 963.72,
+  "total_cartera": 1014.44,
+  "posiciones_abiertas": {
+    "LINK-USD": {
+      "cantidad": 5.433661,
+      "precio_entrada": 9.334406,
+      "timestamp_entrada": "2026-09-16 08:42:55"
+    }
+  },
   "inyeccion_100_realizada": true,
   "historial_operaciones": [
     "[2026-09-16 08:18:21] \ud83d\udd04 REINICIO TOTAL: Todas las posiciones liquidadas a mercado. Liquidez total disponible: 1015.4 \u20ac",
@@ -14,6 +20,7 @@
     "[2026-09-16 08:39:04] \ud83d\udfe2 COMPRA 5.435804 de LINK-USD a 9.319471\u20ac (50.74\u20ac inc. fee)",
     "[2026-09-16 08:40:07] \ud83d\udd34 VENTA LINK-USD a 9.320126\u20ac - PnL: -0.16\u20ac",
     "[2026-09-16 08:41:12] \ud83d\udfe2 COMPRA 5.432086 de LINK-USD a 9.324011\u20ac (50.73\u20ac inc. fee)",
-    "[2026-09-16 08:42:16] \ud83d\udd34 VENTA LINK-USD a 9.316008\u20ac - PnL: -0.21\u20ac"
+    "[2026-09-16 08:42:16] \ud83d\udd34 VENTA LINK-USD a 9.316008\u20ac - PnL: -0.21\u20ac",
+    "[2026-09-16 08:42:55] \ud83d\udfe2 COMPRA 5.433661 de LINK-USD a 9.319471\u20ac (50.72\u20ac inc. fee)"
   ]
 }
