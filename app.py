@@ -45,7 +45,7 @@ def cargar_cartera():
 
 @st.cache_data(ttl=60)
 def obtener_precios_posiciones(pos_tickers_tuple):
-  """Descarga rápida y meamoriada de precios actuales."""
+  """Descarga rápida y memorizada de precios actuales."""
   if not pos_tickers_tuple:
     return {}, 0.92
 
@@ -267,7 +267,29 @@ if cartera:
 
   st.divider()
 
-  # 2. VOLUMEN OPERADO
+  # =======================================================
+  # 1.5. TELEMETRÍA Y ESTADO DEL ESCÁNER (AÑADIDO DELANTE DE LA 1ª GRÁFICA)
+  # =======================================================
+  st.subheader("📡 Telemetría y Estado de Consola")
+  
+  ultimo_log = historial_raw[-1] if historial_raw else "Sin registros"
+  match_hora_log = re.search(r"\[(\d{4}-\d{2}-\d{2}\s+\d{2}:\d{2}:\d{2})\]", ultimo_log)
+  hora_ultimo_escaneo = match_hora_log.group(1) if match_hora_log else "N/A"
+  
+  pnl_hoy_eur = round(total_activo - saldo_inicio, 2) if saldo_inicio > 0 else 0.0
+  restante_barrido = round(max(0.0, meta_dia - pnl_hoy_eur), 2) if not barrido else 0.0
+
+  t1, t2, t3 = st.columns(3)
+  t1.info(f"⏱️ **Último registro:** {hora_ultimo_escaneo}")
+  if barrido:
+      t2.success("🏦 **Estado Hucha:** ¡Barrido diario de 5% completado!")
+  else:
+      t2.warning(f"📊 **Beneficio hoy:** {pnl_hoy_eur:+.2f} € | **Falta para barrido:** {restante_barrido:.2f} €")
+  t3.caption("🟢 **Bot en ejecución:** Escaneando en bucle (5m check / 15m mapa)")
+
+  st.divider()
+
+  # 2. VOLUMEN OPERADO (PRIMERA GRÁFICA)
   st.subheader("📊 Volumen Operado: Compras vs Ventas")
   df_grafica = aplicar_filtros_grafica(
       df_historial_completo, key_prefix="grafica_volumen"
@@ -300,11 +322,12 @@ if cartera:
 
   st.divider()
 
-  # 3. TABLA DE POSICIONES DETALLADA (OPTIMIZADA)
+  # 3. TABLA DE POSICIONES DETALLADA (CON TIMER DETALLADO)
   st.subheader("📌 Posiciones Actuales en Cartera")
   if posiciones:
     pos_tickers_tuple = tuple(posiciones.keys())
     precios_live, _ = obtener_precios_posiciones(pos_tickers_tuple)
+    ahora_dt = datetime.now()
 
     filas_pos = []
     for ticker, pos in posiciones.items():
@@ -317,6 +340,17 @@ if cartera:
       diferencia = round(tot_actual - tot_comprado, 2)
       pct_pnl = ((p_act - p_ent) / p_ent * 100) if p_ent > 0 else 0.0
 
+      # Tiempo transcurrido vs 240m
+      f_ent_str = pos.get("timestamp_entrada", "")
+      tiempo_str = "N/A"
+      if f_ent_str:
+        try:
+          f_ent = datetime.strptime(f_ent_str, "%Y-%m-%d %H:%M:%S")
+          mins = round((ahora_dt - f_ent).total_seconds() / 60, 1)
+          tiempo_str = f"{mins}m / 240m"
+        except Exception:
+          pass
+
       filas_pos.append({
           "Activo": ticker.replace("-USD", ""),
           "Cantidad": cant,
@@ -326,7 +360,8 @@ if cartera:
           "Precio Total Actual (€)": tot_actual,
           "Diferencia (€)": diferencia,
           "Porcentaje PnL (%)": f"{pct_pnl:+.2f}%",
-          "Fecha Entrada": pos.get("timestamp_entrada", "N/A"),
+          "Tiempo en Cartera": tiempo_str,
+          "Fecha Entrada": f_ent_str if f_ent_str else "N/A",
       })
 
     st.dataframe(pd.DataFrame(filas_pos), use_container_width=True)
@@ -441,7 +476,7 @@ if cartera:
 
   st.divider()
 
-  # 5. GRÁFICA LINEAL TENDENCIA 24H (OPTIMIZADA)
+  # 5. GRÁFICA LINEAL TENDENCIA 24H
   st.subheader("📈 Fluctuación del Mercado (Últimas 24 Horas %)")
   seleccionadas_linea = st.multiselect(
       "🪙 Activos a comparar:",
