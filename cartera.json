@@ -1,12 +1,7 @@
 {
-  "efectivo_disponible": 757.24,
-  "total_cartera": 1009.75,
+  "efectivo_disponible": 757.32,
+  "total_cartera": 1009.79,
   "posiciones_abiertas": {
-    "DOT-USD": {
-      "cantidad": 60.987793,
-      "precio_entrada": 0.827871,
-      "timestamp_entrada": "2026-09-16 12:17:23"
-    },
     "ICP-USD": {
       "cantidad": 23.207009,
       "precio_entrada": 2.176067,
@@ -26,6 +21,11 @@
       "cantidad": 10.772781,
       "precio_entrada": 4.686812,
       "timestamp_entrada": "2026-09-16 12:37:46"
+    },
+    "XLM-USD": {
+      "cantidad": 331.532703,
+      "precio_entrada": 0.152293,
+      "timestamp_entrada": "2026-09-16 12:42:51"
     }
   },
   "inyeccion_100_realizada": true,
@@ -117,6 +117,8 @@
     "[2026-09-16 12:32:39] \ud83d\udd34 VENTA AAVE-USD por ROTACI\u00d3N ULTRA-R\u00c1PIDA (25.5m transcurridos). Neto: 50.46\u20ac | PnL: -0.05\u20ac",
     "[2026-09-16 12:32:39] \ud83d\udfe2 COMPRA 662.4231 de ALGO-USD a 0.076053\u20ac (50.46\u20ac)",
     "[2026-09-16 12:37:46] \ud83d\udd34 VENTA FIL-USD por ROTACI\u00d3N ULTRA-R\u00c1PIDA (25.5m transcurridos). Neto: 50.31\u20ac | PnL: -0.18\u20ac",
-    "[2026-09-16 12:37:46] \ud83d\udfe2 COMPRA 10.772781 de INJ-USD a 4.679313\u20ac (50.49\u20ac)"
+    "[2026-09-16 12:37:46] \ud83d\udfe2 COMPRA 10.772781 de INJ-USD a 4.679313\u20ac (50.49\u20ac)",
+    "[2026-09-16 12:42:51] \ud83d\udd34 VENTA DOT-USD por ROTACI\u00d3N ULTRA-R\u00c1PIDA (25.5m transcurridos). Neto: 50.57\u20ac | PnL: +0.08\u20ac",
+    "[2026-09-16 12:42:51] \ud83d\udfe2 COMPRA 331.532703 de XLM-USD a 0.152049\u20ac (50.49\u20ac)"
   ]
 }
