@@ -1,12 +1,7 @@
 {
-  "efectivo_disponible": 557.21,
-  "total_cartera": 1011.41,
+  "efectivo_disponible": 556.81,
+  "total_cartera": 1010.98,
   "posiciones_abiertas": {
-    "BNB-USD": {
-      "cantidad": 0.082406,
-      "precio_entrada": 615.125112,
-      "timestamp_entrada": "2026-09-16 09:43:16"
-    },
     "DOGE-USD": {
       "cantidad": 733.615264,
       "precio_entrada": 0.069083,
@@ -46,6 +41,11 @@
       "cantidad": 45.63511,
       "precio_entrada": 1.108138,
       "timestamp_entrada": "2026-09-16 10:24:02"
+    },
+    "AAVE-USD": {
+      "cantidad": 0.490219,
+      "precio_entrada": 103.117178,
+      "timestamp_entrada": "2026-09-16 10:28:22"
     }
   },
   "inyeccion_100_realizada": true,
@@ -79,6 +79,8 @@
     "[2026-09-16 10:18:56] \ud83d\udfe2 COMPRA 2526451.2 de FLOKI-USD a 2e-05\u20ac (50.61\u20ac)",
     "[2026-09-16 10:24:02] \ud83d\udd34 VENTA AAVE-USD por TIME-STOP / ROTACI\u00d3N DE CAPITAL (48.0m transcurridos). Neto: 50.36\u20ac",
     "[2026-09-16 10:24:02] \ud83d\udd34 VENTA XRP-USD por TIME-STOP / ROTACI\u00d3N DE CAPITAL (46.0m transcurridos). Neto: 50.16\u20ac",
-    "[2026-09-16 10:24:02] \ud83d\udfe2 COMPRA 45.63511 de XRP-USD a 1.106365\u20ac (50.57\u20ac)"
+    "[2026-09-16 10:24:02] \ud83d\udfe2 COMPRA 45.63511 de XRP-USD a 1.106365\u20ac (50.57\u20ac)",
+    "[2026-09-16 10:28:22] \ud83d\udd34 VENTA BNB-USD por TIME-STOP / ROTACI\u00d3N DE CAPITAL (45.1m transcurridos). Neto: 50.15\u20ac",
+    "[2026-09-16 10:28:22] \ud83d\udfe2 COMPRA 0.490219 de AAVE-USD a 102.952284\u20ac (50.55\u20ac)"
   ]
 }
