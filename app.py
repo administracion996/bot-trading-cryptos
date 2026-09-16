@@ -44,8 +44,10 @@ def cargar_cartera():
 
 
 def parsear_historial(historial_raw):
-  """Extrae fecha, ticker, tipo, valor y calcula el PnL (€) de cada registro."""
+  """Reconstruye el PnL de operaciones pasadas emparejando compras y ventas (FIFO)."""
   registros = []
+  compras_memoria = {}
+
   for log in historial_raw:
     match_fecha = re.search(r"\[(\d{4}-\d{2}-\d{2}\s+\d{2}:\d{2}:\d{2})\]", log)
     if not match_fecha:
@@ -62,30 +64,11 @@ def parsear_historial(historial_raw):
     val_matches = re.findall(r"(\d+(?:\.\d+)?)\s*€", log)
     valor = float(val_matches[-1]) if val_matches else 0.0
 
-    pnl_eur = 0.0
+    if "COMPRA" in log:
+      if ticker not in compras_memoria:
+        compras_memoria[ticker] = []
+      compras_memoria[ticker].append(valor)
 
-    if "VENTA" in log or "Vendido" in log or "ROTACIÓN" in log:
-      match_pnl_directo = re.search(
-          r"PnL.*?([+-]?\d+(?:\.\d+)?)\s*(?:EUR|€)", log, re.IGNORECASE
-      )
-      match_pct = re.search(r"\(([+-]?\d+(?:\.\d+)?)\%\)", log)
-
-      if match_pnl_directo:
-        pnl_eur = float(match_pnl_directo.group(1))
-      elif match_pct and valor > 0:
-        pct = float(match_pct.group(1))
-        base = valor / (1.0 + (pct / 100.0))
-        pnl_eur = valor - base
-
-      registros.append({
-          "Fecha": fecha_dt,
-          "Tipo": "VENTA 🔴",
-          "Ticker": ticker,
-          "Valor (€)": valor,
-          "PnL (€)": round(pnl_eur, 2),
-          "Log": log,
-      })
-    elif "COMPRA" in log:
       registros.append({
           "Fecha": fecha_dt,
           "Tipo": "COMPRA 🟢",
@@ -95,11 +78,38 @@ def parsear_historial(historial_raw):
           "Log": log,
       })
 
+    elif "VENTA" in log or "Vendido" in log or "ROTACIÓN" in log:
+      pnl_eur = 0.0
+      match_pnl = re.search(r"PnL:\s*([+-]?\d+(?:\.\d+)?)\s*€", log)
+
+      if match_pnl:
+        pnl_eur = float(match_pnl.group(1))
+        if ticker in compras_memoria and compras_memoria[ticker]:
+          compras_memoria[ticker].pop(0)
+      else:
+        if ticker in compras_memoria and compras_memoria[ticker]:
+          coste_compra = compras_memoria[ticker].pop(0)
+          pnl_eur = valor - coste_compra
+        else:
+          match_pct = re.search(r"\(([+-]?\d+(?:\.\d+)?)\%\)", log)
+          if match_pct and valor > 0:
+            pct = float(match_pct.group(1))
+            base = valor / (1.0 + (pct / 100.0))
+            pnl_eur = valor - base
+
+      registros.append({
+          "Fecha": fecha_dt,
+          "Tipo": "VENTA 🔴",
+          "Ticker": ticker,
+          "Valor (€)": valor,
+          "PnL (€)": round(pnl_eur, 2),
+          "Log": log,
+      })
+
   return pd.DataFrame(registros)
 
 
 def aplicar_filtros_grafica(df, key_prefix):
-  """Filtro modular para la sección de volumen operado."""
   if df.empty:
     return df
 
@@ -166,7 +176,7 @@ def aplicar_filtros_grafica(df, key_prefix):
   return df_filtrado
 
 
-# --- BUCLE PRINCIPAL ---
+# --- BUCLE PRINCIPAL DASHBOARD ---
 cartera = cargar_cartera()
 st.title("🤖 Dashboard Bot Trading Hiperactivo")
 
@@ -187,9 +197,7 @@ if cartera:
 
   st.divider()
 
-  # =======================================================
   # 2. GRÁFICA DE BARRAS: COMPRAS VS VENTAS
-  # =======================================================
   st.subheader("📊 Volumen Operado: Compras vs Ventas")
   df_grafica = aplicar_filtros_grafica(
       df_historial_completo, key_prefix="grafica_volumen"
@@ -199,7 +207,6 @@ if cartera:
     df_agrupado = (
         df_grafica.groupby(["Ticker", "Tipo"])["Valor (€)"].sum().reset_index()
     )
-
     fig_barras = px.bar(
         df_agrupado,
         x="Ticker",
@@ -221,11 +228,8 @@ if cartera:
 
   st.divider()
 
-  # =======================================================
   # 3. TABLA DE POSICIONES DETALLADA
-  # =======================================================
   st.subheader("📌 Posiciones Actuales en Cartera")
-
   if posiciones:
     pos_tickers = list(posiciones.keys())
     precios_live = {}
@@ -283,9 +287,7 @@ if cartera:
 
   st.divider()
 
-  # =======================================================
-  # 4. HISTORIAL DE OPERACIONES (TABLA CON SCROLL AUTOMÁTICO)
-  # =======================================================
+  # 4. HISTORIAL DE OPERACIONES (CON RECALCULO FIFO RETROACTIVO Y SCROLL)
   st.subheader("📜 Historial de Operaciones")
 
   c1, c2 = st.columns([3, 3])
@@ -335,7 +337,6 @@ if cartera:
         f_inicio_h = lunes_esta - timedelta(days=7)
         f_fin_h = lunes_esta - timedelta(seconds=1)
 
-  # Filtrado de DataFrame por Fecha
   if not df_historial_completo.empty:
     df_texto = df_historial_completo[
         (df_historial_completo["Fecha"] >= f_inicio_h)
@@ -357,7 +358,6 @@ if cartera:
 
   st.write("")
 
-  # Tabla de operaciones con scroll activo
   if not df_texto.empty:
     df_tabla_historial = df_texto.sort_values(
         by="Fecha", ascending=False
@@ -391,16 +391,14 @@ if cartera:
         },
         hide_index=True,
         use_container_width=True,
-        height=400,  # Habilita el scroll interno vertical al superar esta altura
+        height=400,
     )
   else:
     st.info("No hay operaciones registradas en el rango de fecha seleccionado.")
 
   st.divider()
 
-  # =======================================================
-  # 5. GRÁFICA DE TENDENCIA LINEAL (24H)
-  # =======================================================
+  # 5. GRÁFICA LINEAL TENDENCIA 24H
   st.subheader("📈 Fluctuación del Mercado (Últimas 24 Horas %)")
   seleccionadas_linea = st.multiselect(
       "🪙 Activos a comparar:",
