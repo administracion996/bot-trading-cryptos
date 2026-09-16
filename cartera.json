@@ -1,6 +1,6 @@
 {
-  "efectivo_disponible": 862.44,
-  "total_cartera": 1013.81,
+  "efectivo_disponible": 811.75,
+  "total_cartera": 1013.72,
   "posiciones_abiertas": {
     "INJ-USD": {
       "cantidad": 10.742971,
@@ -16,6 +16,11 @@
       "cantidad": 45.409263,
       "precio_entrada": 1.116292,
       "timestamp_entrada": "2026-09-16 09:38:03"
+    },
+    "BNB-USD": {
+      "cantidad": 0.082406,
+      "precio_entrada": 615.125112,
+      "timestamp_entrada": "2026-09-16 09:43:16"
     }
   },
   "inyeccion_100_realizada": true,
@@ -37,6 +42,7 @@
     "[2026-09-16 09:03:11] \ud83d\udd34 VENTA LINK-USD a 9.378994\u20ac - PnL: 0.14\u20ac",
     "[2026-09-16 09:04:22] \ud83d\udfe2 COMPRA 10.742971 de INJ-USD a 4.714602\u20ac (50.73\u20ac inc. fee)",
     "[2026-09-16 09:36:05] \ud83d\udfe2 COMPRA 0.489421 de AAVE-USD a 103.426007\u20ac (50.7\u20ac)",
-    "[2026-09-16 09:38:03] \ud83d\udfe2 COMPRA 45.409263 de XRP-USD a 1.114506\u20ac (50.69\u20ac)"
+    "[2026-09-16 09:38:03] \ud83d\udfe2 COMPRA 45.409263 de XRP-USD a 1.114506\u20ac (50.69\u20ac)",
+    "[2026-09-16 09:43:16] \ud83d\udfe2 COMPRA 0.082406 de BNB-USD a 614.139752\u20ac (50.69\u20ac)"
   ]
 }
