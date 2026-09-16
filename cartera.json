@@ -1,21 +1,11 @@
 {
-  "efectivo_disponible": 706.94,
-  "total_cartera": 1010.53,
+  "efectivo_disponible": 757.73,
+  "total_cartera": 1010.64,
   "posiciones_abiertas": {
-    "ADA-USD": {
-      "cantidad": 301.266055,
-      "precio_entrada": 0.167692,
-      "timestamp_entrada": "2026-09-16 11:13:25"
-    },
     "AAVE-USD": {
       "cantidad": 0.490252,
       "precio_entrada": 103.069442,
       "timestamp_entrada": "2026-09-16 11:18:30"
-    },
-    "NEAR-USD": {
-      "cantidad": 24.289971,
-      "precio_entrada": 2.080282,
-      "timestamp_entrada": "2026-09-16 11:23:35"
     },
     "LTC-USD": {
       "cantidad": 1.14801,
@@ -31,6 +21,11 @@
       "cantidad": 23.266985,
       "precio_entrada": 2.171747,
       "timestamp_entrada": "2026-09-16 11:36:37"
+    },
+    "DOT-USD": {
+      "cantidad": 61.068766,
+      "precio_entrada": 0.827428,
+      "timestamp_entrada": "2026-09-16 11:41:42"
     }
   },
   "inyeccion_100_realizada": true,
@@ -97,6 +92,9 @@
     "[2026-09-16 11:31:31] \ud83d\udd34 VENTA AVAX-USD por ROTACI\u00d3N ULTRA-R\u00c1PIDA (28.3m transcurridos). Neto: 50.64\u20ac | PnL: +0.07\u20ac",
     "[2026-09-16 11:31:31] \ud83d\udfe2 COMPRA 10.821351 de INJ-USD a 4.660156\u20ac (50.51\u20ac)",
     "[2026-09-16 11:36:37] \ud83d\udd34 VENTA BNB-USD por ROTACI\u00d3N ULTRA-R\u00c1PIDA (28.4m transcurridos). Neto: 50.55\u20ac | PnL: -0.02\u20ac",
-    "[2026-09-16 11:36:37] \ud83d\udfe2 COMPRA 23.266985 de ICP-USD a 2.168272\u20ac (50.53\u20ac)"
+    "[2026-09-16 11:36:37] \ud83d\udfe2 COMPRA 23.266985 de ICP-USD a 2.168272\u20ac (50.53\u20ac)",
+    "[2026-09-16 11:41:42] \ud83d\udd34 VENTA ADA-USD por ROTACI\u00d3N ULTRA-R\u00c1PIDA (28.3m transcurridos). Neto: 50.61\u20ac | PnL: +0.09\u20ac",
+    "[2026-09-16 11:41:42] \ud83d\udd34 VENTA NEAR-USD por TAKE-PROFIT R\u00c1PIDO (+0.52%). Neto: 50.71\u20ac | PnL: +0.18\u20ac",
+    "[2026-09-16 11:41:42] \ud83d\udfe2 COMPRA 61.068766 de DOT-USD a 0.826104\u20ac (50.53\u20ac)"
   ]
 }
