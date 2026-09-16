@@ -1,12 +1,7 @@
 {
-  "efectivo_disponible": 556.26,
-  "total_cartera": 1010.45,
+  "efectivo_disponible": 556.11,
+  "total_cartera": 1010.16,
   "posiciones_abiertas": {
-    "ATOM-USD": {
-      "cantidad": 39.321213,
-      "precio_entrada": 1.2876,
-      "timestamp_entrada": "2026-09-16 10:03:40"
-    },
     "AVAX-USD": {
       "cantidad": 8.10477,
       "precio_entrada": 6.244471,
@@ -46,6 +41,11 @@
       "cantidad": 12609792.0,
       "precio_entrada": 4e-06,
       "timestamp_entrada": "2026-09-16 10:43:40"
+    },
+    "FET-USD": {
+      "cantidad": 391.063356,
+      "precio_entrada": 0.129161,
+      "timestamp_entrada": "2026-09-16 10:48:45"
     }
   },
   "inyeccion_100_realizada": true,
@@ -87,6 +87,8 @@
     "[2026-09-16 10:38:34] \ud83d\udd34 VENTA SHIB-USD por TIME-STOP / ROTACI\u00d3N DE CAPITAL (45.2m transcurridos). Neto: 50.5\u20ac",
     "[2026-09-16 10:38:34] \ud83d\udfe2 COMPRA 735.528321 de DOGE-USD a 0.068589\u20ac (50.53\u20ac)",
     "[2026-09-16 10:43:40] \ud83d\udd34 VENTA ETC-USD por TIME-STOP / ROTACI\u00d3N DE CAPITAL (45.1m transcurridos). Neto: 50.32\u20ac",
-    "[2026-09-16 10:43:40] \ud83d\udfe2 COMPRA 12609792.0 de SHIB-USD a 4e-06\u20ac (50.52\u20ac)"
+    "[2026-09-16 10:43:40] \ud83d\udfe2 COMPRA 12609792.0 de SHIB-USD a 4e-06\u20ac (50.52\u20ac)",
+    "[2026-09-16 10:48:45] \ud83d\udd34 VENTA ATOM-USD por TIME-STOP / ROTACI\u00d3N DE CAPITAL (45.1m transcurridos). Neto: 50.36\u20ac",
+    "[2026-09-16 10:48:45] \ud83d\udfe2 COMPRA 391.063356 de FET-USD a 0.128954\u20ac (50.51\u20ac)"
   ]
 }
