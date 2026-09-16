@@ -1,11 +1,18 @@
 {
-  "efectivo_disponible": 1015.24,
+  "efectivo_disponible": 964.48,
   "total_cartera": 1015.24,
-  "posiciones_abiertas": {},
+  "posiciones_abiertas": {
+    "LINK-USD": {
+      "cantidad": 5.421828,
+      "precio_entrada": 9.362156,
+      "timestamp_entrada": "2026-09-16 08:27:15"
+    }
+  },
   "inyeccion_100_realizada": true,
   "historial_operaciones": [
     "[2026-09-16 08:18:21] \ud83d\udd04 REINICIO TOTAL: Todas las posiciones liquidadas a mercado. Liquidez total disponible: 1015.4 \u20ac",
     "[2026-09-16 08:18:42] \ud83d\udfe2 COMPRA 12672192.0 de SHIB-USD a 4e-06\u20ac (50.77\u20ac inc. fee)",
-    "[2026-09-16 08:25:05] \ud83d\udd34 VENTA SHIB-USD a 4e-06\u20ac - PnL: -0.08\u20ac"
+    "[2026-09-16 08:25:05] \ud83d\udd34 VENTA SHIB-USD a 4e-06\u20ac - PnL: -0.08\u20ac",
+    "[2026-09-16 08:27:15] \ud83d\udfe2 COMPRA 5.421828 de LINK-USD a 9.347177\u20ac (50.76\u20ac inc. fee)"
   ]
 }
