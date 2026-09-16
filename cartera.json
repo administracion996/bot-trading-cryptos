@@ -1,6 +1,6 @@
 {
-  "efectivo_disponible": 555.95,
-  "total_cartera": 1010.72,
+  "efectivo_disponible": 505.38,
+  "total_cartera": 1011.34,
   "posiciones_abiertas": {
     "FLOKI-USD": {
       "cantidad": 2526451.2,
@@ -46,6 +46,11 @@
       "cantidad": 663.630381,
       "precio_entrada": 0.076157,
       "timestamp_entrada": "2026-09-16 10:58:58"
+    },
+    "AVAX-USD": {
+      "cantidad": 8.073507,
+      "precio_entrada": 6.263697,
+      "timestamp_entrada": "2026-09-16 11:03:15"
     }
   },
   "inyeccion_100_realizada": true,
@@ -93,6 +98,7 @@
     "[2026-09-16 10:53:52] \ud83d\udd34 VENTA AVAX-USD por TIME-STOP / ROTACI\u00d3N DE CAPITAL (45.1m transcurridos). Neto: 50.4\u20ac",
     "[2026-09-16 10:53:52] \ud83d\udfe2 COMPRA 39.295356 de ATOM-USD a 1.283337\u20ac (50.51\u20ac)",
     "[2026-09-16 10:58:58] \ud83d\udd34 VENTA XLM-USD por TIME-STOP / ROTACI\u00d3N DE CAPITAL (45.2m transcurridos). Neto: 50.49\u20ac",
-    "[2026-09-16 10:58:58] \ud83d\udfe2 COMPRA 663.630381 de ALGO-USD a 0.076035\u20ac (50.54\u20ac)"
+    "[2026-09-16 10:58:58] \ud83d\udfe2 COMPRA 663.630381 de ALGO-USD a 0.076035\u20ac (50.54\u20ac)",
+    "[2026-09-16 11:03:15] \ud83d\udfe2 COMPRA 8.073507 de AVAX-USD a 6.253675\u20ac (50.57\u20ac)"
   ]
 }
