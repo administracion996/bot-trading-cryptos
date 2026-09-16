@@ -1,12 +1,7 @@
 {
-  "efectivo_disponible": 706.84,
-  "total_cartera": 1009.47,
+  "efectivo_disponible": 706.71,
+  "total_cartera": 1008.83,
   "posiciones_abiertas": {
-    "INJ-USD": {
-      "cantidad": 10.772781,
-      "precio_entrada": 4.686812,
-      "timestamp_entrada": "2026-09-16 12:37:46"
-    },
     "XLM-USD": {
       "cantidad": 331.532703,
       "precio_entrada": 0.152293,
@@ -31,6 +26,11 @@
       "cantidad": 23.772808,
       "precio_entrada": 2.123014,
       "timestamp_entrada": "2026-09-16 13:00:49"
+    },
+    "FET-USD": {
+      "cantidad": 384.339958,
+      "precio_entrada": 0.131238,
+      "timestamp_entrada": "2026-09-16 13:05:56"
     }
   },
   "inyeccion_100_realizada": true,
@@ -131,6 +131,8 @@
     "[2026-09-16 12:55:44] \ud83d\udd34 VENTA NEAR-USD por ROTACI\u00d3N ULTRA-R\u00c1PIDA (28.2m transcurridos). Neto: 50.41\u20ac | PnL: -0.07\u20ac",
     "[2026-09-16 12:55:44] \ud83d\udfe2 COMPRA 71.934226 de FIL-USD a 0.700213\u20ac (50.45\u20ac)",
     "[2026-09-16 13:00:49] \ud83d\udd34 VENTA ALGO-USD por ROTACI\u00d3N ULTRA-R\u00c1PIDA (28.2m transcurridos). Neto: 50.54\u20ac | PnL: +0.08\u20ac",
-    "[2026-09-16 13:00:49] \ud83d\udfe2 COMPRA 23.772808 de NEAR-USD a 2.119617\u20ac (50.47\u20ac)"
+    "[2026-09-16 13:00:49] \ud83d\udfe2 COMPRA 23.772808 de NEAR-USD a 2.119617\u20ac (50.47\u20ac)",
+    "[2026-09-16 13:05:56] \ud83d\udd34 VENTA INJ-USD por ROTACI\u00d3N ULTRA-R\u00c1PIDA (28.2m transcurridos). Neto: 50.31\u20ac | PnL: -0.18\u20ac",
+    "[2026-09-16 13:05:56] \ud83d\udfe2 COMPRA 384.339958 de FET-USD a 0.131028\u20ac (50.44\u20ac)"
   ]
 }
