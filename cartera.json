@@ -1,6 +1,6 @@
 {
-  "efectivo_disponible": 352.83,
-  "total_cartera": 1002.5,
+  "efectivo_disponible": 302.71,
+  "total_cartera": 1002.4,
   "posiciones_abiertas": {
     "FET-USD": {
       "cantidad": 381.050208,
@@ -66,6 +66,11 @@
       "cantidad": 5.416295,
       "precio_entrada": 9.253558,
       "timestamp_entrada": "2026-09-16 16:04:24"
+    },
+    "DOGE-USD": {
+      "cantidad": 731.212672,
+      "precio_entrada": 0.068544,
+      "timestamp_entrada": "2026-09-16 16:08:33"
     }
   },
   "inyeccion_100_realizada": true,
@@ -213,7 +218,8 @@
     "[2026-09-16 15:53:51] \ud83d\udfe2 COMPRA 301.21968 de ADA-USD a 0.166588\u20ac (50.26\u20ac)",
     "[2026-09-16 15:57:59] \ud83d\udfe2 COMPRA 0.49437 de AAVE-USD a 101.481899\u20ac (50.25\u20ac)",
     "[2026-09-16 16:02:11] \ud83d\udfe2 COMPRA 45.469802 de XRP-USD a 1.102263\u20ac (50.2\u20ac)",
-    "[2026-09-16 16:04:24] \ud83d\udfe2 COMPRA 5.416295 de LINK-USD a 9.238752\u20ac (50.12\u20ac)"
+    "[2026-09-16 16:04:24] \ud83d\udfe2 COMPRA 5.416295 de LINK-USD a 9.238752\u20ac (50.12\u20ac)",
+    "[2026-09-16 16:08:33] \ud83d\udfe2 COMPRA 731.212672 de DOGE-USD a 0.068434\u20ac (50.12\u20ac)"
   ],
   "reserva_intocable": 0.0,
   "fecha_control_diario": "2026-09-16",
