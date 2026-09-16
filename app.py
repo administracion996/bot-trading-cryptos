@@ -44,7 +44,7 @@ def cargar_cartera():
 
 
 def parsear_historial(historial_raw):
-  """Extrae fecha, ticker, tipo, valor y calcula el PnL (€) de cada venta."""
+  """Extrae fecha, ticker, tipo, valor y calcula el PnL (€) de cada registro."""
   registros = []
   for log in historial_raw:
     match_fecha = re.search(r"\[(\d{4}-\d{2}-\d{2}\s+\d{2}:\d{2}:\d{2})\]", log)
@@ -65,11 +65,9 @@ def parsear_historial(historial_raw):
     pnl_eur = 0.0
 
     if "VENTA" in log or "Vendido" in log or "ROTACIÓN" in log:
-      # Buscar PnL directo en texto (ej: -0.47 EUR)
       match_pnl_directo = re.search(
           r"PnL.*?([+-]?\d+(?:\.\d+)?)\s*(?:EUR|€)", log, re.IGNORECASE
       )
-      # Buscar porcentaje (ej: +0.82% o -1.50%)
       match_pct = re.search(r"\(([+-]?\d+(?:\.\d+)?)\%\)", log)
 
       if match_pnl_directo:
@@ -81,7 +79,7 @@ def parsear_historial(historial_raw):
 
       registros.append({
           "Fecha": fecha_dt,
-          "Tipo": "VENTA",
+          "Tipo": "VENTA 🔴",
           "Ticker": ticker,
           "Valor (€)": valor,
           "PnL (€)": round(pnl_eur, 2),
@@ -90,7 +88,7 @@ def parsear_historial(historial_raw):
     elif "COMPRA" in log:
       registros.append({
           "Fecha": fecha_dt,
-          "Tipo": "COMPRA",
+          "Tipo": "COMPRA 🟢",
           "Ticker": ticker,
           "Valor (€)": valor,
           "PnL (€)": 0.0,
@@ -209,7 +207,7 @@ if cartera:
         color="Tipo",
         barmode="group",
         text_auto=".2f",
-        color_discrete_map={"COMPRA": "#00CC96", "VENTA": "#EF553B"},
+        color_discrete_map={"COMPRA 🟢": "#00CC96", "VENTA 🔴": "#EF553B"},
         template="plotly_dark",
     )
     fig_barras.update_layout(
@@ -286,7 +284,7 @@ if cartera:
   st.divider()
 
   # =======================================================
-  # 4. HISTORIAL DE OPERACIONES (SÓLO FILTRO DE FECHA + MÉTRICA PNL)
+  # 4. HISTORIAL DE OPERACIONES (TABLA CON SCROLL AUTOMÁTICO)
   # =======================================================
   st.subheader("📜 Historial de Operaciones")
 
@@ -337,7 +335,7 @@ if cartera:
         f_inicio_h = lunes_esta - timedelta(days=7)
         f_fin_h = lunes_esta - timedelta(seconds=1)
 
-  # Filtrado de DataFrame por Fecha exclusivamente
+  # Filtrado de DataFrame por Fecha
   if not df_historial_completo.empty:
     df_texto = df_historial_completo[
         (df_historial_completo["Fecha"] >= f_inicio_h)
@@ -346,10 +344,11 @@ if cartera:
   else:
     df_texto = pd.DataFrame()
 
-  # Métrica de PnL y Recuento en el rango
   pnl_acumulado = df_texto["PnL (€)"].sum() if not df_texto.empty else 0.0
   ventas_cerradas = (
-      len(df_texto[df_texto["Tipo"] == "VENTA"]) if not df_texto.empty else 0
+      len(df_texto[df_texto["Tipo"].str.contains("VENTA")])
+      if not df_texto.empty
+      else 0
   )
 
   col_m1, col_m2 = st.columns(2)
@@ -358,13 +357,44 @@ if cartera:
 
   st.write("")
 
+  # Tabla de operaciones con scroll activo
   if not df_texto.empty:
-    for _, fila in df_texto.sort_values(
+    df_tabla_historial = df_texto.sort_values(
         by="Fecha", ascending=False
-    ).iterrows():
-      st.caption(fila["Log"])
+    ).copy()
+    df_tabla_historial["Fecha"] = df_tabla_historial["Fecha"].dt.strftime(
+        "%Y-%m-%d %H:%M:%S"
+    )
+
+    st.dataframe(
+        df_tabla_historial[[
+            "Fecha",
+            "Tipo",
+            "Ticker",
+            "Valor (€)",
+            "PnL (€)",
+            "Log",
+        ]],
+        column_config={
+            "Fecha": st.column_config.TextColumn("Fecha / Hora"),
+            "Tipo": st.column_config.TextColumn("Operación"),
+            "Ticker": st.column_config.TextColumn("Activo"),
+            "Valor (€)": st.column_config.NumberColumn(
+                "Importe (€)", format="%.2f €"
+            ),
+            "PnL (€)": st.column_config.NumberColumn(
+                "PnL (€)", format="%+.2f €"
+            ),
+            "Log": st.column_config.TextColumn(
+                "Registro Completo", width="large"
+            ),
+        },
+        hide_index=True,
+        use_container_width=True,
+        height=400,  # Habilita el scroll interno vertical al superar esta altura
+    )
   else:
-    st.caption("No hay operaciones registradas en el rango de fecha seleccionado.")
+    st.info("No hay operaciones registradas en el rango de fecha seleccionado.")
 
   st.divider()
 
