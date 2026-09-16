@@ -1,51 +1,9 @@
 {
-  "efectivo_disponible": 0.0,
-  "total_cartera": 1017.03,
-  "posiciones_abiertas": {
-    "ATOM-USD": {
-      "cantidad": 395.293876,
-      "precio_entrada": 1.450617
-    },
-    "BCH-USD": {
-      "cantidad": 0.967393,
-      "precio_entrada": 207.568176
-    },
-    "DOGE-USD": {
-      "cantidad": 2717.978115,
-      "precio_entrada": 0.073397
-    },
-    "ETH-USD": {
-      "cantidad": 0.0626,
-      "precio_entrada": 2167.731629
-    }
-  },
+  "efectivo_disponible": 1015.4,
+  "total_cartera": 1015.4,
+  "posiciones_abiertas": {},
+  "inyeccion_100_realizada": true,
   "historial_operaciones": [
-    "[2026-09-10 07:14:19] INICIO: Asignados 50\u20ac a cada una de las 14 criptomonedas (Precios en EUR y comisi\u00f3n descontada). Liquidez: 300.0\u20ac",
-    "[2026-09-10 07:14:20] COMPRA 95.197418 de ATOM-USD a 1.571369\u20ac (149.83\u20ac inc. fee)",
-    "[2026-09-10 07:44:46] COMPRA 72.08832 de NEAR-USD a 2.062494\u20ac (148.92\u20ac inc. fee)",
-    "[2026-09-10 09:19:11] \ud83d\udd34 VENTA NEAR-USD - Beneficio Neto: -0.08\u20ac",
-    "[2026-09-10 09:24:26] \ud83d\udfe2 COMPRA 2037.887654 de DOGE-USD a 0.073238\u20ac (Tasa USD/EUR: 0.8591 | 149.49\u20ac inc. fee)",
-    "[2026-09-10 10:43:48] \ud83d\udfe2 COMPRA 0.238851 de BCH-USD a 211.508406\u20ac (Tasa USD/EUR: 0.8600 | 50.6\u20ac inc. fee)",
-    "[2026-09-10 11:44:22] \ud83d\udd34 VENTA LINK-USD a 10.194974\u20ac (Tasa USD/EUR: 0.8599) - Beneficio Neto: 0.06\u20ac",
-    "[2026-09-10 12:14:30] \ud83d\udfe2 COMPRA 0.237082 de BCH-USD a 210.81258\u20ac (Tasa USD/EUR: 0.8606 | 50.06\u20ac inc. fee)",
-    "[2026-09-11 09:06:13] \ud83d\udd34 VENTA DOT-USD a 0.998161\u20ac (Tasa USD/EUR: 0.8613) - Beneficio Neto: 2.36\u20ac",
-    "[2026-09-11 09:36:21] \ud83d\udd34 VENTA LTC-USD a 45.837526\u20ac (Tasa USD/EUR: 0.8613) - Beneficio Neto: 0.57\u20ac",
-    "[2026-09-11 10:05:59] \ud83d\udfe2 COMPRA 574.653649 de ADA-USD a 0.17883\u20ac (Tasa USD/EUR: 0.8615 | 102.93\u20ac inc. fee)",
-    "[2026-09-11 12:56:50] \ud83d\udcb0 INGRESO: Se han a\u00f1adido 100.00 \u20ac extra de liquidez.",
-    "[2026-09-11 12:56:52] \ud83d\udfe2 COMPRA SALVAVIDAS (DCA) AVAX-USD | Invertido: 85.48\u20ac | Nuevo Precio Medio: 6.482235\u20ac | Ca\u00edda estaba en: -5.50%",
-    "[2026-09-11 12:56:52] \ud83d\udd34 VENTA SHIB-USD | Beneficio Neto: 4.44 \u20ac | Rentabilidad: 8.89 %",
-    "[2026-09-11 14:46:10] \ud83d\udd34 VENTA ETH-USD a 2150.121127\u20ac (Tasa USD/EUR: 0.8620) - Beneficio Neto: 0.42\u20ac",
-    "[2026-09-14 08:51:35] \ud83d\udfe2 COMPRA SALVAVIDAS (DCA) 85.842967 de ATOM-USD a 1.387521\u20ac | Ca\u00edda: -11.84% | Invertido: 119.29979859491688\u20ac | Nuevo precio medio: 1.499608\u20ac",
-    "[2026-09-14 08:52:57] \ud83d\udd34 VENTA XRP-USD a 1.199392\u20ac (Tasa USD/EUR: 0.8653) - Beneficio Neto: 0.27\u20ac",
-    "[2026-09-14 09:23:05] \ud83d\udfe2 COMPRA SALVAVIDAS (DCA) 36.072828 de ATOM-USD a 1.39134\u20ac | Ca\u00edda: -7.22% | Invertido: 50.27\u20ac | Nuevo precio medio: 1.484239\u20ac",
-    "[2026-09-14 09:23:05] \ud83d\udd34 VENTA SOL-USD a 87.816306\u20ac (Tasa USD/EUR: 0.8651) - Beneficio Neto: 0.14\u20ac",
-    "[2026-09-14 09:53:15] \ud83d\udfe2 COMPRA SALVAVIDAS (DCA) 36.078988 de ATOM-USD a 1.387505\u20ac | Ca\u00edda: -6.52% | Invertido: 50.14\u20ac | Nuevo precio medio: 1.472273\u20ac",
-    "[2026-09-14 09:53:15] \ud83d\udd34 VENTA ADA-USD a 0.182077\u20ac (Tasa USD/EUR: 0.8660) - Beneficio Neto: 0.95\u20ac",
-    "[2026-09-14 10:23:22] \ud83d\udfe2 COMPRA SALVAVIDAS (DCA) 110.333198 de ATOM-USD a 1.392453\u20ac | Ca\u00edda: -5.42% | Invertido: 153.88\u20ac | Nuevo precio medio: 1.450617\u20ac",
-    "[2026-09-14 12:10:12] \ud83d\udd34 VENTA BTC-USD a 67597.387973\u20ac (Tasa USD/EUR: 0.8663) - Beneficio Neto: 0.14\u20ac",
-    "[2026-09-14 12:40:20] \ud83d\udfe2 COMPRA SALVAVIDAS (DCA) 0.258463 de BCH-USD a 193.682319\u20ac | Ca\u00edda: -8.86% | Invertido: 50.14\u20ac | Nuevo precio medio: 207.568176\u20ac",
-    "[2026-09-14 14:40:47] \ud83d\udd34 VENTA AVAX-USD a 6.503367\u20ac (Tasa USD/EUR: 0.8670) - Beneficio Neto: 0.22\u20ac",
-    "[2026-09-14 15:10:56] \ud83d\udfe2 COMPRA 0.0626 de ETH-USD a 2164.259304\u20ac (Tasa USD/EUR: 0.8669 | 135.7\u20ac inc. fee)"
-  ],
-  "inyeccion_100_realizada": true
+    "[2026-09-16 08:18:21] \ud83d\udd04 REINICIO TOTAL: Todas las posiciones liquidadas a mercado. Liquidez total disponible: 1015.4 \u20ac"
+  ]
 }
