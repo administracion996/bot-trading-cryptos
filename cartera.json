@@ -1,17 +1,7 @@
 {
-  "efectivo_disponible": 707.26,
-  "total_cartera": 1010.65,
+  "efectivo_disponible": 808.54,
+  "total_cartera": 1010.77,
   "posiciones_abiertas": {
-    "LTC-USD": {
-      "cantidad": 1.14801,
-      "precio_entrada": 44.024007,
-      "timestamp_entrada": "2026-09-16 11:28:40"
-    },
-    "INJ-USD": {
-      "cantidad": 10.821351,
-      "precio_entrada": 4.667624,
-      "timestamp_entrada": "2026-09-16 11:31:31"
-    },
     "ICP-USD": {
       "cantidad": 23.266985,
       "precio_entrada": 2.171747,
@@ -22,15 +12,15 @@
       "precio_entrada": 0.827428,
       "timestamp_entrada": "2026-09-16 11:41:42"
     },
-    "ALGO-USD": {
-      "cantidad": 667.264528,
-      "precio_entrada": 0.075697,
-      "timestamp_entrada": "2026-09-16 11:46:48"
-    },
     "XLM-USD": {
       "cantidad": 331.727722,
       "precio_entrada": 0.152324,
       "timestamp_entrada": "2026-09-16 11:51:53"
+    },
+    "NEAR-USD": {
+      "cantidad": 24.019273,
+      "precio_entrada": 2.104144,
+      "timestamp_entrada": "2026-09-16 11:56:59"
     }
   },
   "inyeccion_100_realizada": true,
@@ -103,6 +93,10 @@
     "[2026-09-16 11:41:42] \ud83d\udfe2 COMPRA 61.068766 de DOT-USD a 0.826104\u20ac (50.53\u20ac)",
     "[2026-09-16 11:46:48] \ud83d\udd34 VENTA AAVE-USD por ROTACI\u00d3N ULTRA-R\u00c1PIDA (28.4m transcurridos). Neto: 50.57\u20ac | PnL: +0.04\u20ac",
     "[2026-09-16 11:46:48] \ud83d\udfe2 COMPRA 667.264528 de ALGO-USD a 0.075576\u20ac (50.51\u20ac)",
-    "[2026-09-16 11:51:53] \ud83d\udfe2 COMPRA 331.727722 de XLM-USD a 0.15208\u20ac (50.53\u20ac)"
+    "[2026-09-16 11:51:53] \ud83d\udfe2 COMPRA 331.727722 de XLM-USD a 0.15208\u20ac (50.53\u20ac)",
+    "[2026-09-16 11:56:59] \ud83d\udd34 VENTA LTC-USD por ROTACI\u00d3N ULTRA-R\u00c1PIDA (28.4m transcurridos). Neto: 50.55\u20ac | PnL: +0.01\u20ac",
+    "[2026-09-16 11:56:59] \ud83d\udd34 VENTA INJ-USD por ROTACI\u00d3N ULTRA-R\u00c1PIDA (25.5m transcurridos). Neto: 50.58\u20ac | PnL: +0.07\u20ac",
+    "[2026-09-16 11:56:59] \ud83d\udd34 VENTA ALGO-USD por TAKE-PROFIT R\u00c1PIDO (+0.52%). Neto: 50.69\u20ac | PnL: +0.18\u20ac",
+    "[2026-09-16 11:56:59] \ud83d\udfe2 COMPRA 24.019273 de NEAR-USD a 2.100777\u20ac (50.54\u20ac)"
   ]
 }
