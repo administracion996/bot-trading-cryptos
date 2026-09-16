@@ -1,12 +1,7 @@
 {
-  "efectivo_disponible": 706.92,
-  "total_cartera": 1010.21,
+  "efectivo_disponible": 706.94,
+  "total_cartera": 1010.53,
   "posiciones_abiertas": {
-    "BNB-USD": {
-      "cantidad": 0.082381,
-      "precio_entrada": 613.855136,
-      "timestamp_entrada": "2026-09-16 11:08:19"
-    },
     "ADA-USD": {
       "cantidad": 301.266055,
       "precio_entrada": 0.167692,
@@ -31,6 +26,11 @@
       "cantidad": 10.821351,
       "precio_entrada": 4.667624,
       "timestamp_entrada": "2026-09-16 11:31:31"
+    },
+    "ICP-USD": {
+      "cantidad": 23.266985,
+      "precio_entrada": 2.171747,
+      "timestamp_entrada": "2026-09-16 11:36:37"
     }
   },
   "inyeccion_100_realizada": true,
@@ -95,6 +95,8 @@
     "[2026-09-16 11:31:31] \ud83d\udd34 VENTA ATOM-USD por ROTACI\u00d3N ULTRA-R\u00c1PIDA (37.7m transcurridos). Neto: 50.56\u20ac | PnL: +0.05\u20ac",
     "[2026-09-16 11:31:31] \ud83d\udd34 VENTA ALGO-USD por STOP-LOSS PROTECTOR (-1.21%). Neto: 49.85\u20ac | PnL: -0.69\u20ac",
     "[2026-09-16 11:31:31] \ud83d\udd34 VENTA AVAX-USD por ROTACI\u00d3N ULTRA-R\u00c1PIDA (28.3m transcurridos). Neto: 50.64\u20ac | PnL: +0.07\u20ac",
-    "[2026-09-16 11:31:31] \ud83d\udfe2 COMPRA 10.821351 de INJ-USD a 4.660156\u20ac (50.51\u20ac)"
+    "[2026-09-16 11:31:31] \ud83d\udfe2 COMPRA 10.821351 de INJ-USD a 4.660156\u20ac (50.51\u20ac)",
+    "[2026-09-16 11:36:37] \ud83d\udd34 VENTA BNB-USD por ROTACI\u00d3N ULTRA-R\u00c1PIDA (28.4m transcurridos). Neto: 50.55\u20ac | PnL: -0.02\u20ac",
+    "[2026-09-16 11:36:37] \ud83d\udfe2 COMPRA 23.266985 de ICP-USD a 2.168272\u20ac (50.53\u20ac)"
   ]
 }
