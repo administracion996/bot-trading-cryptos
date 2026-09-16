@@ -1,12 +1,7 @@
 {
-  "efectivo_disponible": 756.65,
-  "total_cartera": 1008.39,
+  "efectivo_disponible": 756.61,
+  "total_cartera": 1008.05,
   "posiciones_abiertas": {
-    "BTC-USD": {
-      "cantidad": 0.000766,
-      "precio_entrada": 65796.344648,
-      "timestamp_entrada": "2026-09-16 13:16:15"
-    },
     "DOT-USD": {
       "cantidad": 60.506183,
       "precio_entrada": 0.833799,
@@ -26,6 +21,11 @@
       "cantidad": 10.752855,
       "precio_entrada": 4.688987,
       "timestamp_entrada": "2026-09-16 13:36:40"
+    },
+    "ICP-USD": {
+      "cantidad": 22.897238,
+      "precio_entrada": 2.201139,
+      "timestamp_entrada": "2026-09-16 13:41:47"
     }
   },
   "inyeccion_100_realizada": true,
@@ -141,6 +141,8 @@
     "[2026-09-16 13:26:29] \ud83d\udfe2 COMPRA 71.758225 de FIL-USD a 0.701513\u20ac (50.42\u20ac)",
     "[2026-09-16 13:31:34] \ud83d\udd34 VENTA FET-USD por ROTACI\u00d3N ULTRA-R\u00c1PIDA (25.7m transcurridos). Neto: 50.3\u20ac | PnL: -0.14\u20ac",
     "[2026-09-16 13:31:34] \ud83d\udfe2 COMPRA 0.484367 de AAVE-USD a 103.928015\u20ac (50.42\u20ac)",
-    "[2026-09-16 13:36:40] \ud83d\udfe2 COMPRA 10.752855 de INJ-USD a 4.681485\u20ac (50.42\u20ac)"
+    "[2026-09-16 13:36:40] \ud83d\udfe2 COMPRA 10.752855 de INJ-USD a 4.681485\u20ac (50.42\u20ac)",
+    "[2026-09-16 13:41:47] \ud83d\udd34 VENTA BTC-USD por ROTACI\u00d3N ULTRA-R\u00c1PIDA (25.6m transcurridos). Neto: 50.36\u20ac | PnL: -0.04\u20ac",
+    "[2026-09-16 13:41:47] \ud83d\udfe2 COMPRA 22.897238 de ICP-USD a 2.197617\u20ac (50.4\u20ac)"
   ]
 }
