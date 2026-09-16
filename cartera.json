@@ -1,12 +1,7 @@
 {
-  "efectivo_disponible": 755.41,
-  "total_cartera": 1006.55,
+  "efectivo_disponible": 754.82,
+  "total_cartera": 1006.07,
   "posiciones_abiertas": {
-    "ATOM-USD": {
-      "cantidad": 38.415007,
-      "precio_entrada": 1.312248,
-      "timestamp_entrada": "2026-09-16 14:02:14"
-    },
     "DOT-USD": {
       "cantidad": 59.403305,
       "precio_entrada": 0.848101,
@@ -26,6 +21,11 @@
       "cantidad": 327.648418,
       "precio_entrada": 0.15361,
       "timestamp_entrada": "2026-09-16 14:22:40"
+    },
+    "ALGO-USD": {
+      "cantidad": 671.653337,
+      "precio_entrada": 0.07489,
+      "timestamp_entrada": "2026-09-16 14:27:48"
     }
   },
   "inyeccion_100_realizada": true,
@@ -159,6 +159,8 @@
     "[2026-09-16 14:17:34] \ud83d\udd34 VENTA NEAR-USD por ROTACI\u00d3N ULTRA-R\u00c1PIDA (25.6m transcurridos). Neto: 50.21\u20ac | PnL: -0.21\u20ac",
     "[2026-09-16 14:17:34] \ud83d\udfe2 COMPRA 381.050208 de FET-USD a 0.131871\u20ac (50.33\u20ac)",
     "[2026-09-16 14:22:40] \ud83d\udd34 VENTA SOL-USD por ROTACI\u00d3N ULTRA-R\u00c1PIDA (25.6m transcurridos). Neto: 50.14\u20ac | PnL: -0.27\u20ac",
-    "[2026-09-16 14:22:40] \ud83d\udfe2 COMPRA 327.648418 de XLM-USD a 0.153364\u20ac (50.33\u20ac)"
+    "[2026-09-16 14:22:40] \ud83d\udfe2 COMPRA 327.648418 de XLM-USD a 0.153364\u20ac (50.33\u20ac)",
+    "[2026-09-16 14:27:48] \ud83d\udd34 VENTA ATOM-USD por STOP-LOSS PROTECTOR (-1.23%). Neto: 49.71\u20ac | PnL: -0.70\u20ac",
+    "[2026-09-16 14:27:48] \ud83d\udfe2 COMPRA 671.653337 de ALGO-USD a 0.07477\u20ac (50.3\u20ac)"
   ]
 }
