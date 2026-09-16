@@ -1,6 +1,6 @@
 {
-  "efectivo_disponible": 811.75,
-  "total_cartera": 1013.72,
+  "efectivo_disponible": 761.07,
+  "total_cartera": 1013.62,
   "posiciones_abiertas": {
     "INJ-USD": {
       "cantidad": 10.742971,
@@ -21,6 +21,11 @@
       "cantidad": 0.082406,
       "precio_entrada": 615.125112,
       "timestamp_entrada": "2026-09-16 09:43:16"
+    },
+    "DOGE-USD": {
+      "cantidad": 733.615264,
+      "precio_entrada": 0.069083,
+      "timestamp_entrada": "2026-09-16 09:48:22"
     }
   },
   "inyeccion_100_realizada": true,
@@ -43,6 +48,7 @@
     "[2026-09-16 09:04:22] \ud83d\udfe2 COMPRA 10.742971 de INJ-USD a 4.714602\u20ac (50.73\u20ac inc. fee)",
     "[2026-09-16 09:36:05] \ud83d\udfe2 COMPRA 0.489421 de AAVE-USD a 103.426007\u20ac (50.7\u20ac)",
     "[2026-09-16 09:38:03] \ud83d\udfe2 COMPRA 45.409263 de XRP-USD a 1.114506\u20ac (50.69\u20ac)",
-    "[2026-09-16 09:43:16] \ud83d\udfe2 COMPRA 0.082406 de BNB-USD a 614.139752\u20ac (50.69\u20ac)"
+    "[2026-09-16 09:43:16] \ud83d\udfe2 COMPRA 0.082406 de BNB-USD a 614.139752\u20ac (50.69\u20ac)",
+    "[2026-09-16 09:48:22] \ud83d\udfe2 COMPRA 733.615264 de DOGE-USD a 0.068972\u20ac (50.68\u20ac)"
   ]
 }
