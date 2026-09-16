@@ -1,12 +1,7 @@
 {
-  "efectivo_disponible": 755.88,
-  "total_cartera": 1007.51,
+  "efectivo_disponible": 755.72,
+  "total_cartera": 1006.85,
   "posiciones_abiertas": {
-    "FET-USD": {
-      "cantidad": 380.844982,
-      "precio_entrada": 0.13239,
-      "timestamp_entrada": "2026-09-16 13:46:54"
-    },
     "NEAR-USD": {
       "cantidad": 23.514535,
       "precio_entrada": 2.144206,
@@ -26,6 +21,11 @@
       "cantidad": 59.403305,
       "precio_entrada": 0.848101,
       "timestamp_entrada": "2026-09-16 14:07:22"
+    },
+    "AVAX-USD": {
+      "cantidad": 7.944677,
+      "precio_entrada": 6.336318,
+      "timestamp_entrada": "2026-09-16 14:12:27"
     }
   },
   "inyeccion_100_realizada": true,
@@ -153,6 +153,8 @@
     "[2026-09-16 14:02:14] \ud83d\udd34 VENTA INJ-USD por ROTACI\u00d3N ULTRA-R\u00c1PIDA (25.6m transcurridos). Neto: 50.21\u20ac | PnL: -0.21\u20ac",
     "[2026-09-16 14:02:14] \ud83d\udfe2 COMPRA 38.415007 de ATOM-USD a 1.310148\u20ac (50.41\u20ac)",
     "[2026-09-16 14:07:22] \ud83d\udd34 VENTA ICP-USD por ROTACI\u00d3N ULTRA-R\u00c1PIDA (25.6m transcurridos). Neto: 50.01\u20ac | PnL: -0.39\u20ac",
-    "[2026-09-16 14:07:22] \ud83d\udfe2 COMPRA 59.403305 de DOT-USD a 0.846744\u20ac (50.38\u20ac)"
+    "[2026-09-16 14:07:22] \ud83d\udfe2 COMPRA 59.403305 de DOT-USD a 0.846744\u20ac (50.38\u20ac)",
+    "[2026-09-16 14:12:27] \ud83d\udd34 VENTA FET-USD por ROTACI\u00d3N ULTRA-R\u00c1PIDA (25.6m transcurridos). Neto: 50.18\u20ac | PnL: -0.24\u20ac",
+    "[2026-09-16 14:12:27] \ud83d\udfe2 COMPRA 7.944677 de AVAX-USD a 6.32618\u20ac (50.34\u20ac)"
   ]
 }
