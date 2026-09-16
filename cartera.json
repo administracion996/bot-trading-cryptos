@@ -1,6 +1,6 @@
 {
-  "efectivo_disponible": 704.27,
-  "total_cartera": 1004.97,
+  "efectivo_disponible": 654.02,
+  "total_cartera": 1004.94,
   "posiciones_abiertas": {
     "FET-USD": {
       "cantidad": 381.050208,
@@ -31,6 +31,11 @@
       "cantidad": 25084800.0,
       "precio_entrada": 2e-06,
       "timestamp_entrada": "2026-09-16 14:38:37"
+    },
+    "FIL-USD": {
+      "cantidad": 74.192556,
+      "precio_entrada": 0.677292,
+      "timestamp_entrada": "2026-09-16 14:41:38"
     }
   },
   "inyeccion_100_realizada": true,
@@ -171,7 +176,8 @@
     "[2026-09-16 14:32:53] \ud83d\udfe2 COMPRA 23.325932 de ICP-USD a 2.151236\u20ac (50.26\u20ac)",
     "[2026-09-16 14:38:00] \ud83d\udd34 VENTA AVAX-USD por ROTACI\u00d3N ULTRA-R\u00c1PIDA (25.6m transcurridos). Neto: 50.05\u20ac | PnL: -0.29\u20ac",
     "[2026-09-16 14:38:00] \ud83d\udfe2 COMPRA 23.364459 de NEAR-USD a 2.148116\u20ac (50.27\u20ac)",
-    "[2026-09-16 14:38:37] \ud83d\udfe2 COMPRA 25084800.0 de BONK-USD a 2e-06\u20ac (50.25\u20ac)"
+    "[2026-09-16 14:38:37] \ud83d\udfe2 COMPRA 25084800.0 de BONK-USD a 2e-06\u20ac (50.25\u20ac)",
+    "[2026-09-16 14:41:38] \ud83d\udfe2 COMPRA 74.192556 de FIL-USD a 0.676208\u20ac (50.25\u20ac)"
   ],
   "reserva_intocable": 0.0,
   "fecha_control_diario": "2026-09-16",
