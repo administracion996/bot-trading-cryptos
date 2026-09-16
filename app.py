@@ -17,7 +17,7 @@ REPO = "administracion996/bot-trading-dashboard"
 FILE_PATH = "cartera.json"
 GITHUB_TOKEN = st.secrets.get("GITHUB_TOKEN", "")
 
-# Universo de criptomonedas sincronizado
+# Universo completo de mercado verificado
 UNIVERSO_MERCADO = [
     "BTC-USD",
     "ETH-USD",
@@ -62,46 +62,82 @@ def cargar_cartera():
       content_b64 = res.json()["content"]
       return json.loads(base64.b64decode(content_b64).decode("utf-8"))
   except Exception as e:
-    st.error(f"Error cargando cartera: {e}")
+    st.error(f"Error cargando datos de GitHub: {e}")
   return None
 
 
-@st.cache_data(ttl=120)
-def obtener_historico_fluctuacion():
-  data = yf.download(
-      UNIVERSO_MERCADO, period="1d", interval="15m", progress=False
-  )["Close"]
-  data_pct = ((data - data.iloc[0]) / data.iloc[0]) * 100
-  return data_pct
+@st.cache_data(ttl=60)
+def obtener_precios_actuales():
+  try:
+    data = yf.download(
+        UNIVERSO_MERCADO, period="1d", interval="15m", progress=False
+    )["Close"]
+    tasa_eur = float(
+        yf.Ticker("EUR=X").history(period="1d")["Close"].iloc[-1]
+    )
+    precios = (data.iloc[-1] * tasa_eur).to_dict()
+    return precios, data, tasa_eur
+  except:
+    return {}, pd.DataFrame(), 0.92
 
 
 # --- CARGA DE DATOS ---
 cartera = cargar_cartera()
+precios_actuales, df_historico, tasa_eur = obtener_precios_actuales()
 
 st.title("🤖 Dashboard Bot Trading Hiperactivo")
 
 if cartera:
-  # 1. MÉTRICAS PRINCIPALES
+  posiciones = cartera.get("posiciones_abiertas", {})
+  efectivo = cartera.get("efectivo_disponible", 0.0)
+
+  # Calcular valor real de posiciones y PnL
+  valor_posiciones_total = 0.0
+  pnl_total_acumulado = 0.0
+
+  datos_posiciones_tabla = []
+
+  for ticker, pos in posiciones.items():
+    precio_actual = precios_actuales.get(ticker, pos["precio_entrada"])
+    valor_actual = pos["cantidad"] * precio_actual
+    inversion = pos["cantidad"] * pos["precio_entrada"]
+    pnl_eur = valor_actual - inversion
+    pnl_pct = ((precio_actual - pos["precio_entrada"]) / pos["precio_entrada"]) * 100.0
+
+    valor_posiciones_total += valor_actual
+    pnl_total_acumulado += pnl_eur
+
+    datos_posiciones_tabla.append({
+        "Activo": ticker.replace("-USD", ""),
+        "Cantidad": pos["cantidad"],
+        "Precio Entrada (€)": round(pos["precio_entrada"], 4),
+        "Precio Actual (€)": round(precio_actual, 4),
+        "Valor Actual (€)": round(valor_actual, 2),
+        "PnL (€)": round(pnl_eur, 2),
+        "PnL (%)": f"{pnl_pct:+.2f}%",
+    })
+
+  total_cartera_calculado = round(efectivo + valor_posiciones_total, 2)
+
+  # 1. MÉTRICAS PRINCIPALES DE CABECERA
   col1, col2, col3, col4 = st.columns(4)
-  col1.metric("Cartera Total", f"{cartera.get('total_cartera', 0):.2f} €")
-  col2.metric("Efectivo Libre", f"{cartera.get('efectivo_disponible', 0):.2f} €")
-  col3.metric("Posiciones Abiertas", len(cartera.get("posiciones_abiertas", {})))
+  col1.metric("Cartera Total", f"{total_cartera_calculado:.2f} €")
+  col2.metric("Efectivo Libre", f"{efectivo:.2f} €")
+  col3.metric("Posiciones Abiertas", len(posiciones))
   col4.metric(
-      "Operaciones Registradas", len(cartera.get("historial_operaciones", []))
+      "PnL No Realizado",
+      f"{pnl_total_acumulado:+.2f} €",
+      delta_color="normal",
   )
 
   st.divider()
 
-  # 2. GRÁFICA DE BARRAS INICIAL (DISTRIBUCIÓN DE CAPITAL)
-  st.subheader("📊 Distribución Actual de Capital (€)")
-  posiciones = cartera.get("posiciones_abiertas", {})
-  efectivo = cartera.get("efectivo_disponible", 0.0)
-
+  # 2. GRÁFICA INICIAL DE BARRAS (DISTRIBUCIÓN DE CAPITAL ORIGINAL)
+  st.subheader("📊 Distribución de Capital en Cartera (€)")
   datos_barras = {"Activo": ["Efectivo Libre"], "Valor (€)": [efectivo]}
-  for ticker, pos in posiciones.items():
-    valor_posicion = round(pos["cantidad"] * pos["precio_entrada"], 2)
-    datos_barras["Activo"].append(ticker.replace("-USD", ""))
-    datos_barras["Valor (€)"].append(valor_posicion)
+  for item in datos_posiciones_tabla:
+    datos_barras["Activo"].append(item["Activo"])
+    datos_barras["Valor (€)"].append(item["Valor Actual (€)"])
 
   df_barras = pd.DataFrame(datos_barras)
   fig_barras = px.bar(
@@ -117,11 +153,11 @@ if cartera:
 
   st.divider()
 
-  # 3. TABLA DE POSICIONES
-  st.subheader("📌 Posiciones en Cartera")
-  if posiciones:
-    df_pos = pd.DataFrame.from_dict(posiciones, orient="index")
-    st.dataframe(df_pos, use_container_width=True)
+  # 3. TABLA DE POSICIONES DETALLADA
+  st.subheader("📌 Posiciones Abiertas en Tiempo Real")
+  if datos_posiciones_tabla:
+    df_tabla = pd.DataFrame(datos_posiciones_tabla)
+    st.dataframe(df_tabla, use_container_width=True)
   else:
     st.info("No hay posiciones abiertas actualmente (100% en Liquidez).")
 
@@ -130,30 +166,36 @@ if cartera:
   # 4. HISTORIAL DE OPERACIONES
   st.subheader("📜 Historial de Operaciones")
   historial = cartera.get("historial_operaciones", [])
-  for item in reversed(historial[-15:]):
-    st.caption(item)
+  if historial:
+    for item in reversed(historial[-15:]):
+      st.caption(item)
+  else:
+    st.caption("Sin operaciones registradas.")
 
   st.divider()
 
-  # 5. GRÁFICA DE LÍNEAS AL FINAL (FLUCTUACIÓN 24H %)
+  # 5. NUEVA GRÁFICA DE LÍNEAS AL FINAL (FLUCTUACIÓN MERCADO 24H)
   st.subheader("📈 Fluctuación del Mercado (Últimas 24 Horas %)")
   seleccionadas = st.multiselect(
-      "Selecciona criptomonedas para comparar:",
+      "Selecciona activos para comparar su variación relativa:",
       options=UNIVERSO_MERCADO,
       default=["BTC-USD", "ETH-USD", "SOL-USD", "DOGE-USD", "LINK-USD"],
   )
 
-  if seleccionadas:
+  if seleccionadas and not df_historico.empty:
     try:
-      df_hist = obtener_historico_fluctuacion()
-      fig_lineas = go.Figure()
+      df_pct = (
+          (df_historico[seleccionadas] - df_historico[seleccionadas].iloc[0])
+          / df_historico[seleccionadas].iloc[0]
+      ) * 100.0
 
+      fig_lineas = go.Figure()
       for ticker in seleccionadas:
-        if ticker in df_hist.columns:
+        if ticker in df_pct.columns:
           fig_lineas.add_trace(
               go.Scatter(
-                  x=df_hist.index,
-                  y=df_hist[ticker],
+                  x=df_pct.index,
+                  y=df_pct[ticker],
                   mode="lines",
                   name=ticker.replace("-USD", ""),
               )
@@ -168,7 +210,7 @@ if cartera:
       )
       st.plotly_chart(fig_lineas, use_container_width=True)
     except Exception as e:
-      st.warning(f"Cargando gráfico de precios... ({e})")
+      st.warning(f"Calculando histórico... ({e})")
 
 else:
-  st.warning("Conectando con GitHub para obtener el estado actual...")
+  st.warning("Conectando con GitHub para recuperar el estado...")
