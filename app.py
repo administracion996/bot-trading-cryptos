@@ -19,15 +19,15 @@ REPO = "administracion996/bot-trading-dashboard"
 FILE_PATH = "cartera.json"
 GITHUB_TOKEN = st.secrets.get("GITHUB_TOKEN", "")
 
-UNIVERSO_MERCADO = [
+UNIVERSO_MERCADO = (
     "BTC-USD", "ETH-USD", "SOL-USD", "BNB-USD", "XRP-USD", "ADA-USD", "AVAX-USD",
     "DOT-USD", "NEAR-USD", "ATOM-USD", "MATIC-USD", "LTC-USD", "BCH-USD", "ETC-USD",
     "LINK-USD", "AAVE-USD", "INJ-USD", "FET-USD", "ALGO-USD", "XLM-USD", "TRX-USD",
     "DOGE-USD", "SHIB-USD", "BONK-USD", "FLOKI-USD", "FIL-USD", "ICP-USD",
-]
+)
 
 
-@st.cache_data(ttl=5)
+@st.cache_data(ttl=10)
 def cargar_cartera():
   url = f"https://api.github.com/repos/{REPO}/contents/{FILE_PATH}"
   headers = (
@@ -43,8 +43,59 @@ def cargar_cartera():
   return None
 
 
+@st.cache_data(ttl=60)
+def obtener_precios_posiciones(pos_tickers_tuple):
+  """Descarga rápida y meamoriada de precios actuales."""
+  if not pos_tickers_tuple:
+    return {}, 0.92
+
+  precios_live = {}
+  tasa_eur = 0.92
+  try:
+    df_live = yf.download(
+        list(pos_tickers_tuple), period="1d", interval="15m", progress=False
+    )["Close"]
+    try:
+      df_t = yf.Ticker("EUR=X").history(period="1d")
+      if not df_t.empty:
+        tasa_eur = float(df_t["Close"].iloc[-1])
+    except Exception:
+      pass
+
+    for t in pos_tickers_tuple:
+      try:
+        if len(pos_tickers_tuple) == 1:
+          val = float(df_live.dropna().iloc[-1])
+        else:
+          val = float(df_live[t].dropna().iloc[-1])
+        precios_live[t] = val * tasa_eur
+      except Exception:
+        pass
+  except Exception:
+    pass
+
+  return precios_live, tasa_eur
+
+
+@st.cache_data(ttl=60)
+def obtener_datos_grafica_lineal(seleccionadas_tuple):
+  """Descarga y calcula la variación % en segundo plano."""
+  if not seleccionadas_tuple:
+    return pd.DataFrame()
+  try:
+    df_precios = yf.download(
+        list(seleccionadas_tuple), period="1d", interval="15m", progress=False
+    )["Close"]
+    if not df_precios.empty:
+      if isinstance(df_precios, pd.Series):
+        df_precios = df_precios.to_frame()
+      return ((df_precios - df_precios.iloc[0]) / df_precios.iloc[0]) * 100.0
+  except Exception:
+    pass
+  return pd.DataFrame()
+
+
 def parsear_historial(historial_raw):
-  """Reconstruye el PnL y detecta los nuevos barridos de reserva."""
   registros = []
   compras_memoria = {}
 
@@ -199,9 +250,7 @@ if cartera:
 
   df_historial_completo = parsear_historial(historial_raw)
 
-  # =======================================================
-  # 1. MÉTRICAS GLOBALES (Destacando la Hucha y el Progreso)
-  # =======================================================
+  # 1. MÉTRICAS GLOBALES
   col1, col2, col3, col4 = st.columns(4)
   col1.metric("Capital Activo (Trabajo)", f"{total_activo:.2f} €")
   col2.metric("Efectivo Libre", f"{efectivo:.2f} €")
@@ -218,9 +267,7 @@ if cartera:
 
   st.divider()
 
-  # =======================================================
-  # 2. VOLUMEN OPERADO (COMPRAS VS VENTAS)
-  # =======================================================
+  # 2. VOLUMEN OPERADO
   st.subheader("📊 Volumen Operado: Compras vs Ventas")
   df_grafica = aplicar_filtros_grafica(
       df_historial_completo, key_prefix="grafica_volumen"
@@ -230,7 +277,6 @@ if cartera:
     df_agrupado = (
         df_grafica.groupby(["Ticker", "Tipo"])["Valor (€)"].sum().reset_index()
     )
-    # Filtrar BARRIDO del gráfico para no ensuciar la estadística de trading
     df_agrupado = df_agrupado[df_agrupado["Tipo"] != "BARRIDO 🏦"]
     
     fig_barras = px.bar(
@@ -254,37 +300,11 @@ if cartera:
 
   st.divider()
 
-  # =======================================================
-  # 3. TABLA DE POSICIONES DETALLADA CON PNL REAL
-  # =======================================================
+  # 3. TABLA DE POSICIONES DETALLADA (OPTIMIZADA)
   st.subheader("📌 Posiciones Actuales en Cartera")
   if posiciones:
-    pos_tickers = list(posiciones.keys())
-    precios_live = {}
-
-    try:
-      df_live = yf.download(
-          pos_tickers, period="1d", interval="15m", progress=False
-      )["Close"]
-      tasa_eur = 0.92
-      try:
-        df_t = yf.Ticker("EUR=X").history(period="1d")
-        if not df_t.empty:
-          tasa_eur = float(df_t["Close"].iloc[-1])
-      except Exception:
-        pass
-
-      for t in pos_tickers:
-        try:
-          if len(pos_tickers) == 1:
-            val = float(df_live.dropna().iloc[-1])
-          else:
-            val = float(df_live[t].dropna().iloc[-1])
-          precios_live[t] = val * tasa_eur
-        except Exception:
-          pass
-    except Exception:
-      pass
+    pos_tickers_tuple = tuple(posiciones.keys())
+    precios_live, _ = obtener_precios_posiciones(pos_tickers_tuple)
 
     filas_pos = []
     for ticker, pos in posiciones.items():
@@ -315,9 +335,7 @@ if cartera:
 
   st.divider()
 
-  # =======================================================
-  # 4. HISTORIAL DE OPERACIONES (CON SCROLL)
-  # =======================================================
+  # 4. HISTORIAL DE OPERACIONES
   st.subheader("📜 Historial de Operaciones y Movimientos")
 
   c1, c2 = st.columns([3, 3])
@@ -423,49 +441,38 @@ if cartera:
 
   st.divider()
 
-  # =======================================================
-  # 5. GRÁFICA LINEAL TENDENCIA 24H
-  # =======================================================
+  # 5. GRÁFICA LINEAL TENDENCIA 24H (OPTIMIZADA)
   st.subheader("📈 Fluctuación del Mercado (Últimas 24 Horas %)")
   seleccionadas_linea = st.multiselect(
       "🪙 Activos a comparar:",
-      options=UNIVERSO_MERCADO,
+      options=list(UNIVERSO_MERCADO),
       default=["BTC-USD", "ETH-USD", "SOL-USD", "AAVE-USD", "INJ-USD"],
       key="filtro_lineas",
   )
 
   if seleccionadas_linea:
-    try:
-      df_precios = yf.download(
-          seleccionadas_linea, period="1d", interval="15m", progress=False
-      )["Close"]
-      if not df_precios.empty:
-        if isinstance(df_precios, pd.Series):
-          df_precios = df_precios.to_frame()
-        df_pct = (
-            (df_precios - df_precios.iloc[0]) / df_precios.iloc[0]
-        ) * 100.0
-
-        fig_lineas = go.Figure()
-        for col in df_pct.columns:
-          fig_lineas.add_trace(
-              go.Scatter(
-                  x=df_pct.index,
-                  y=df_pct[col],
-                  mode="lines",
-                  name=str(col).replace("-USD", ""),
-              )
-          )
-
-        fig_lineas.update_layout(
-            xaxis_title="Hora",
-            yaxis_title="Variación (%)",
-            hovermode="x unified",
-            template="plotly_dark",
-            margin=dict(l=20, r=20, t=30, b=20),
+    df_pct = obtener_datos_grafica_lineal(tuple(seleccionadas_linea))
+    if not df_pct.empty:
+      fig_lineas = go.Figure()
+      for col in df_pct.columns:
+        fig_lineas.add_trace(
+            go.Scatter(
+                x=df_pct.index,
+                y=df_pct[col],
+                mode="lines",
+                name=str(col).replace("-USD", ""),
+            )
         )
-        st.plotly_chart(fig_lineas, use_container_width=True)
-    except Exception:
+
+      fig_lineas.update_layout(
+          xaxis_title="Hora",
+          yaxis_title="Variación (%)",
+          hovermode="x unified",
+          template="plotly_dark",
+          margin=dict(l=20, r=20, t=30, b=20),
+      )
+      st.plotly_chart(fig_lineas, use_container_width=True)
+    else:
       st.caption("Gráfico temporalmente no disponible.")
 
 else:
