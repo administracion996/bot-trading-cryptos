@@ -1,6 +1,7 @@
 import base64
 import json
 import pandas as pd
+import plotly.express as px
 import plotly.graph_objects as go
 import requests
 import streamlit as st
@@ -16,7 +17,7 @@ REPO = "administracion996/bot-trading-dashboard"
 FILE_PATH = "cartera.json"
 GITHUB_TOKEN = st.secrets.get("GITHUB_TOKEN", "")
 
-# Universo actualizado y verificado (28 activos)
+# Universo de criptomonedas sincronizado
 UNIVERSO_MERCADO = [
     "BTC-USD",
     "ETH-USD",
@@ -67,7 +68,6 @@ def cargar_cartera():
 
 @st.cache_data(ttl=120)
 def obtener_historico_fluctuacion():
-  """Descarga historico de 24h y calcula el rendimiento en porcentaje (%)."""
   data = yf.download(
       UNIVERSO_MERCADO, period="1d", interval="15m", progress=False
   )["Close"]
@@ -81,7 +81,7 @@ cartera = cargar_cartera()
 st.title("🤖 Dashboard Bot Trading Hiperactivo")
 
 if cartera:
-  # Métricas Principales
+  # 1. MÉTRICAS PRINCIPALES
   col1, col2, col3, col4 = st.columns(4)
   col1.metric("Cartera Total", f"{cartera.get('total_cartera', 0):.2f} €")
   col2.metric("Efectivo Libre", f"{cartera.get('efectivo_disponible', 0):.2f} €")
@@ -92,9 +92,33 @@ if cartera:
 
   st.divider()
 
-  # Tabla de Posiciones Abiertas
-  st.subheader("📌 Posiciones en Cartera")
+  # 2. GRÁFICA DE BARRAS INICIAL (DISTRIBUCIÓN DE CAPITAL)
+  st.subheader("📊 Distribución Actual de Capital (€)")
   posiciones = cartera.get("posiciones_abiertas", {})
+  efectivo = cartera.get("efectivo_disponible", 0.0)
+
+  datos_barras = {"Activo": ["Efectivo Libre"], "Valor (€)": [efectivo]}
+  for ticker, pos in posiciones.items():
+    valor_posicion = round(pos["cantidad"] * pos["precio_entrada"], 2)
+    datos_barras["Activo"].append(ticker.replace("-USD", ""))
+    datos_barras["Valor (€)"].append(valor_posicion)
+
+  df_barras = pd.DataFrame(datos_barras)
+  fig_barras = px.bar(
+      df_barras,
+      x="Activo",
+      y="Valor (€)",
+      color="Activo",
+      text_auto=".2f",
+      template="plotly_dark",
+  )
+  fig_barras.update_layout(showlegend=False, margin=dict(l=20, r=20, t=20, b=20))
+  st.plotly_chart(fig_barras, use_container_width=True)
+
+  st.divider()
+
+  # 3. TABLA DE POSICIONES
+  st.subheader("📌 Posiciones en Cartera")
   if posiciones:
     df_pos = pd.DataFrame.from_dict(posiciones, orient="index")
     st.dataframe(df_pos, use_container_width=True)
@@ -103,7 +127,7 @@ if cartera:
 
   st.divider()
 
-  # Historial de Operaciones
+  # 4. HISTORIAL DE OPERACIONES
   st.subheader("📜 Historial de Operaciones")
   historial = cartera.get("historial_operaciones", [])
   for item in reversed(historial[-15:]):
@@ -111,9 +135,8 @@ if cartera:
 
   st.divider()
 
-  # --- NUEVA GRÁFICA DE FLUCTUACIÓN EN EL PIE DEL DASHBOARD ---
+  # 5. GRÁFICA DE LÍNEAS AL FINAL (FLUCTUACIÓN 24H %)
   st.subheader("📈 Fluctuación del Mercado (Últimas 24 Horas %)")
-
   seleccionadas = st.multiselect(
       "Selecciona criptomonedas para comparar:",
       options=UNIVERSO_MERCADO,
@@ -123,11 +146,11 @@ if cartera:
   if seleccionadas:
     try:
       df_hist = obtener_historico_fluctuacion()
-      fig = go.Figure()
+      fig_lineas = go.Figure()
 
       for ticker in seleccionadas:
         if ticker in df_hist.columns:
-          fig.add_trace(
+          fig_lineas.add_trace(
               go.Scatter(
                   x=df_hist.index,
                   y=df_hist[ticker],
@@ -136,14 +159,14 @@ if cartera:
               )
           )
 
-      fig.update_layout(
+      fig_lineas.update_layout(
           xaxis_title="Hora",
           yaxis_title="Variación (%)",
           hovermode="x unified",
           template="plotly_dark",
           margin=dict(l=20, r=20, t=30, b=20),
       )
-      st.plotly_chart(fig, use_container_width=True)
+      st.plotly_chart(fig_lineas, use_container_width=True)
     except Exception as e:
       st.warning(f"Cargando gráfico de precios... ({e})")
 
