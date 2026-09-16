@@ -1,12 +1,7 @@
 {
-  "efectivo_disponible": 807.19,
-  "total_cartera": 1008.45,
+  "efectivo_disponible": 807.07,
+  "total_cartera": 1008.44,
   "posiciones_abiertas": {
-    "FET-USD": {
-      "cantidad": 384.339958,
-      "precio_entrada": 0.131238,
-      "timestamp_entrada": "2026-09-16 13:05:56"
-    },
     "BTC-USD": {
       "cantidad": 0.000766,
       "precio_entrada": 65796.344648,
@@ -21,6 +16,11 @@
       "cantidad": 71.758225,
       "precio_entrada": 0.702637,
       "timestamp_entrada": "2026-09-16 13:26:29"
+    },
+    "AAVE-USD": {
+      "cantidad": 0.484367,
+      "precio_entrada": 104.094622,
+      "timestamp_entrada": "2026-09-16 13:31:34"
     }
   },
   "inyeccion_100_realizada": true,
@@ -133,6 +133,8 @@
     "[2026-09-16 13:21:23] \ud83d\udd34 VENTA ICP-USD por TAKE-PROFIT R\u00c1PIDO (+0.71%). Neto: 50.7\u20ac | PnL: +0.28\u20ac",
     "[2026-09-16 13:21:23] \ud83d\udfe2 COMPRA 60.506183 de DOT-USD a 0.832465\u20ac (50.45\u20ac)",
     "[2026-09-16 13:26:29] \ud83d\udd34 VENTA NEAR-USD por ROTACI\u00d3N ULTRA-R\u00c1PIDA (25.7m transcurridos). Neto: 50.31\u20ac | PnL: -0.16\u20ac",
-    "[2026-09-16 13:26:29] \ud83d\udfe2 COMPRA 71.758225 de FIL-USD a 0.701513\u20ac (50.42\u20ac)"
+    "[2026-09-16 13:26:29] \ud83d\udfe2 COMPRA 71.758225 de FIL-USD a 0.701513\u20ac (50.42\u20ac)",
+    "[2026-09-16 13:31:34] \ud83d\udd34 VENTA FET-USD por ROTACI\u00d3N ULTRA-R\u00c1PIDA (25.7m transcurridos). Neto: 50.3\u20ac | PnL: -0.14\u20ac",
+    "[2026-09-16 13:31:34] \ud83d\udfe2 COMPRA 0.484367 de AAVE-USD a 103.928015\u20ac (50.42\u20ac)"
   ]
 }
