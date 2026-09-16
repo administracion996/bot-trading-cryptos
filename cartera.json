@@ -1,6 +1,6 @@
 {
-  "efectivo_disponible": 453.15,
-  "total_cartera": 1005.03,
+  "efectivo_disponible": 402.95,
+  "total_cartera": 1004.01,
   "posiciones_abiertas": {
     "FET-USD": {
       "cantidad": 381.050208,
@@ -56,6 +56,11 @@
       "cantidad": 0.49437,
       "precio_entrada": 101.644517,
       "timestamp_entrada": "2026-09-16 15:57:59"
+    },
+    "XRP-USD": {
+      "cantidad": 45.469802,
+      "precio_entrada": 1.104029,
+      "timestamp_entrada": "2026-09-16 16:02:11"
     }
   },
   "inyeccion_100_realizada": true,
@@ -201,7 +206,8 @@
     "[2026-09-16 15:07:02] \ud83d\udfe2 COMPRA 12532416.0 de SHIB-USD a 4e-06\u20ac (50.21\u20ac)",
     "[2026-09-16 15:12:08] \ud83d\udfe2 COMPRA 1.146788 de LTC-USD a 43.660878\u20ac (50.15\u20ac)",
     "[2026-09-16 15:53:51] \ud83d\udfe2 COMPRA 301.21968 de ADA-USD a 0.166588\u20ac (50.26\u20ac)",
-    "[2026-09-16 15:57:59] \ud83d\udfe2 COMPRA 0.49437 de AAVE-USD a 101.481899\u20ac (50.25\u20ac)"
+    "[2026-09-16 15:57:59] \ud83d\udfe2 COMPRA 0.49437 de AAVE-USD a 101.481899\u20ac (50.25\u20ac)",
+    "[2026-09-16 16:02:11] \ud83d\udfe2 COMPRA 45.469802 de XRP-USD a 1.102263\u20ac (50.2\u20ac)"
   ],
   "reserva_intocable": 0.0,
   "fecha_control_diario": "2026-09-16",
