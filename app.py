@@ -9,21 +9,42 @@ import requests
 import streamlit as st
 import yfinance as yf
 
-# Configuración de página
 st.set_page_config(
     page_title="Crypto Scalper Dashboard", page_icon="🤖", layout="wide"
 )
 
-# Configuración GitHub
 REPO = "administracion996/bot-trading-dashboard"
 FILE_PATH = "cartera.json"
 GITHUB_TOKEN = st.secrets.get("GITHUB_TOKEN", "")
 
 UNIVERSO_MERCADO = [
-    "BTC-USD", "ETH-USD", "SOL-USD", "BNB-USD", "XRP-USD", "ADA-USD", "AVAX-USD",
-    "DOT-USD", "NEAR-USD", "ATOM-USD", "MATIC-USD", "LTC-USD", "BCH-USD", "ETC-USD",
-    "LINK-USD", "AAVE-USD", "INJ-USD", "FET-USD", "ALGO-USD", "XLM-USD", "TRX-USD",
-    "DOGE-USD", "SHIB-USD", "BONK-USD", "FLOKI-USD", "FIL-USD", "ICP-USD",
+    "BTC-USD",
+    "ETH-USD",
+    "SOL-USD",
+    "BNB-USD",
+    "XRP-USD",
+    "ADA-USD",
+    "AVAX-USD",
+    "DOT-USD",
+    "NEAR-USD",
+    "ATOM-USD",
+    "MATIC-USD",
+    "LTC-USD",
+    "BCH-USD",
+    "ETC-USD",
+    "LINK-USD",
+    "AAVE-USD",
+    "INJ-USD",
+    "FET-USD",
+    "ALGO-USD",
+    "XLM-USD",
+    "TRX-USD",
+    "DOGE-USD",
+    "SHIB-USD",
+    "BONK-USD",
+    "FLOKI-USD",
+    "FIL-USD",
+    "ICP-USD",
 ]
 
 
@@ -44,7 +65,6 @@ def cargar_cartera():
 
 
 def parsear_historial(historial_raw):
-  """Reconstruye el PnL de operaciones pasadas emparejando compras y ventas (FIFO)."""
   registros = []
   compras_memoria = {}
 
@@ -176,7 +196,7 @@ def aplicar_filtros_grafica(df, key_prefix):
   return df_filtrado
 
 
-# --- BUCLE PRINCIPAL DASHBOARD ---
+# --- ESTRUCTURA DEL DASHBOARD ---
 cartera = cargar_cartera()
 st.title("🤖 Dashboard Bot Trading Hiperactivo")
 
@@ -197,7 +217,7 @@ if cartera:
 
   st.divider()
 
-  # 2. GRÁFICA DE BARRAS: COMPRAS VS VENTAS
+  # 2. VOLUMEN OPERADO (COMPRAS VS VENTAS)
   st.subheader("📊 Volumen Operado: Compras vs Ventas")
   df_grafica = aplicar_filtros_grafica(
       df_historial_completo, key_prefix="grafica_volumen"
@@ -228,7 +248,7 @@ if cartera:
 
   st.divider()
 
-  # 3. TABLA DE POSICIONES DETALLADA
+  # 3. TABLA DE POSICIONES DETALLADA CON PNL REAL
   st.subheader("📌 Posiciones Actuales en Cartera")
   if posiciones:
     pos_tickers = list(posiciones.keys())
@@ -236,7 +256,7 @@ if cartera:
 
     try:
       df_live = yf.download(
-          pos_tickers, period="1d", interval="15m", progress=False
+          pos_tickers, period="1d", interval="5m", progress=False
       )["Close"]
       tasa_eur = 0.92
       try:
@@ -283,11 +303,11 @@ if cartera:
 
     st.dataframe(pd.DataFrame(filas_pos), use_container_width=True)
   else:
-    st.info("No hay posiciones abiertas (100% liquidez).")
+    st.info("No hay posiciones abiertas actualmente (100% liquidez).")
 
   st.divider()
 
-  # 4. HISTORIAL DE OPERACIONES (CON RECALCULO FIFO RETROACTIVO Y SCROLL)
+  # 4. HISTORIAL DE OPERACIONES CON SCROLL
   st.subheader("📜 Historial de Operaciones")
 
   c1, c2 = st.columns([3, 3])
@@ -410,7 +430,7 @@ if cartera:
   if seleccionadas_linea:
     try:
       df_precios = yf.download(
-          seleccionadas_linea, period="1d", interval="15m", progress=False
+          seleccionadas_linea, period="1d", interval="5m", progress=False
       )["Close"]
       if not df_precios.empty:
         if isinstance(df_precios, pd.Series):
