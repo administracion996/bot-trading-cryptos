@@ -1,6 +1,6 @@
 {
-  "efectivo_disponible": 709.72,
-  "total_cartera": 1013.07,
+  "efectivo_disponible": 659.09,
+  "total_cartera": 1012.66,
   "posiciones_abiertas": {
     "AAVE-USD": {
       "cantidad": 0.489421,
@@ -31,6 +31,11 @@
       "cantidad": 8.159316,
       "precio_entrada": 6.207628,
       "timestamp_entrada": "2026-09-16 09:58:35"
+    },
+    "ATOM-USD": {
+      "cantidad": 39.321213,
+      "precio_entrada": 1.2876,
+      "timestamp_entrada": "2026-09-16 10:03:40"
     }
   },
   "inyeccion_100_realizada": true,
@@ -57,6 +62,7 @@
     "[2026-09-16 09:48:22] \ud83d\udfe2 COMPRA 733.615264 de DOGE-USD a 0.068972\u20ac (50.68\u20ac)",
     "[2026-09-16 09:53:27] \ud83d\udd34 VENTA INJ-USD por TIME-STOP / ROTACI\u00d3N DE CAPITAL (49.1m transcurridos). Neto: 49.96\u20ac",
     "[2026-09-16 09:53:27] \ud83d\udfe2 COMPRA 12644736.0 de SHIB-USD a 4e-06\u20ac (50.66\u20ac)",
-    "[2026-09-16 09:58:35] \ud83d\udfe2 COMPRA 8.159316 de ETC-USD a 6.197696\u20ac (50.65\u20ac)"
+    "[2026-09-16 09:58:35] \ud83d\udfe2 COMPRA 8.159316 de ETC-USD a 6.197696\u20ac (50.65\u20ac)",
+    "[2026-09-16 10:03:40] \ud83d\udfe2 COMPRA 39.321213 de ATOM-USD a 1.28554\u20ac (50.63\u20ac)"
   ]
 }
