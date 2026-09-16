@@ -1,12 +1,7 @@
 {
-  "efectivo_disponible": 706.77,
-  "total_cartera": 1008.91,
+  "efectivo_disponible": 706.84,
+  "total_cartera": 1009.47,
   "posiciones_abiertas": {
-    "ALGO-USD": {
-      "cantidad": 662.4231,
-      "precio_entrada": 0.076175,
-      "timestamp_entrada": "2026-09-16 12:32:39"
-    },
     "INJ-USD": {
       "cantidad": 10.772781,
       "precio_entrada": 4.686812,
@@ -31,6 +26,11 @@
       "cantidad": 71.934226,
       "precio_entrada": 0.701335,
       "timestamp_entrada": "2026-09-16 12:55:44"
+    },
+    "NEAR-USD": {
+      "cantidad": 23.772808,
+      "precio_entrada": 2.123014,
+      "timestamp_entrada": "2026-09-16 13:00:49"
     }
   },
   "inyeccion_100_realizada": true,
@@ -129,6 +129,8 @@
     "[2026-09-16 12:50:28] \ud83d\udd34 VENTA ICP-USD por ROTACI\u00d3N ULTRA-R\u00c1PIDA (28.1m transcurridos). Neto: 50.44\u20ac | PnL: -0.06\u20ac",
     "[2026-09-16 12:50:28] \ud83d\udfe2 COMPRA 1.148153 de LTC-USD a 43.887224\u20ac (50.47\u20ac)",
     "[2026-09-16 12:55:44] \ud83d\udd34 VENTA NEAR-USD por ROTACI\u00d3N ULTRA-R\u00c1PIDA (28.2m transcurridos). Neto: 50.41\u20ac | PnL: -0.07\u20ac",
-    "[2026-09-16 12:55:44] \ud83d\udfe2 COMPRA 71.934226 de FIL-USD a 0.700213\u20ac (50.45\u20ac)"
+    "[2026-09-16 12:55:44] \ud83d\udfe2 COMPRA 71.934226 de FIL-USD a 0.700213\u20ac (50.45\u20ac)",
+    "[2026-09-16 13:00:49] \ud83d\udd34 VENTA ALGO-USD por ROTACI\u00d3N ULTRA-R\u00c1PIDA (28.2m transcurridos). Neto: 50.54\u20ac | PnL: +0.08\u20ac",
+    "[2026-09-16 13:00:49] \ud83d\udfe2 COMPRA 23.772808 de NEAR-USD a 2.119617\u20ac (50.47\u20ac)"
   ]
 }
