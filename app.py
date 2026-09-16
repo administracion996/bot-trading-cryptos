@@ -44,16 +44,14 @@ def cargar_cartera():
 
 
 def parsear_historial(historial_raw):
-  """Expresión regular ultra-flexible para extraer operaciones sin fallar."""
+  """Extrae fecha, ticker, tipo, valor y calcula el PnL (€) de cada venta."""
   registros = []
   for log in historial_raw:
-    # 1. Extraer fecha [YYYY-MM-DD HH:MM:SS]
     match_fecha = re.search(r"\[(\d{4}-\d{2}-\d{2}\s+\d{2}:\d{2}:\d{2})\]", log)
     if not match_fecha:
       continue
     fecha_dt = datetime.strptime(match_fecha.group(1), "%Y-%m-%d %H:%M:%S")
 
-    # 2. Extraer Ticker (ej: AAVE-USD -> AAVE)
     match_ticker = re.search(r"([A-Z0-9]{2,10}-USD)", log)
     ticker = (
         match_ticker.group(1).replace("-USD", "")
@@ -61,38 +59,53 @@ def parsear_historial(historial_raw):
         else "DESCONOCIDO"
     )
 
-    # 3. Extraer el importe en euros (última cifra seguida de €)
     val_matches = re.findall(r"(\d+(?:\.\d+)?)\s*€", log)
     valor = float(val_matches[-1]) if val_matches else 0.0
 
-    # 4. Clasificar Tipo
-    if "COMPRA" in log:
-      registros.append({
-          "Fecha": fecha_dt,
-          "Tipo": "COMPRA",
-          "Ticker": ticker,
-          "Valor (€)": valor,
-          "Log": log,
-      })
-    elif "VENTA" in log or "Vendido" in log or "ROTACIÓN" in log:
+    pnl_eur = 0.0
+
+    if "VENTA" in log or "Vendido" in log or "ROTACIÓN" in log:
+      # Buscar PnL directo en texto (ej: -0.47 EUR)
+      match_pnl_directo = re.search(
+          r"PnL.*?([+-]?\d+(?:\.\d+)?)\s*(?:EUR|€)", log, re.IGNORECASE
+      )
+      # Buscar porcentaje (ej: +0.82% o -1.50%)
+      match_pct = re.search(r"\(([+-]?\d+(?:\.\d+)?)\%\)", log)
+
+      if match_pnl_directo:
+        pnl_eur = float(match_pnl_directo.group(1))
+      elif match_pct and valor > 0:
+        pct = float(match_pct.group(1))
+        base = valor / (1.0 + (pct / 100.0))
+        pnl_eur = valor - base
+
       registros.append({
           "Fecha": fecha_dt,
           "Tipo": "VENTA",
           "Ticker": ticker,
           "Valor (€)": valor,
+          "PnL (€)": round(pnl_eur, 2),
+          "Log": log,
+      })
+    elif "COMPRA" in log:
+      registros.append({
+          "Fecha": fecha_dt,
+          "Tipo": "COMPRA",
+          "Ticker": ticker,
+          "Valor (€)": valor,
+          "PnL (€)": 0.0,
           "Log": log,
       })
 
   return pd.DataFrame(registros)
 
 
-def aplicar_filtros_independientes(df, key_prefix):
-  """Modulo de filtros independiente por sección."""
+def aplicar_filtros_grafica(df, key_prefix):
+  """Filtro modular para la sección de volumen operado."""
   if df.empty:
     return df
 
   c1, c2, c3 = st.columns([2, 2, 4])
-
   with c1:
     opciones_fecha = [
         "Todo",
@@ -122,7 +135,7 @@ def aplicar_filtros_independientes(df, key_prefix):
         f_inicio = datetime.combine(rango[0], datetime.min.time())
         f_fin = datetime.combine(rango[1], datetime.max.time())
     else:
-      st.write("")  # Alineador
+      st.write("")
       if sel_fecha == "Hoy":
         f_inicio = hoy_inicio
         f_fin = ahora + timedelta(days=1)
@@ -177,11 +190,10 @@ if cartera:
   st.divider()
 
   # =======================================================
-  # 2. GRÁFICA DE BARRAS: COMPRAS VS VENTAS (FILTRO INDEPENDIENTE)
+  # 2. GRÁFICA DE BARRAS: COMPRAS VS VENTAS
   # =======================================================
   st.subheader("📊 Volumen Operado: Compras vs Ventas")
-
-  df_grafica = aplicar_filtros_independientes(
+  df_grafica = aplicar_filtros_grafica(
       df_historial_completo, key_prefix="grafica_volumen"
   )
 
@@ -212,7 +224,7 @@ if cartera:
   st.divider()
 
   # =======================================================
-  # 3. TABLA DE POSICIONES DETALLADA (COMPLETADA CON PNL REAL)
+  # 3. TABLA DE POSICIONES DETALLADA
   # =======================================================
   st.subheader("📌 Posiciones Actuales en Cartera")
 
@@ -267,21 +279,84 @@ if cartera:
           "Fecha Entrada": pos.get("timestamp_entrada", "N/A"),
       })
 
-    df_pos_completo = pd.DataFrame(filas_pos)
-    st.dataframe(df_pos_completo, use_container_width=True)
+    st.dataframe(pd.DataFrame(filas_pos), use_container_width=True)
   else:
     st.info("No hay posiciones abiertas (100% liquidez).")
 
   st.divider()
 
   # =======================================================
-  # 4. HISTORIAL DE OPERACIONES (FILTRO INDEPENDIENTE)
+  # 4. HISTORIAL DE OPERACIONES (SÓLO FILTRO DE FECHA + MÉTRICA PNL)
   # =======================================================
   st.subheader("📜 Historial de Operaciones")
 
-  df_texto = aplicar_filtros_independientes(
-      df_historial_completo, key_prefix="texto_historial"
+  c1, c2 = st.columns([3, 3])
+  with c1:
+    opciones_fecha_h = [
+        "Todo",
+        "Hoy",
+        "Ayer",
+        "Esta semana",
+        "Semana pasada",
+        "Personalizado",
+    ]
+    sel_fecha_h = st.selectbox(
+        "📅 Filtro de Fecha (Historial)",
+        opciones_fecha_h,
+        key="f_fecha_historial",
+    )
+
+  ahora = datetime.now()
+  hoy_inicio = ahora.replace(hour=0, minute=0, second=0, microsecond=0)
+  f_inicio_h = datetime(2020, 1, 1)
+  f_fin_h = ahora + timedelta(days=2)
+
+  with c2:
+    if sel_fecha_h == "Personalizado":
+      rango_h = st.date_input(
+          "Rango manual (Historial)",
+          [hoy_inicio.date(), hoy_inicio.date()],
+          key="f_rango_historial",
+      )
+      if isinstance(rango_h, (list, tuple)) and len(rango_h) == 2:
+        f_inicio_h = datetime.combine(rango_h[0], datetime.min.time())
+        f_fin_h = datetime.combine(rango_h[1], datetime.max.time())
+    else:
+      st.write("")
+      if sel_fecha_h == "Hoy":
+        f_inicio_h = hoy_inicio
+        f_fin_h = ahora + timedelta(days=1)
+      elif sel_fecha_h == "Ayer":
+        f_inicio_h = hoy_inicio - timedelta(days=1)
+        f_fin_h = hoy_inicio - timedelta(seconds=1)
+      elif sel_fecha_h == "Esta semana":
+        f_inicio_h = hoy_inicio - timedelta(days=hoy_inicio.weekday())
+        f_fin_h = ahora + timedelta(days=1)
+      elif sel_fecha_h == "Semana pasada":
+        lunes_esta = hoy_inicio - timedelta(days=hoy_inicio.weekday())
+        f_inicio_h = lunes_esta - timedelta(days=7)
+        f_fin_h = lunes_esta - timedelta(seconds=1)
+
+  # Filtrado de DataFrame por Fecha exclusivamente
+  if not df_historial_completo.empty:
+    df_texto = df_historial_completo[
+        (df_historial_completo["Fecha"] >= f_inicio_h)
+        & (df_historial_completo["Fecha"] <= f_fin_h)
+    ]
+  else:
+    df_texto = pd.DataFrame()
+
+  # Métrica de PnL y Recuento en el rango
+  pnl_acumulado = df_texto["PnL (€)"].sum() if not df_texto.empty else 0.0
+  ventas_cerradas = (
+      len(df_texto[df_texto["Tipo"] == "VENTA"]) if not df_texto.empty else 0
   )
+
+  col_m1, col_m2 = st.columns(2)
+  col_m1.metric("💰 PnL Realizado en Rango", f"{pnl_acumulado:+.2f} €")
+  col_m2.metric("🔄 Ventas Ejecutadas", ventas_cerradas)
+
+  st.write("")
 
   if not df_texto.empty:
     for _, fila in df_texto.sort_values(
@@ -289,7 +364,7 @@ if cartera:
     ).iterrows():
       st.caption(fila["Log"])
   else:
-    st.caption("No hay operaciones registradas con los filtros actuales.")
+    st.caption("No hay operaciones registradas en el rango de fecha seleccionado.")
 
   st.divider()
 
