@@ -107,7 +107,6 @@ def obtener_rsi_historico(tickers_tuple, periodo="5d"):
     
     df_rsi = df_rsi.dropna(how="all")
 
-    # Recorte basado en número de velas (Solución inmune a errores de Timezone)
     if periodo == "1d":
       df_rsi = df_rsi.tail(96)   # 24h x 4 velas de 15m = 96 velas
     elif periodo == "5d":
@@ -116,22 +115,6 @@ def obtener_rsi_historico(tickers_tuple, periodo="5d"):
     return df_rsi
   except Exception:
     return pd.DataFrame()
-
-@st.cache_data(ttl=60)
-def obtener_datos_grafica_lineal(seleccionadas_tuple):
-  if not seleccionadas_tuple:
-    return pd.DataFrame()
-  try:
-    df_precios = yf.download(
-        list(seleccionadas_tuple), period="1d", interval="15m", progress=False
-    )["Close"]
-    if not df_precios.empty:
-      if isinstance(df_precios, pd.Series):
-        df_precios = df_precios.to_frame()
-      return ((df_precios - df_precios.iloc[0]) / df_precios.iloc[0]) * 100.0
-  except Exception:
-    pass
-  return pd.DataFrame()
 
 def parsear_historial(historial_raw):
   registros = []
@@ -208,10 +191,11 @@ def parsear_historial(historial_raw):
   return pd.DataFrame(registros)
 
 def color_rsi(val):
-    if val <= 22:
-        return 'background-color: #ff4b4b; color: white; font-weight: bold;'
-    elif val <= 30:
-        return 'background-color: #ffa500; color: black; font-weight: bold;'
+    if isinstance(val, (int, float)):
+        if val <= 22:
+            return 'background-color: #ff4b4b; color: white; font-weight: bold;'
+        elif val <= 30:
+            return 'background-color: #ffa500; color: black; font-weight: bold;'
     return ''
 
 # --- BUCLE PRINCIPAL DASHBOARD ---
@@ -344,7 +328,7 @@ if cartera:
 
   st.divider()
 
-  # 4. TABLA DE POSICIONES DETALLADA
+  # 4. TABLA DE POSICIONES DETALLADA (RSI ACTUALIZADO EN TIEMPO REAL)
   st.subheader("📌 Posiciones Actuales en Cartera")
   if posiciones:
     pos_tickers_tuple = tuple(posiciones.keys())
@@ -372,6 +356,9 @@ if cartera:
         except Exception:
           pass
 
+      # Lectura directa del RSI actual desde el Radar en vivo
+      rsi_actual = radar_rsi.get(ticker, "N/A")
+
       filas_pos.append({
           "Activo": ticker.replace("-USD", ""),
           "Cantidad": cant,
@@ -381,8 +368,8 @@ if cartera:
           "Precio Total Actual (€)": tot_actual,
           "Diferencia (€)": diferencia,
           "Porcentaje PnL (%)": f"{pct_pnl:+.2f}%",
+          "RSI Actual": rsi_actual,
           "Tiempo en Cartera": tiempo_str,
-          "Fecha Entrada": f_ent_str if f_ent_str else "N/A",
       })
 
     st.dataframe(pd.DataFrame(filas_pos), use_container_width=True)
@@ -494,42 +481,6 @@ if cartera:
     )
   else:
     st.info("No hay operaciones registradas en el rango de fecha seleccionado.")
-
-  st.divider()
-
-  # 6. GRÁFICA LINEAL TENDENCIA PRECIOS 24H
-  st.subheader("📈 Fluctuación del Mercado (Últimas 24 Horas %)")
-  seleccionadas_linea = st.multiselect(
-      "🪙 Activos a comparar:",
-      options=list(UNIVERSO_MERCADO),
-      default=["BTC-USD", "ETH-USD", "SOL-USD", "AAVE-USD", "INJ-USD"],
-      key="filtro_lineas",
-  )
-
-  if seleccionadas_linea:
-    df_pct = obtener_datos_grafica_lineal(tuple(seleccionadas_linea))
-    if not df_pct.empty:
-      fig_lineas = go.Figure()
-      for col in df_pct.columns:
-        fig_lineas.add_trace(
-            go.Scatter(
-                x=df_pct.index,
-                y=df_pct[col],
-                mode="lines",
-                name=str(col).replace("-USD", ""),
-            )
-        )
-
-      fig_lineas.update_layout(
-          xaxis_title="Hora",
-          yaxis_title="Variación (%)",
-          hovermode="x unified",
-          template="plotly_dark",
-          margin=dict(l=20, r=20, t=30, b=20),
-      )
-      st.plotly_chart(fig_lineas, use_container_width=True)
-    else:
-      st.caption("Gráfico temporalmente no disponible.")
 
 else:
   st.warning("Recuperando datos desde GitHub...")
