@@ -79,13 +79,17 @@ def calcular_rsi_serie(df_close, period=14):
   rs = gain / loss
   return 100 - (100 / (1 + rs))
 
-@st.cache_data(ttl=300)
+@st.cache_data(ttl=60)
 def obtener_rsi_historico(tickers_tuple, periodo="5d"):
   if not tickers_tuple:
     return pd.DataFrame()
   try:
+    # Solución al corte de Yahoo Finance: Descargamos 5 días para asegurar datos frescos hasta el minuto actual
+    intervalo = "15m" if periodo in ["1d", "5d"] else "1h"
+    periodo_dl = "5d" if periodo in ["1d", "5d"] else "1mo"
+    
     df = yf.download(
-        list(tickers_tuple), period=periodo, interval="15m", progress=False
+        list(tickers_tuple), period=periodo_dl, interval=intervalo, progress=False
     )["Close"]
     if df.empty:
       return pd.DataFrame()
@@ -95,6 +99,12 @@ def obtener_rsi_historico(tickers_tuple, periodo="5d"):
     df_rsi = pd.DataFrame(index=df.index)
     for col in df.columns:
       df_rsi[col] = calcular_rsi_serie(df[col])
+    
+    # Recorte estricto de las últimas 24h si el filtro es "1d"
+    if periodo == "1d":
+        hace_24h = datetime.now() - timedelta(days=1)
+        df_rsi = df_rsi[df_rsi.index >= hace_24h]
+        
     return df_rsi
   except Exception:
     return pd.DataFrame()
@@ -268,7 +278,7 @@ if cartera:
 
   st.divider()
 
-  # 3. NUEVA SECCIÓN: EVOLUCIÓN HISTÓRICA DEL RSI (REEMPLAZA VOLUMEN)
+  # 3. EVOLUCIÓN HISTÓRICA DEL RSI
   st.subheader("📉 Evolución Histórica del RSI (Análisis Técnico)")
   
   c_rsi1, c_rsi2 = st.columns([6, 2])
@@ -276,14 +286,14 @@ if cartera:
       sel_rsi_cryptos = st.multiselect(
           "🪙 Criptomonedas a analizar:",
           options=list(UNIVERSO_MERCADO),
-          default=["BTC-USD", "ETH-USD", "SOL-USD", "FET-USD"],
+          default=["ETH-USD", "XLM-USD", "TRX-USD", "ICP-USD"],
           key="filtro_rsi_historico"
       )
   with c_rsi2:
       periodo_rsi = st.selectbox(
           "📅 Rango de tiempo:",
           options=["1d", "5d", "1mo"],
-          index=1,
+          index=0,
           key="periodo_rsi"
       )
 
