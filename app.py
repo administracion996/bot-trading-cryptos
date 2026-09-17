@@ -49,7 +49,7 @@ def obtener_precios_posiciones(pos_tickers_tuple):
   tasa_eur = 0.92
   try:
     df_live = yf.download(
-        list(pos_tickers_tuple), period="1d", interval="15m", progress=False
+        list(pos_tickers_tuple), period="1d", interval="5m", progress=False
     )["Close"]
     try:
       df_t = yf.Ticker("EUR=X").history(period="1d")
@@ -84,7 +84,7 @@ def obtener_rsi_historico(tickers_tuple, periodo="5d"):
   if not tickers_tuple:
     return pd.DataFrame()
   try:
-    intervalo = "15m" if periodo in ["1d", "5d"] else "1h"
+    intervalo = "5m" if periodo in ["1d", "5d"] else "1h"
     periodo_dl = "5d" if periodo in ["1d", "5d"] else "1mo"
     
     df = yf.download(
@@ -108,9 +108,9 @@ def obtener_rsi_historico(tickers_tuple, periodo="5d"):
     df_rsi = df_rsi.dropna(how="all")
 
     if periodo == "1d":
-      df_rsi = df_rsi.tail(96)   # 24h x 4 velas de 15m = 96 velas
+      df_rsi = df_rsi.tail(288)   # 24h x 12 velas de 5m = 288 velas
     elif periodo == "5d":
-      df_rsi = df_rsi.tail(480)  # 5d x 96 velas = 480 velas
+      df_rsi = df_rsi.tail(1440)  # 5d x 288 velas = 1440 velas
 
     return df_rsi
   except Exception:
@@ -190,11 +190,12 @@ def parsear_historial(historial_raw):
 
   return pd.DataFrame(registros)
 
+# --- FUNCIÓN DE COLOR ACTUALIZADA A RSI 25 ---
 def color_rsi(val):
     if isinstance(val, (int, float)):
-        if val <= 22:
+        if val <= 25:
             return 'background-color: #ff4b4b; color: white; font-weight: bold;'
-        elif val <= 30:
+        elif val <= 32:
             return 'background-color: #ffa500; color: black; font-weight: bold;'
     return ''
 
@@ -254,12 +255,12 @@ if cartera:
       t2.success("🏦 **Estado Hucha:** ¡Barrido diario completado!")
   else:
       t2.warning(f"📊 **Beneficio hoy:** {pnl_hoy_eur:+.2f} € | **Falta para barrido:** {restante_barrido:.2f} €")
-  t3.caption(f"🟢 **Estado Bot:** {telemetria.get('estado', 'Vigilando en bucle')}")
+  t3.caption(f"🟢 **Estado Bot:** {telemetria.get('estado', 'Vigilando Scalping 5m')}")
 
   # RADAR INSTANTÁNEO
   if radar_rsi:
       st.write("")
-      with st.expander("👁️ Radar Sniper (Niveles RSI actuales)", expanded=True):
+      with st.expander("👁️ Radar Sniper (Niveles RSI actuales 5m)", expanded=True):
           df_radar = pd.DataFrame(list(radar_rsi.items()), columns=["Activo", "RSI"])
           df_radar = df_radar.sort_values(by="RSI", ascending=True).reset_index(drop=True)
           st.dataframe(
@@ -267,11 +268,12 @@ if cartera:
               use_container_width=True, 
               height=200
           )
+          st.caption("🔴 Rojo: Zona de compra (RSI <= 25) | 🟠 Naranja: Acercándose (RSI <= 32)")
 
   st.divider()
 
   # 3. EVOLUCIÓN HISTÓRICA DEL RSI
-  st.subheader("📉 Evolución Histórica del RSI (Análisis Técnico)")
+  st.subheader("📉 Evolución Histórica del RSI (5 Minutos)")
   
   c_rsi1, c_rsi2 = st.columns([6, 2])
   with c_rsi1:
@@ -303,10 +305,10 @@ if cartera:
                   )
               )
           
-          # Línea Gatillo Sniper (RSI 22)
+          # --- LÍNEA GATILLO ACTUALIZADA A 25 ---
           fig_rsi.add_hline(
-              y=22, line_dash="dash", line_color="#EF553B", 
-              annotation_text="🎯 Gatillo Sniper (22)", annotation_position="bottom right"
+              y=25, line_dash="dash", line_color="#EF553B", 
+              annotation_text="🎯 Gatillo Sniper (25)", annotation_position="bottom right"
           )
           # Línea Sobreventa Tradicional (RSI 30)
           fig_rsi.add_hline(
@@ -316,7 +318,7 @@ if cartera:
 
           fig_rsi.update_layout(
               xaxis_title="Fecha / Hora",
-              yaxis_title="Índice RSI (15m)",
+              yaxis_title="Índice RSI (5m)",
               yaxis=dict(range=[10, 90]),
               hovermode="x unified",
               template="plotly_dark",
@@ -328,7 +330,7 @@ if cartera:
 
   st.divider()
 
-  # 4. TABLA DE POSICIONES DETALLADA (RSI ACTUALIZADO EN TIEMPO REAL)
+  # 4. TABLA DE POSICIONES DETALLADA
   st.subheader("📌 Posiciones Actuales en Cartera")
   if posiciones:
     pos_tickers_tuple = tuple(posiciones.keys())
@@ -356,7 +358,6 @@ if cartera:
         except Exception:
           pass
 
-      # Lectura directa del RSI actual desde el Radar en vivo
       rsi_actual = radar_rsi.get(ticker, "N/A")
 
       filas_pos.append({
