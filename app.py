@@ -3,7 +3,6 @@ from datetime import datetime, timedelta
 import json
 import re
 import pandas as pd
-import plotly.express as px
 import plotly.graph_objects as go
 import requests
 import streamlit as st
@@ -72,6 +71,33 @@ def obtener_precios_posiciones(pos_tickers_tuple):
     pass
 
   return precios_live, tasa_eur
+
+def calcular_rsi_serie(df_close, period=14):
+  delta = df_close.diff()
+  gain = (delta.where(delta > 0, 0)).rolling(window=period).mean()
+  loss = (-delta.where(delta < 0, 0)).rolling(window=period).mean()
+  rs = gain / loss
+  return 100 - (100 / (1 + rs))
+
+@st.cache_data(ttl=300)
+def obtener_rsi_historico(tickers_tuple, periodo="5d"):
+  if not tickers_tuple:
+    return pd.DataFrame()
+  try:
+    df = yf.download(
+        list(tickers_tuple), period=periodo, interval="15m", progress=False
+    )["Close"]
+    if df.empty:
+      return pd.DataFrame()
+    if isinstance(df, pd.Series):
+      df = df.to_frame()
+    
+    df_rsi = pd.DataFrame(index=df.index)
+    for col in df.columns:
+      df_rsi[col] = calcular_rsi_serie(df[col])
+    return df_rsi
+  except Exception:
+    return pd.DataFrame()
 
 @st.cache_data(ttl=60)
 def obtener_datos_grafica_lineal(seleccionadas_tuple):
@@ -163,75 +189,12 @@ def parsear_historial(historial_raw):
 
   return pd.DataFrame(registros)
 
-def aplicar_filtros_grafica(df, key_prefix):
-  if df.empty:
-    return df
-
-  c1, c2, c3 = st.columns([2, 2, 4])
-  with c1:
-    opciones_fecha = [
-        "Todo", "Hoy", "Ayer", "Esta semana", "Semana pasada", "Personalizado",
-    ]
-    sel_fecha = st.selectbox(
-        "📅 Filtro de Fecha", opciones_fecha, key=f"f_fecha_{key_prefix}"
-    )
-
-  ahora = datetime.now()
-  hoy_inicio = ahora.replace(hour=0, minute=0, second=0, microsecond=0)
-  f_inicio = datetime(2020, 1, 1)
-  f_fin = ahora + timedelta(days=2)
-
-  with c2:
-    if sel_fecha == "Personalizado":
-      rango = st.date_input(
-          "Rango manual",
-          [hoy_inicio.date(), hoy_inicio.date()],
-          key=f"f_rango_{key_prefix}",
-      )
-      if isinstance(rango, (list, tuple)) and len(rango) == 2:
-        f_inicio = datetime.combine(rango[0], datetime.min.time())
-        f_fin = datetime.combine(rango[1], datetime.max.time())
-    else:
-      st.write("")
-      if sel_fecha == "Hoy":
-        f_inicio = hoy_inicio
-        f_fin = ahora + timedelta(days=1)
-      elif sel_fecha == "Ayer":
-        f_inicio = hoy_inicio - timedelta(days=1)
-        f_fin = hoy_inicio - timedelta(seconds=1)
-      elif sel_fecha == "Esta semana":
-        f_inicio = hoy_inicio - timedelta(days=hoy_inicio.weekday())
-        f_fin = ahora + timedelta(days=1)
-      elif sel_fecha == "Semana pasada":
-        lunes_esta = hoy_inicio - timedelta(days=hoy_inicio.weekday())
-        f_inicio = lunes_esta - timedelta(days=7)
-        f_fin = lunes_esta - timedelta(seconds=1)
-
-  with c3:
-    lista_cryptos = sorted(df["Ticker"].unique().tolist())
-    sel_cryptos = st.multiselect(
-        "🪙 Criptomonedas",
-        options=lista_cryptos,
-        default=lista_cryptos,
-        key=f"f_crypto_{key_prefix}",
-    )
-
-  df_filtrado = df[(df["Fecha"] >= f_inicio) & (df["Fecha"] <= f_fin)]
-  if sel_cryptos:
-    df_filtrado = df_filtrado[df_filtrado["Ticker"].isin(sel_cryptos)]
-  else:
-    df_filtrado = df_filtrado.iloc[0:0]
-
-  return df_filtrado
-
-# --- COLOR PARA LA TABLA RSI ---
 def color_rsi(val):
     if val <= 22:
         return 'background-color: #ff4b4b; color: white; font-weight: bold;'
     elif val <= 30:
         return 'background-color: #ffa500; color: black; font-weight: bold;'
     return ''
-
 
 # --- BUCLE PRINCIPAL DASHBOARD ---
 cartera = cargar_cartera()
@@ -270,15 +233,10 @@ if cartera:
 
   st.divider()
 
-  # =======================================================
-  # TELEMETRÍA Y ESTADO DEL ESCÁNER (AHORA CON HORA REAL)
-  # =======================================================
+  # 2. TELEMETRÍA Y ESTADO DE CONSOLA
   st.subheader("📡 Telemetría y Estado de Consola")
-  
-  # Leemos la hora de la telemetría (se actualiza cada 15m)
   hora_ultimo_escaneo = telemetria.get("ultima_actualizacion", "N/A")
   
-  # Si falla, usamos el método antiguo
   if hora_ultimo_escaneo == "N/A" and historial_raw:
       ultimo_log = historial_raw[-1]
       match_hora_log = re.search(r"\[(\d{4}-\d{2}-\d{2}\s+\d{2}:\d{2}:\d{2})\]", ultimo_log)
@@ -296,60 +254,79 @@ if cartera:
       t2.warning(f"📊 **Beneficio hoy:** {pnl_hoy_eur:+.2f} € | **Falta para barrido:** {restante_barrido:.2f} €")
   t3.caption(f"🟢 **Estado Bot:** {telemetria.get('estado', 'Vigilando en bucle')}")
 
-  # =======================================================
-  # NUEVO RADAR RSI
-  # =======================================================
+  # RADAR INSTANTÁNEO
   if radar_rsi:
       st.write("")
-      with st.expander("👁️ Radar Sniper (Ver niveles RSI en tiempo real)", expanded=True):
+      with st.expander("👁️ Radar Sniper (Niveles RSI actuales)", expanded=True):
           df_radar = pd.DataFrame(list(radar_rsi.items()), columns=["Activo", "RSI"])
-          # Ordenar de menor a mayor RSI para ver cuáles están cerca del disparo
           df_radar = df_radar.sort_values(by="RSI", ascending=True).reset_index(drop=True)
-          
-          # Pintamos la tabla con colores
           st.dataframe(
               df_radar.style.map(color_rsi, subset=['RSI']),
               use_container_width=True, 
-              height=250
+              height=200
           )
-          st.caption("🔴 Rojo: Zona de compra (RSI <= 22) | 🟠 Naranja: Acercándose al pánico (RSI <= 30)")
 
   st.divider()
 
-  # 2. VOLUMEN OPERADO (PRIMERA GRÁFICA)
-  st.subheader("📊 Volumen Operado: Compras vs Ventas")
-  df_grafica = aplicar_filtros_grafica(
-      df_historial_completo, key_prefix="grafica_volumen"
-  )
+  # 3. NUEVA SECCIÓN: EVOLUCIÓN HISTÓRICA DEL RSI (REEMPLAZA VOLUMEN)
+  st.subheader("📉 Evolución Histórica del RSI (Análisis Técnico)")
+  
+  c_rsi1, c_rsi2 = st.columns([6, 2])
+  with c_rsi1:
+      sel_rsi_cryptos = st.multiselect(
+          "🪙 Criptomonedas a analizar:",
+          options=list(UNIVERSO_MERCADO),
+          default=["BTC-USD", "ETH-USD", "SOL-USD", "FET-USD"],
+          key="filtro_rsi_historico"
+      )
+  with c_rsi2:
+      periodo_rsi = st.selectbox(
+          "📅 Rango de tiempo:",
+          options=["1d", "5d", "1mo"],
+          index=1,
+          key="periodo_rsi"
+      )
 
-  if not df_grafica.empty:
-    df_agrupado = (
-        df_grafica.groupby(["Ticker", "Tipo"])["Valor (€)"].sum().reset_index()
-    )
-    df_agrupado = df_agrupado[df_agrupado["Tipo"] != "BARRIDO 🏦"]
-    
-    fig_barras = px.bar(
-        df_agrupado,
-        x="Ticker",
-        y="Valor (€)",
-        color="Tipo",
-        barmode="group",
-        text_auto=".2f",
-        color_discrete_map={"COMPRA 🟢": "#00CC96", "VENTA 🔴": "#EF553B"},
-        template="plotly_dark",
-    )
-    fig_barras.update_layout(
-        xaxis_title="",
-        yaxis_title="Euros (€)",
-        margin=dict(l=20, r=20, t=20, b=20),
-    )
-    st.plotly_chart(fig_barras, use_container_width=True)
-  else:
-    st.info("No hay datos de operaciones que coincidan con estos filtros.")
+  if sel_rsi_cryptos:
+      df_rsi_hist = obtener_rsi_historico(tuple(sel_rsi_cryptos), periodo=periodo_rsi)
+      if not df_rsi_hist.empty:
+          fig_rsi = go.Figure()
+          for col in df_rsi_hist.columns:
+              fig_rsi.add_trace(
+                  go.Scatter(
+                      x=df_rsi_hist.index,
+                      y=df_rsi_hist[col],
+                      mode="lines",
+                      name=str(col).replace("-USD", ""),
+                  )
+              )
+          
+          # Línea Gatillo Sniper (RSI 22)
+          fig_rsi.add_hline(
+              y=22, line_dash="dash", line_color="#EF553B", 
+              annotation_text="🎯 Gatillo Sniper (22)", annotation_position="bottom right"
+          )
+          # Línea Sobreventa Tradicional (RSI 30)
+          fig_rsi.add_hline(
+              y=30, line_dash="dot", line_color="#FFA500", 
+              annotation_text="Sobreventa (30)", annotation_position="top right"
+          )
+
+          fig_rsi.update_layout(
+              xaxis_title="Fecha / Hora",
+              yaxis_title="Índice RSI (15m)",
+              yaxis=dict(range=[10, 90]),
+              hovermode="x unified",
+              template="plotly_dark",
+              margin=dict(l=20, r=20, t=30, b=20),
+          )
+          st.plotly_chart(fig_rsi, use_container_width=True)
+      else:
+          st.caption("Cargando datos históricos del RSI...")
 
   st.divider()
 
-  # 3. TABLA DE POSICIONES DETALLADA (CON TIMER DETALLADO)
+  # 4. TABLA DE POSICIONES DETALLADA
   st.subheader("📌 Posiciones Actuales en Cartera")
   if posiciones:
     pos_tickers_tuple = tuple(posiciones.keys())
@@ -396,7 +373,7 @@ if cartera:
 
   st.divider()
 
-  # 4. HISTORIAL DE OPERACIONES
+  # 5. HISTORIAL DE OPERACIONES
   st.subheader("📜 Historial de Operaciones y Movimientos")
 
   c1, c2 = st.columns([3, 3])
@@ -502,7 +479,7 @@ if cartera:
 
   st.divider()
 
-  # 5. GRÁFICA LINEAL TENDENCIA 24H
+  # 6. GRÁFICA LINEAL TENDENCIA PRECIOS 24H
   st.subheader("📈 Fluctuación del Mercado (Últimas 24 Horas %)")
   seleccionadas_linea = st.multiselect(
       "🪙 Activos a comparar:",
