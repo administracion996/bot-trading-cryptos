@@ -26,7 +26,6 @@ UNIVERSO_MERCADO = (
     "DOGE-USD", "SHIB-USD", "BONK-USD", "FLOKI-USD", "FIL-USD", "ICP-USD",
 )
 
-
 @st.cache_data(ttl=10)
 def cargar_cartera():
   url = f"https://api.github.com/repos/{REPO}/contents/{FILE_PATH}"
@@ -42,10 +41,8 @@ def cargar_cartera():
     pass
   return None
 
-
 @st.cache_data(ttl=60)
 def obtener_precios_posiciones(pos_tickers_tuple):
-  """Descarga rápida y memorizada de precios actuales."""
   if not pos_tickers_tuple:
     return {}, 0.92
 
@@ -76,10 +73,8 @@ def obtener_precios_posiciones(pos_tickers_tuple):
 
   return precios_live, tasa_eur
 
-
 @st.cache_data(ttl=60)
 def obtener_datos_grafica_lineal(seleccionadas_tuple):
-  """Descarga y calcula la variación % en segundo plano."""
   if not seleccionadas_tuple:
     return pd.DataFrame()
   try:
@@ -93,7 +88,6 @@ def obtener_datos_grafica_lineal(seleccionadas_tuple):
   except Exception:
     pass
   return pd.DataFrame()
-
 
 def parsear_historial(historial_raw):
   registros = []
@@ -169,7 +163,6 @@ def parsear_historial(historial_raw):
 
   return pd.DataFrame(registros)
 
-
 def aplicar_filtros_grafica(df, key_prefix):
   if df.empty:
     return df
@@ -231,6 +224,14 @@ def aplicar_filtros_grafica(df, key_prefix):
 
   return df_filtrado
 
+# --- COLOR PARA LA TABLA RSI ---
+def color_rsi(val):
+    if val <= 22:
+        return 'background-color: #ff4b4b; color: white; font-weight: bold;'
+    elif val <= 30:
+        return 'background-color: #ffa500; color: black; font-weight: bold;'
+    return ''
+
 
 # --- BUCLE PRINCIPAL DASHBOARD ---
 cartera = cargar_cartera()
@@ -247,6 +248,8 @@ if cartera:
   
   posiciones = cartera.get("posiciones_abiertas", {})
   historial_raw = cartera.get("historial_operaciones", [])
+  telemetria = cartera.get("telemetria", {})
+  radar_rsi = cartera.get("radar_rsi", {})
 
   df_historial_completo = parsear_historial(historial_raw)
 
@@ -268,24 +271,48 @@ if cartera:
   st.divider()
 
   # =======================================================
-  # 1.5. TELEMETRÍA Y ESTADO DEL ESCÁNER (AÑADIDO DELANTE DE LA 1ª GRÁFICA)
+  # TELEMETRÍA Y ESTADO DEL ESCÁNER (AHORA CON HORA REAL)
   # =======================================================
   st.subheader("📡 Telemetría y Estado de Consola")
   
-  ultimo_log = historial_raw[-1] if historial_raw else "Sin registros"
-  match_hora_log = re.search(r"\[(\d{4}-\d{2}-\d{2}\s+\d{2}:\d{2}:\d{2})\]", ultimo_log)
-  hora_ultimo_escaneo = match_hora_log.group(1) if match_hora_log else "N/A"
+  # Leemos la hora de la telemetría (se actualiza cada 15m)
+  hora_ultimo_escaneo = telemetria.get("ultima_actualizacion", "N/A")
+  
+  # Si falla, usamos el método antiguo
+  if hora_ultimo_escaneo == "N/A" and historial_raw:
+      ultimo_log = historial_raw[-1]
+      match_hora_log = re.search(r"\[(\d{4}-\d{2}-\d{2}\s+\d{2}:\d{2}:\d{2})\]", ultimo_log)
+      if match_hora_log:
+          hora_ultimo_escaneo = match_hora_log.group(1)
   
   pnl_hoy_eur = round(total_activo - saldo_inicio, 2) if saldo_inicio > 0 else 0.0
   restante_barrido = round(max(0.0, meta_dia - pnl_hoy_eur), 2) if not barrido else 0.0
 
   t1, t2, t3 = st.columns(3)
-  t1.info(f"⏱️ **Último registro:** {hora_ultimo_escaneo}")
+  t1.info(f"⏱️ **Último escaneo sincronizado:** {hora_ultimo_escaneo}")
   if barrido:
-      t2.success("🏦 **Estado Hucha:** ¡Barrido diario de 5% completado!")
+      t2.success("🏦 **Estado Hucha:** ¡Barrido diario completado!")
   else:
       t2.warning(f"📊 **Beneficio hoy:** {pnl_hoy_eur:+.2f} € | **Falta para barrido:** {restante_barrido:.2f} €")
-  t3.caption("🟢 **Bot en ejecución:** Escaneando en bucle (5m check / 15m mapa)")
+  t3.caption(f"🟢 **Estado Bot:** {telemetria.get('estado', 'Vigilando en bucle')}")
+
+  # =======================================================
+  # NUEVO RADAR RSI
+  # =======================================================
+  if radar_rsi:
+      st.write("")
+      with st.expander("👁️ Radar Sniper (Ver niveles RSI en tiempo real)", expanded=True):
+          df_radar = pd.DataFrame(list(radar_rsi.items()), columns=["Activo", "RSI"])
+          # Ordenar de menor a mayor RSI para ver cuáles están cerca del disparo
+          df_radar = df_radar.sort_values(by="RSI", ascending=True).reset_index(drop=True)
+          
+          # Pintamos la tabla con colores
+          st.dataframe(
+              df_radar.style.map(color_rsi, subset=['RSI']),
+              use_container_width=True, 
+              height=250
+          )
+          st.caption("🔴 Rojo: Zona de compra (RSI <= 22) | 🟠 Naranja: Acercándose al pánico (RSI <= 30)")
 
   st.divider()
 
@@ -340,7 +367,6 @@ if cartera:
       diferencia = round(tot_actual - tot_comprado, 2)
       pct_pnl = ((p_act - p_ent) / p_ent * 100) if p_ent > 0 else 0.0
 
-      # Tiempo transcurrido vs 240m
       f_ent_str = pos.get("timestamp_entrada", "")
       tiempo_str = "N/A"
       if f_ent_str:
