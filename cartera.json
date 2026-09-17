@@ -1,88 +1,7 @@
 {
-  "efectivo_disponible": 202.64,
-  "total_cartera": 1001.48,
-  "posiciones_abiertas": {
-    "FET-USD": {
-      "cantidad": 381.050208,
-      "precio_entrada": 0.132082,
-      "timestamp_entrada": "2026-09-16 14:17:34"
-    },
-    "XLM-USD": {
-      "cantidad": 327.648418,
-      "precio_entrada": 0.15361,
-      "timestamp_entrada": "2026-09-16 14:22:40"
-    },
-    "ALGO-USD": {
-      "cantidad": 671.653337,
-      "precio_entrada": 0.07489,
-      "timestamp_entrada": "2026-09-16 14:27:48"
-    },
-    "ICP-USD": {
-      "cantidad": 23.325932,
-      "precio_entrada": 2.154683,
-      "timestamp_entrada": "2026-09-16 14:32:53"
-    },
-    "NEAR-USD": {
-      "cantidad": 23.364459,
-      "precio_entrada": 2.151558,
-      "timestamp_entrada": "2026-09-16 14:38:00"
-    },
-    "BONK-USD": {
-      "cantidad": 25084800.0,
-      "precio_entrada": 2e-06,
-      "timestamp_entrada": "2026-09-16 14:38:37"
-    },
-    "FIL-USD": {
-      "cantidad": 74.192556,
-      "precio_entrada": 0.677292,
-      "timestamp_entrada": "2026-09-16 14:41:38"
-    },
-    "SHIB-USD": {
-      "cantidad": 12532416.0,
-      "precio_entrada": 4e-06,
-      "timestamp_entrada": "2026-09-16 15:07:02"
-    },
-    "LTC-USD": {
-      "cantidad": 1.146788,
-      "precio_entrada": 43.730838,
-      "timestamp_entrada": "2026-09-16 15:12:08"
-    },
-    "ADA-USD": {
-      "cantidad": 301.21968,
-      "precio_entrada": 0.166855,
-      "timestamp_entrada": "2026-09-16 15:53:51"
-    },
-    "AAVE-USD": {
-      "cantidad": 0.49437,
-      "precio_entrada": 101.644517,
-      "timestamp_entrada": "2026-09-16 15:57:59"
-    },
-    "XRP-USD": {
-      "cantidad": 45.469802,
-      "precio_entrada": 1.104029,
-      "timestamp_entrada": "2026-09-16 16:02:11"
-    },
-    "LINK-USD": {
-      "cantidad": 5.416295,
-      "precio_entrada": 9.253558,
-      "timestamp_entrada": "2026-09-16 16:04:24"
-    },
-    "DOGE-USD": {
-      "cantidad": 731.212672,
-      "precio_entrada": 0.068544,
-      "timestamp_entrada": "2026-09-16 16:08:33"
-    },
-    "ETC-USD": {
-      "cantidad": 8.10272,
-      "precio_entrada": 6.17447,
-      "timestamp_entrada": "2026-09-16 17:01:05"
-    },
-    "ETH-USD": {
-      "cantidad": 0.024127,
-      "precio_entrada": 2074.024951,
-      "timestamp_entrada": "2026-09-16 17:03:19"
-    }
-  },
+  "efectivo_disponible": 1031.0,
+  "total_cartera": 1031.0,
+  "posiciones_abiertas": {},
   "inyeccion_100_realizada": true,
   "historial_operaciones": [
     "[2026-09-16 08:18:21] \ud83d\udd04 REINICIO TOTAL: Todas las posiciones liquidadas a mercado. Liquidez total disponible: 1015.4 \u20ac",
@@ -231,11 +150,27 @@
     "[2026-09-16 16:04:24] \ud83d\udfe2 COMPRA 5.416295 de LINK-USD a 9.238752\u20ac (50.12\u20ac)",
     "[2026-09-16 16:08:33] \ud83d\udfe2 COMPRA 731.212672 de DOGE-USD a 0.068434\u20ac (50.12\u20ac)",
     "[2026-09-16 17:01:05] \ud83d\udfe2 COMPRA 8.10272 de ETC-USD a 6.164591\u20ac (50.03\u20ac) | RSI P\u00e1nico",
-    "[2026-09-16 17:03:19] \ud83d\udfe2 COMPRA 0.024127 de ETH-USD a 2070.748043\u20ac (50.04\u20ac) | RSI P\u00e1nico"
+    "[2026-09-16 17:03:19] \ud83d\udfe2 COMPRA 0.024127 de ETH-USD a 2070.748043\u20ac (50.04\u20ac) | RSI P\u00e1nico",
+    "[2026-09-17 07:55:01] \ud83d\udd34 VENTA FET-USD por TAKE-PROFIT SNIPER (+2.81%). Neto: 51.66\u20ac | PnL: +1.33\u20ac",
+    "[2026-09-17 07:55:01] \ud83d\udd34 VENTA XLM-USD por TAKE-PROFIT SNIPER (+3.40%). Neto: 51.96\u20ac | PnL: +1.63\u20ac",
+    "[2026-09-17 07:55:01] \ud83d\udd34 VENTA ALGO-USD por TAKE-PROFIT SNIPER (+4.01%). Neto: 52.24\u20ac | PnL: +1.94\u20ac",
+    "[2026-09-17 07:55:01] \ud83d\udd34 VENTA ICP-USD por TAKE-PROFIT SNIPER (+3.56%). Neto: 51.97\u20ac | PnL: +1.71\u20ac",
+    "[2026-09-17 07:55:01] \ud83d\udd34 VENTA NEAR-USD por TAKE-PROFIT SNIPER (+7.94%). Neto: 54.18\u20ac | PnL: +3.91\u20ac",
+    "[2026-09-17 07:55:01] \ud83d\udd34 VENTA BONK-USD por TIME-STOP (1036.4m transcurridos). Neto: 50.09\u20ac | PnL: -0.08\u20ac",
+    "[2026-09-17 07:55:01] \ud83d\udd34 VENTA FIL-USD por TAKE-PROFIT SNIPER (+3.15%). Neto: 51.75\u20ac | PnL: +1.50\u20ac",
+    "[2026-09-17 07:55:01] \ud83d\udd34 VENTA SHIB-USD por TIME-STOP (1008.0m transcurridos). Neto: 50.05\u20ac | PnL: -0.08\u20ac",
+    "[2026-09-17 07:55:01] \ud83d\udd34 VENTA LTC-USD por TAKE-PROFIT SNIPER (+3.61%). Neto: 51.88\u20ac | PnL: +1.73\u20ac",
+    "[2026-09-17 07:55:01] \ud83d\udd34 VENTA ADA-USD por TAKE-PROFIT SNIPER (+2.52%). Neto: 51.45\u20ac | PnL: +1.19\u20ac",
+    "[2026-09-17 07:55:01] \ud83d\udd34 VENTA AAVE-USD por TAKE-PROFIT SNIPER (+4.86%). Neto: 52.61\u20ac | PnL: +2.36\u20ac",
+    "[2026-09-17 07:55:01] \ud83d\udd34 VENTA XRP-USD por TAKE-PROFIT SNIPER (+2.28%). Neto: 51.26\u20ac | PnL: +1.06\u20ac",
+    "[2026-09-17 07:55:01] \ud83d\udd34 VENTA LINK-USD por TAKE-PROFIT SNIPER (+4.73%). Neto: 52.41\u20ac | PnL: +2.29\u20ac",
+    "[2026-09-17 07:55:01] \ud83d\udd34 VENTA DOGE-USD por TAKE-PROFIT SNIPER (+2.78%). Neto: 51.43\u20ac | PnL: +1.31\u20ac",
+    "[2026-09-17 07:55:01] \ud83d\udd34 VENTA ETC-USD por TAKE-PROFIT SNIPER (+4.59%). Neto: 52.24\u20ac | PnL: +2.21\u20ac",
+    "[2026-09-17 07:55:01] \ud83d\udd34 VENTA ETH-USD por TAKE-PROFIT SNIPER (+2.45%). Neto: 51.18\u20ac | PnL: +1.14\u20ac"
   ],
   "reserva_intocable": 0.0,
-  "fecha_control_diario": "2026-09-16",
-  "saldo_inicio_dia": 1004.97,
-  "meta_eur_dia": 50.25,
+  "fecha_control_diario": "2026-09-17",
+  "saldo_inicio_dia": 1031.0,
+  "meta_eur_dia": 51.55,
   "barrido_realizado": false
 }
