@@ -84,27 +84,35 @@ def obtener_rsi_historico(tickers_tuple, periodo="5d"):
   if not tickers_tuple:
     return pd.DataFrame()
   try:
-    # Solución al corte de Yahoo Finance: Descargamos 5 días para asegurar datos frescos hasta el minuto actual
     intervalo = "15m" if periodo in ["1d", "5d"] else "1h"
     periodo_dl = "5d" if periodo in ["1d", "5d"] else "1mo"
     
     df = yf.download(
         list(tickers_tuple), period=periodo_dl, interval=intervalo, progress=False
-    )["Close"]
+    )
     if df.empty:
       return pd.DataFrame()
-    if isinstance(df, pd.Series):
-      df = df.to_frame()
+      
+    if "Close" in df:
+      df_close = df["Close"]
+    else:
+      df_close = df
+
+    if isinstance(df_close, pd.Series):
+      df_close = df_close.to_frame(name=tickers_tuple[0])
     
-    df_rsi = pd.DataFrame(index=df.index)
-    for col in df.columns:
-      df_rsi[col] = calcular_rsi_serie(df[col])
+    df_rsi = pd.DataFrame(index=df_close.index)
+    for col in df_close.columns:
+      df_rsi[col] = calcular_rsi_serie(df_close[col])
     
-    # Recorte estricto de las últimas 24h si el filtro es "1d"
+    df_rsi = df_rsi.dropna(how="all")
+
+    # Recorte basado en número de velas (Solución inmune a errores de Timezone)
     if periodo == "1d":
-        hace_24h = datetime.now() - timedelta(days=1)
-        df_rsi = df_rsi[df_rsi.index >= hace_24h]
-        
+      df_rsi = df_rsi.tail(96)   # 24h x 4 velas de 15m = 96 velas
+    elif periodo == "5d":
+      df_rsi = df_rsi.tail(480)  # 5d x 96 velas = 480 velas
+
     return df_rsi
   except Exception:
     return pd.DataFrame()
@@ -332,7 +340,7 @@ if cartera:
           )
           st.plotly_chart(fig_rsi, use_container_width=True)
       else:
-          st.caption("Cargando datos históricos del RSI...")
+          st.caption("Sin datos para las criptomonedas seleccionadas.")
 
   st.divider()
 
