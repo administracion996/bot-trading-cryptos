@@ -1,12 +1,7 @@
 {
-  "efectivo_disponible": 775.35,
-  "total_cartera": 1033.17,
+  "efectivo_disponible": 826.65,
+  "total_cartera": 1033.29,
   "posiciones_abiertas": {
-    "TRX-USD": {
-      "cantidad": 176.631856,
-      "precio_entrada": 0.29185,
-      "timestamp_entrada": "2026-09-17 13:16:06"
-    },
     "ICP-USD": {
       "cantidad": 23.294588,
       "precio_entrada": 2.212531,
@@ -203,7 +198,8 @@
     "[2026-09-17 16:15:09] \ud83d\udd34 VENTA ETH-USD por TAKE-PROFIT SNIPER (+1.53%). Neto: 52.23\u20ac | PnL: +0.71\u20ac",
     "[2026-09-17 16:25:34] \ud83d\udd34 VENTA ETC-USD por TAKE-PROFIT SNIPER (+1.54%). Neto: 52.26\u20ac | PnL: +0.71\u20ac",
     "[2026-09-17 16:27:41] \ud83d\udd34 VENTA SOL-USD por TAKE-PROFIT SNIPER (+1.51%). Neto: 52.22\u20ac | PnL: +0.70\u20ac",
-    "[2026-09-17 17:15:35] \ud83d\udfe2 COMPRA 10.715039 de INJ-USD a 4.813547\u20ac (51.66\u20ac) | RSI P\u00e1nico"
+    "[2026-09-17 17:15:35] \ud83d\udfe2 COMPRA 10.715039 de INJ-USD a 4.813547\u20ac (51.66\u20ac) | RSI P\u00e1nico",
+    "[2026-09-17 17:17:44] \ud83d\udd34 VENTA TRX-USD por TIME-STOP (241.6m transcurridos). Neto: 51.3\u20ac | PnL: -0.25\u20ac"
   ],
   "reserva_intocable": 0.0,
   "fecha_control_diario": "2026-09-17",
@@ -211,35 +207,35 @@
   "meta_eur_dia": 51.55,
   "barrido_realizado": false,
   "telemetria": {
-    "ultima_actualizacion": "2026-09-17 17:15:35",
+    "ultima_actualizacion": "2026-09-17 17:17:44",
     "estado": "Vigilando Scalping 5m (Multi-Compra | RSI <= 25)"
   },
   "radar_rsi": {
-    "BTC-USD": 39.94,
-    "ETH-USD": 41.64,
-    "SOL-USD": 47.34,
-    "BNB-USD": 44.74,
-    "XRP-USD": 41.38,
-    "ADA-USD": 48.15,
-    "AVAX-USD": 38.89,
-    "DOT-USD": 46.95,
-    "NEAR-USD": 44.42,
-    "ATOM-USD": 59.55,
-    "LTC-USD": 59.33,
-    "BCH-USD": 60.2,
-    "ETC-USD": 50.82,
-    "LINK-USD": 45.12,
-    "AAVE-USD": 42.26,
-    "INJ-USD": 22.15,
+    "BTC-USD": 41.24,
+    "ETH-USD": 43.3,
+    "SOL-USD": 49.12,
+    "BNB-USD": 46.27,
+    "XRP-USD": 43.17,
+    "ADA-USD": 51.12,
+    "AVAX-USD": 39.23,
+    "DOT-USD": 44.61,
+    "NEAR-USD": 46.09,
+    "ATOM-USD": 63.27,
+    "LTC-USD": 60.94,
+    "BCH-USD": 59.5,
+    "ETC-USD": 53.13,
+    "LINK-USD": 46.43,
+    "AAVE-USD": 42.35,
+    "INJ-USD": 27.06,
     "FET-USD": 46.57,
-    "ALGO-USD": 58.13,
-    "XLM-USD": 43.12,
-    "TRX-USD": 45.64,
-    "DOGE-USD": 43.9,
-    "SHIB-USD": 55.0,
+    "ALGO-USD": 60.26,
+    "XLM-USD": 46.3,
+    "TRX-USD": 54.88,
+    "DOGE-USD": 45.38,
+    "SHIB-USD": 57.14,
     "BONK-USD": 46.15,
-    "FLOKI-USD": 57.01,
-    "FIL-USD": 55.52,
-    "ICP-USD": 56.39
+    "FLOKI-USD": 58.18,
+    "FIL-USD": 53.5,
+    "ICP-USD": 57.67
   }
 }
