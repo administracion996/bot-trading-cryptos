@@ -172,5 +172,37 @@
   "fecha_control_diario": "2026-09-17",
   "saldo_inicio_dia": 1031.0,
   "meta_eur_dia": 51.55,
-  "barrido_realizado": false
+  "barrido_realizado": false,
+  "telemetria": {
+    "ultima_actualizacion": "2026-09-17 10:59:04",
+    "estado": "Vigilando (RSI <= 22)"
+  },
+  "radar_rsi": {
+    "BTC-USD": 54.54,
+    "ETH-USD": 52.78,
+    "SOL-USD": 68.02,
+    "BNB-USD": 52.58,
+    "XRP-USD": 62.23,
+    "ADA-USD": 81.82,
+    "AVAX-USD": 67.95,
+    "DOT-USD": 58.2,
+    "NEAR-USD": 73.44,
+    "ATOM-USD": 69.57,
+    "LTC-USD": 85.54,
+    "BCH-USD": 71.49,
+    "ETC-USD": 48.41,
+    "LINK-USD": 64.02,
+    "AAVE-USD": 65.19,
+    "INJ-USD": 62.26,
+    "FET-USD": 65.47,
+    "ALGO-USD": 50.27,
+    "XLM-USD": 60.54,
+    "TRX-USD": 31.8,
+    "DOGE-USD": 71.09,
+    "SHIB-USD": 69.23,
+    "BONK-USD": 85.71,
+    "FLOKI-USD": 83.02,
+    "FIL-USD": 42.16,
+    "ICP-USD": 65.1
+  }
 }
