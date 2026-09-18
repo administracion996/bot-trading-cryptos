@@ -2,7 +2,7 @@ import streamlit as st
 import json
 import pandas as pd
 from datetime import datetime
-from github import Github
+import requests
 
 # ==========================================
 # 0. CONFIGURACIÓN DE LA PÁGINA
@@ -12,21 +12,24 @@ st.set_page_config(page_title="Centro de Control - Bots", page_icon="🛡️", l
 st.title("🛡️ Centro de Control - Trading Bots")
 
 # ==========================================
-# 1. FUNCIÓN DE CONEXIÓN A GITHUB
+# 1. FUNCIÓN DE CONEXIÓN (MÉTODO RAW SIN DEPENDENCIAS EXTRA)
 # ==========================================
 @st.cache_data(ttl=60)  # Actualiza los datos como máximo cada 60 segundos
 def cargar_datos(file_name):
+    # Asumimos que la rama principal se llama 'main'. Si es 'master', cambia 'main' por 'master' en la URL.
+    url = f"https://raw.githubusercontent.com/administracion996/bot-trading-dashboard/main/{file_name}"
+    
+    headers = {}
+    # Si el repo es privado, usará el token de los Secrets de Streamlit
+    if "GITHUB_TOKEN" in st.secrets:
+        headers["Authorization"] = f"token {st.secrets['GITHUB_TOKEN']}"
+        
     try:
-        # Intenta conectar con el Token si existe en los Secrets de Streamlit
-        if "GITHUB_TOKEN" in st.secrets:
-            g = Github(st.secrets["GITHUB_TOKEN"])
+        response = requests.get(url, headers=headers)
+        if response.status_code == 200:
+            return response.json()
         else:
-            g = Github() # Conexión anónima (muy limitada)
-
-        repo = g.get_repo("administracion996/bot-trading-dashboard")
-        file_content = repo.get_contents(file_name)
-        datos = json.loads(file_content.decoded_content.decode('utf-8'))
-        return datos
+            return {"error": f"Error {response.status_code}: No se pudo acceder a {file_name}."}
     except Exception as e:
         return {"error": str(e)}
 
@@ -44,7 +47,6 @@ with tab1:
     if "error" in datos_sniper:
         st.warning(f"Esperando datos del Francotirador o error de conexión: {datos_sniper['error']}")
     else:
-        # Extraer datos básicos
         efectivo = datos_sniper.get("efectivo_disponible", 0.0)
         posiciones = datos_sniper.get("posiciones", {})
         historial = datos_sniper.get("historial", [])
@@ -52,7 +54,6 @@ with tab1:
         capital_invertido = sum(p.get("coste_total", 0.0) for p in posiciones.values())
         capital_total = efectivo + capital_invertido
         
-        # Métricas principales
         col1, col2, col3, col4 = st.columns(4)
         col1.metric("Capital Total", f"{capital_total:.2f} €")
         col2.metric("Liquidez Disponible", f"{efectivo:.2f} €")
@@ -61,11 +62,9 @@ with tab1:
         
         st.markdown("---")
         
-        # Posiciones activas
         st.subheader("📌 Posiciones Activas")
         if posiciones:
             df_pos = pd.DataFrame.from_dict(posiciones, orient="index")
-            # Renombrar columnas para la vista
             df_pos = df_pos.rename(columns={
                 "unidades": "Unidades", 
                 "precio_compra": "Precio Compra (€)", 
@@ -76,7 +75,6 @@ with tab1:
         else:
             st.info("Sin posiciones abiertas en este momento.")
 
-        # Historial
         st.subheader("📜 Historial de Operaciones")
         if historial:
             df_hist = pd.DataFrame(historial)
@@ -93,7 +91,6 @@ with tab2:
     if "error" in datos_cazador:
         st.warning(f"Esperando datos del Cazador o error de conexión: {datos_cazador['error']}")
     else:
-        # Extraer datos básicos
         efectivo_c = datos_cazador.get("efectivo_disponible", 0.0)
         posiciones_c = datos_cazador.get("posiciones", {})
         historial_c = datos_cazador.get("historial", [])
@@ -108,7 +105,6 @@ with tab2:
         hoy_str = datetime.now().strftime("%Y-%m-%d")
         pnl_hoy_cerrado = sum(h.get("beneficio_neto", 0.0) for h in historial_c if h.get("fecha_salida", "").startswith(hoy_str))
         
-        # Panel superior de Métricas
         st.subheader("📊 Estado Global de la Cuenta")
         col1, col2, col3, col4 = st.columns(4)
         col1.metric("Capital de Trabajo", f"{capital_trabajo_c:.2f} €")
@@ -116,7 +112,6 @@ with tab2:
         col3.metric("🏦 The Vault (Reserva)", f"{vault:.2f} €")
         col4.metric("Posiciones Abiertas", len(posiciones_c))
         
-        # Panel The Vault y Progreso Diario
         st.markdown("---")
         st.subheader("🏦 Progreso Diario & The Vault")
         vc1, vc2, vc3 = st.columns(3)
@@ -131,7 +126,6 @@ with tab2:
             
         st.markdown("---")
         
-        # Posiciones activas Cazador
         st.subheader("📌 Posiciones Activas")
         if posiciones_c:
             df_pos_c = pd.DataFrame.from_dict(posiciones_c, orient="index")
@@ -147,13 +141,10 @@ with tab2:
         else:
             st.info("Sin posiciones abiertas en este momento.")
 
-        # Historial Cazador
         st.subheader("📜 Historial de Caza")
         if historial_c:
             df_hist_c = pd.DataFrame(historial_c)
-            # Organizar y traducir columnas para mejor lectura
             columnas_orden = ["fecha_salida", "ticker", "motivo_salida", "monto_invertido", "beneficio_neto", "pnl_pct", "precio_entrada", "precio_salida"]
-            # Filtrar columnas si existen
             columnas_mostrar = [c for c in columnas_orden if c in df_hist_c.columns]
             df_hist_c = df_hist_c[columnas_mostrar].sort_values(by="fecha_salida", ascending=False)
             st.dataframe(df_hist_c, use_container_width=True)
