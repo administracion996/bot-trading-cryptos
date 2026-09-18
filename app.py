@@ -25,10 +25,9 @@ UNIVERSO_MERCADO = (
     "DOGE-USD", "SHIB-USD", "BONK-USD", "FLOKI-USD", "FIL-USD", "ICP-USD",
 )
 
-# --- FUNCIÓN DE DESCARGA ANTI-CACHÉ ---
+# --- DESCARGA ANTI-CACHÉ EN TIEMPO REAL ---
 @st.cache_data(ttl=5)
 def cargar_cartera():
-    # El ?v= timestamp obliga a GitHub a enviar los datos 100% en tiempo real sin usar caché previa
     url = f"https://api.github.com/repos/{REPO}/contents/{FILE_PATH}?v={int(datetime.now().timestamp())}"
     headers = {
         "Authorization": f"token {GITHUB_TOKEN}",
@@ -211,7 +210,6 @@ if cartera:
   total_activo = round(float(cartera.get("total_cartera", 0.0)), 2)
   reserva = round(float(cartera.get("reserva_intocable", 0.0)), 2)
   
-  saldo_inicio = round(float(cartera.get("saldo_inicio_dia", 0.0)), 2)
   meta_dia = round(float(cartera.get("meta_eur_dia", 0.0)), 2)
   barrido = cartera.get("barrido_realizado", False)
   
@@ -222,6 +220,32 @@ if cartera:
 
   df_historial_completo = parsear_historial(historial_raw)
 
+  # --- CÁLCULO UNIFICADO DE PNL HOY (VENTAS HOY + FLOTANTE ACTUAL) ---
+  ahora = datetime.now()
+  hoy_inicio = ahora.replace(hour=0, minute=0, second=0, microsecond=0)
+  
+  pnl_realizado_hoy = 0.0
+  if not df_historial_completo.empty:
+      df_ventas_hoy = df_historial_completo[
+          (df_historial_completo["Fecha"] >= hoy_inicio) & 
+          (df_historial_completo["Tipo"].str.contains("VENTA"))
+      ]
+      pnl_realizado_hoy = float(df_ventas_hoy["PnL (€)"].sum())
+
+  # PnL Flotante de las posiciones abiertas en este momento
+  pnl_flotante_posiciones = 0.0
+  if posiciones:
+      pos_tickers_tuple = tuple(posiciones.keys())
+      precios_live, _ = obtener_precios_posiciones(pos_tickers_tuple)
+      for t, pos in posiciones.items():
+          p_ent = float(pos.get("precio_entrada", 0))
+          p_act = precios_live.get(t, p_ent)
+          cant = float(pos.get("cantidad", 0))
+          pnl_flotante_posiciones += (p_act - p_ent) * cant
+
+  # Beneficio neto total imputable a hoy
+  pnl_hoy_total = round(pnl_realizado_hoy + pnl_flotante_posiciones, 2)
+
   # 1. MÉTRICAS GLOBALES
   col1, col2, col3, col4 = st.columns(4)
   col1.metric("Capital Activo (Trabajo)", f"{total_activo:.2f} €")
@@ -231,9 +255,8 @@ if cartera:
   if barrido:
       col4.metric("🎯 Progreso Diario", "✅ Conseguido")
   else:
-      if saldo_inicio > 0:
-          pnl_hoy = total_activo - saldo_inicio
-          col4.metric("🎯 Progreso Meta (+5%)", f"{pnl_hoy:+.2f} € / {meta_dia:.2f} €")
+      if meta_dia > 0:
+          col4.metric("🎯 Progreso Meta (+5%)", f"{pnl_hoy_total:+.2f} € / {meta_dia:.2f} €")
       else:
           col4.metric("🎯 Progreso Meta (+5%)", "Esperando cierre...")
 
@@ -249,15 +272,14 @@ if cartera:
       if match_hora_log:
           hora_ultimo_escaneo = match_hora_log.group(1)
   
-  pnl_hoy_eur = round(total_activo - saldo_inicio, 2) if saldo_inicio > 0 else 0.0
-  restante_barrido = round(max(0.0, meta_dia - pnl_hoy_eur), 2) if not barrido else 0.0
+  restante_barrido = round(max(0.0, meta_dia - pnl_hoy_total), 2) if not barrido else 0.0
 
   t1, t2, t3 = st.columns(3)
   t1.info(f"⏱️ **Último escaneo sincronizado:** {hora_ultimo_escaneo}")
   if barrido:
       t2.success("🏦 **Estado Hucha:** ¡Barrido diario completado!")
   else:
-      t2.warning(f"📊 **Beneficio hoy:** {pnl_hoy_eur:+.2f} € | **Falta para barrido:** {restante_barrido:.2f} €")
+      t2.warning(f"📊 **Beneficio hoy:** {pnl_hoy_total:+.2f} € | **Falta para barrido:** {restante_barrido:.2f} €")
   t3.caption(f"🟢 **Estado Bot:** {telemetria.get('estado', 'Vigilando Scalping 5m')}")
 
   # RADAR INSTANTÁNEO
@@ -394,8 +416,6 @@ if cartera:
         key="f_fecha_historial",
     )
 
-  ahora = datetime.now()
-  hoy_inicio = ahora.replace(hour=0, minute=0, second=0, microsecond=0)
   f_inicio_h = datetime(2020, 1, 1)
   f_fin_h = ahora + timedelta(days=2)
 
