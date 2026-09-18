@@ -25,20 +25,24 @@ UNIVERSO_MERCADO = (
     "DOGE-USD", "SHIB-USD", "BONK-USD", "FLOKI-USD", "FIL-USD", "ICP-USD",
 )
 
-@st.cache_data(ttl=10)
+# --- FUNCIÓN DE DESCARGA ANTI-CACHÉ ---
+@st.cache_data(ttl=5)
 def cargar_cartera():
-  url = f"https://api.github.com/repos/{REPO}/contents/{FILE_PATH}"
-  headers = (
-      {"Authorization": f"token {GITHUB_TOKEN}"} if GITHUB_TOKEN else {}
-  )
-  try:
-    res = requests.get(url, headers=headers)
-    if res.status_code == 200:
-      content_b64 = res.json()["content"]
-      return json.loads(base64.b64decode(content_b64).decode("utf-8"))
-  except Exception:
-    pass
-  return None
+    # El ?v= timestamp obliga a GitHub a enviar los datos 100% en tiempo real sin usar caché previa
+    url = f"https://api.github.com/repos/{REPO}/contents/{FILE_PATH}?v={int(datetime.now().timestamp())}"
+    headers = {
+        "Authorization": f"token {GITHUB_TOKEN}",
+        "Cache-Control": "no-cache"
+    } if GITHUB_TOKEN else {"Cache-Control": "no-cache"}
+    
+    try:
+        res = requests.get(url, headers=headers)
+        if res.status_code == 200:
+            content_b64 = res.json()["content"]
+            return json.loads(base64.b64decode(content_b64).decode("utf-8"))
+    except Exception:
+        pass
+    return None
 
 @st.cache_data(ttl=60)
 def obtener_precios_posiciones(pos_tickers_tuple):
@@ -190,7 +194,6 @@ def parsear_historial(historial_raw):
 
   return pd.DataFrame(registros)
 
-# --- FUNCIÓN DE COLOR ACTUALIZADA A RSI 25 ---
 def color_rsi(val):
     if isinstance(val, (int, float)):
         if val <= 25:
@@ -305,12 +308,10 @@ if cartera:
                   )
               )
           
-          # --- LÍNEA GATILLO ACTUALIZADA A 25 ---
           fig_rsi.add_hline(
               y=25, line_dash="dash", line_color="#EF553B", 
               annotation_text="🎯 Gatillo Sniper (25)", annotation_position="bottom right"
           )
-          # Línea Sobreventa Tradicional (RSI 30)
           fig_rsi.add_hline(
               y=30, line_dash="dot", line_color="#FFA500", 
               annotation_text="Sobreventa (30)", annotation_position="top right"
