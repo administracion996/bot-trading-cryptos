@@ -1,17 +1,20 @@
 {
-  "efectivo_disponible": 85.0,
+  "efectivo_disponible": 99.941735143088,
   "vault_reservado": 0.0,
-  "posiciones": {
-    "AVAX-USD": {
-      "unidades": 2.147840727657,
-      "precio_compra": 6.965600292122,
-      "coste_total": 15.0,
-      "max_precio_alcanzado": 6.965600292122,
-      "confianza_gemini": 82,
-      "fecha_entrada": "2026-09-18T10:32:55.117015"
+  "posiciones": {},
+  "historial": [
+    {
+      "ticker": "AVAX-USD",
+      "precio_entrada": 6.965600292122,
+      "precio_salida": 6.974765275185,
+      "monto_invertido": 15.0,
+      "ingreso_obtenido": 14.941735143088,
+      "beneficio_neto": -0.058264856912,
+      "pnl_pct": 0.13,
+      "motivo_salida": "Time-Stop (2h estancado)",
+      "fecha_salida": "2026-09-18T14:28:39.198387+02:00"
     }
-  },
-  "historial": [],
+  ],
   "capital_base_dia": 100.0,
   "barrido_realizado": false,
   "meta_eur_dia": 5.0
