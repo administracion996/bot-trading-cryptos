@@ -2,5 +2,8 @@
   "efectivo_disponible": 100.0,
   "vault_reservado": 0.0,
   "posiciones": {},
-  "historial": []
+  "historial": [],
+  "capital_base_dia": 100.0,
+  "barrido_realizado": false,
+  "meta_eur_dia": 5.0
 }
