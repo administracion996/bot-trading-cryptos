@@ -1,6 +1,6 @@
 {
-  "efectivo_disponible": 480.46,
-  "total_cartera": 1063.74,
+  "efectivo_disponible": 427.22,
+  "total_cartera": 1064.78,
   "posiciones_abiertas": {
     "AAVE-USD": {
       "cantidad": 0.450122384175,
@@ -56,6 +56,11 @@
       "cantidad": 65.449825954983,
       "precio_entrada": 0.815128218014,
       "timestamp_entrada": "2026-09-20 15:14:32"
+    },
+    "ETC-USD": {
+      "cantidad": 7.418538429484,
+      "precio_entrada": 7.176615785719,
+      "timestamp_entrada": "2026-09-20 15:56:07"
     }
   },
   "inyeccion_100_realizada": true,
@@ -319,7 +324,8 @@
     "[2026-09-20 12:59:34] \ud83d\udfe2 COMPRA 323.002188734993 de XLM-USD a 0.164317598614\u20ac (53.16\u20ac) | RSI P\u00e1nico",
     "[2026-09-20 14:08:07] \ud83d\udd34 VENTA ADA-USD por TAKE-PROFIT SNIPER (+1.55%). Neto: 53.87\u20ac | PnL: +0.73\u20ac",
     "[2026-09-20 14:12:18] \ud83d\udd34 VENTA ALGO-USD por TAKE-PROFIT SNIPER (+1.68%). Neto: 54.0\u20ac | PnL: +0.81\u20ac",
-    "[2026-09-20 15:14:32] \ud83d\udfe2 COMPRA 65.449825954983 de FIL-USD a 0.813824012865\u20ac (53.35\u20ac) | RSI P\u00e1nico"
+    "[2026-09-20 15:14:32] \ud83d\udfe2 COMPRA 65.449825954983 de FIL-USD a 0.813824012865\u20ac (53.35\u20ac) | RSI P\u00e1nico",
+    "[2026-09-20 15:56:07] \ud83d\udfe2 COMPRA 7.418538429484 de ETC-USD a 7.165133200462\u20ac (53.24\u20ac) | RSI P\u00e1nico"
   ],
   "reserva_intocable": 0.0,
   "fecha_control_diario": "2026-09-20",
@@ -327,35 +333,35 @@
   "meta_eur_dia": 53.63,
   "barrido_realizado": false,
   "telemetria": {
-    "ultima_actualizacion": "2026-09-20 15:47:47",
+    "ultima_actualizacion": "2026-09-20 15:56:07",
     "estado": "Vigilando Scalping 5m (Multi-Compra | RSI <= 25)"
   },
   "radar_rsi": {
-    "BTC-USD": 64.21,
-    "ETH-USD": 58.09,
-    "SOL-USD": 42.55,
-    "BNB-USD": 33.33,
-    "XRP-USD": 48.17,
-    "ADA-USD": 45.17,
-    "AVAX-USD": 63.12,
-    "DOT-USD": 49.22,
-    "NEAR-USD": 58.49,
-    "ATOM-USD": 50.51,
-    "LTC-USD": 45.51,
-    "BCH-USD": 42.98,
-    "ETC-USD": 43.54,
-    "LINK-USD": 41.7,
-    "AAVE-USD": 40.57,
-    "INJ-USD": 61.37,
-    "FET-USD": 63.25,
-    "ALGO-USD": 54.13,
-    "XLM-USD": 44.86,
-    "TRX-USD": 85.71,
-    "DOGE-USD": 43.42,
+    "BTC-USD": 64.26,
+    "ETH-USD": 61.92,
+    "SOL-USD": 43.1,
+    "BNB-USD": 43.26,
+    "XRP-USD": 48.07,
+    "ADA-USD": 52.12,
+    "AVAX-USD": 69.87,
+    "DOT-USD": 56.62,
+    "NEAR-USD": 45.16,
+    "ATOM-USD": 54.31,
+    "LTC-USD": 44.52,
+    "BCH-USD": 46.58,
+    "ETC-USD": 25.0,
+    "LINK-USD": 46.54,
+    "AAVE-USD": 32.64,
+    "INJ-USD": 58.61,
+    "FET-USD": 55.9,
+    "ALGO-USD": 54.1,
+    "XLM-USD": 48.96,
+    "TRX-USD": 88.23,
+    "DOGE-USD": 47.06,
     "SHIB-USD": 50.0,
-    "BONK-USD": 40.0,
-    "FLOKI-USD": 37.5,
-    "FIL-USD": 16.48,
-    "ICP-USD": 26.96
+    "BONK-USD": 50.0,
+    "FLOKI-USD": 33.33,
+    "FIL-USD": 6.85,
+    "ICP-USD": 26.02
   }
 }
