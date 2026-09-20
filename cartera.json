@@ -1,15 +1,10 @@
 {
-  "efectivo_disponible": 427.22,
-  "total_cartera": 1064.78,
+  "efectivo_disponible": 535.06,
+  "total_cartera": 1067.54,
   "posiciones_abiertas": {
     "AAVE-USD": {
       "cantidad": 0.450122384175,
       "precio_entrada": 118.145646316768,
-      "timestamp_entrada": "2026-09-20 12:36:13"
-    },
-    "DOT-USD": {
-      "cantidad": 55.938182105989,
-      "precio_entrada": 0.950692317802,
       "timestamp_entrada": "2026-09-20 12:36:13"
     },
     "SHIB-USD": {
@@ -46,11 +41,6 @@
       "cantidad": 2424558.420407773,
       "precio_entrada": 2.1925642e-05,
       "timestamp_entrada": "2026-09-20 12:53:15"
-    },
-    "XLM-USD": {
-      "cantidad": 323.002188734993,
-      "precio_entrada": 0.164580928099,
-      "timestamp_entrada": "2026-09-20 12:59:34"
     },
     "FIL-USD": {
       "cantidad": 65.449825954983,
@@ -325,7 +315,9 @@
     "[2026-09-20 14:08:07] \ud83d\udd34 VENTA ADA-USD por TAKE-PROFIT SNIPER (+1.55%). Neto: 53.87\u20ac | PnL: +0.73\u20ac",
     "[2026-09-20 14:12:18] \ud83d\udd34 VENTA ALGO-USD por TAKE-PROFIT SNIPER (+1.68%). Neto: 54.0\u20ac | PnL: +0.81\u20ac",
     "[2026-09-20 15:14:32] \ud83d\udfe2 COMPRA 65.449825954983 de FIL-USD a 0.813824012865\u20ac (53.35\u20ac) | RSI P\u00e1nico",
-    "[2026-09-20 15:56:07] \ud83d\udfe2 COMPRA 7.418538429484 de ETC-USD a 7.165133200462\u20ac (53.24\u20ac) | RSI P\u00e1nico"
+    "[2026-09-20 15:56:07] \ud83d\udfe2 COMPRA 7.418538429484 de ETC-USD a 7.165133200462\u20ac (53.24\u20ac) | RSI P\u00e1nico",
+    "[2026-09-20 16:07:15] \ud83d\udd34 VENTA DOT-USD por TAKE-PROFIT SNIPER (+1.57%). Neto: 53.93\u20ac | PnL: +0.75\u20ac",
+    "[2026-09-20 16:07:15] \ud83d\udd34 VENTA XLM-USD por TAKE-PROFIT SNIPER (+1.57%). Neto: 53.91\u20ac | PnL: +0.75\u20ac"
   ],
   "reserva_intocable": 0.0,
   "fecha_control_diario": "2026-09-20",
@@ -333,35 +325,35 @@
   "meta_eur_dia": 53.63,
   "barrido_realizado": false,
   "telemetria": {
-    "ultima_actualizacion": "2026-09-20 15:56:07",
+    "ultima_actualizacion": "2026-09-20 16:07:15",
     "estado": "Vigilando Scalping 5m (Multi-Compra | RSI <= 25)"
   },
   "radar_rsi": {
-    "BTC-USD": 64.26,
-    "ETH-USD": 61.92,
-    "SOL-USD": 43.1,
-    "BNB-USD": 43.26,
-    "XRP-USD": 48.07,
-    "ADA-USD": 52.12,
-    "AVAX-USD": 69.87,
-    "DOT-USD": 56.62,
-    "NEAR-USD": 45.16,
-    "ATOM-USD": 54.31,
-    "LTC-USD": 44.52,
-    "BCH-USD": 46.58,
-    "ETC-USD": 25.0,
-    "LINK-USD": 46.54,
-    "AAVE-USD": 32.64,
-    "INJ-USD": 58.61,
-    "FET-USD": 55.9,
-    "ALGO-USD": 54.1,
-    "XLM-USD": 48.96,
-    "TRX-USD": 88.23,
-    "DOGE-USD": 47.06,
+    "BTC-USD": 66.59,
+    "ETH-USD": 66.27,
+    "SOL-USD": 58.78,
+    "BNB-USD": 64.52,
+    "XRP-USD": 59.53,
+    "ADA-USD": 57.49,
+    "AVAX-USD": 69.34,
+    "DOT-USD": 63.54,
+    "NEAR-USD": 47.41,
+    "ATOM-USD": 61.12,
+    "LTC-USD": 54.31,
+    "BCH-USD": 48.65,
+    "ETC-USD": 46.49,
+    "LINK-USD": 62.55,
+    "AAVE-USD": 44.91,
+    "INJ-USD": 55.86,
+    "FET-USD": 58.43,
+    "ALGO-USD": 62.91,
+    "XLM-USD": 66.14,
+    "TRX-USD": 88.32,
+    "DOGE-USD": 60.16,
     "SHIB-USD": 50.0,
-    "BONK-USD": 50.0,
-    "FLOKI-USD": 33.33,
-    "FIL-USD": 6.85,
-    "ICP-USD": 26.02
+    "BONK-USD": 46.15,
+    "FLOKI-USD": 46.15,
+    "FIL-USD": 21.22,
+    "ICP-USD": 37.22
   }
 }
