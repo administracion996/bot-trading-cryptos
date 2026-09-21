@@ -12,11 +12,11 @@ st.set_page_config(
     page_title="Crypto Trading Dashboard", page_icon="🎯", layout="wide"
 )
 
-# Configuración GitHub (REPOSITORIO EXACTO)
+# Configuración GitHub (Ruta correcta)
 REPO = "administracion996/bot-trading-cryptos"
 GITHUB_TOKEN = st.secrets.get("GITHUB_TOKEN", "")
 
-# Expresiones regulares precompiladas para máxima velocidad
+# Expresiones regulares para procesar los logs muy rápido
 REGEX_FECHA = re.compile(r"\[(\d{4}-\d{2}-\d{2}\s+\d{2}:\d{2}:\d{2})\]")
 REGEX_TICKER = re.compile(r"([A-Z0-9]{2,10}-USD)")
 REGEX_VALOR = re.compile(r"(\d+(?:\.\d+)?)\s*€")
@@ -24,7 +24,7 @@ REGEX_SCORE = re.compile(r"Score Gemini:\s*(\d+)", re.IGNORECASE)
 REGEX_PNL = re.compile(r"PnL:\s*([+-]?\d+(?:\.\d+)?)\s*€")
 
 
-# --- FUNCIONES OPTIMIZADAS DE CARGA DE DATOS ---
+# --- FUNCIONES DE CARGA Y PROCESAMIENTO ---
 @st.cache_data(ttl=5)
 def cargar_cartera(file_path="cartera.json"):
     url = f"https://api.github.com/repos/{REPO}/contents/{file_path}?v={int(datetime.now().timestamp())}"
@@ -142,6 +142,62 @@ def color_rsi_short(val):
             return 'background-color: #ffa500; color: black; font-weight: bold;'
     return ''
 
+# --- FUNCIÓN PARA EL FILTRO AVANZADO DE HISTORIAL ---
+def mostrar_historial_con_filtros(df_historial, key_prefix):
+    if df_historial.empty:
+        st.info("Aún no hay operaciones registradas.")
+        return
+
+    opciones = [
+        "Todo", "Hoy", "Ayer", "Esta semana", "La semana pasada", 
+        "Este mes", "El mes pasado", "Personalizado"
+    ]
+    
+    col_filtro, col_totales = st.columns([2, 1])
+    seleccion = col_filtro.selectbox("📅 Selecciona el periodo:", opciones, index=0, key=f"sel_{key_prefix}")
+    
+    hoy = datetime.now().date()
+    df_filtrado = df_historial.copy()
+    
+    if seleccion == "Hoy":
+        df_filtrado = df_historial[df_historial["Fecha"].dt.date == hoy]
+    elif seleccion == "Ayer":
+        ayer = hoy - timedelta(days=1)
+        df_filtrado = df_historial[df_historial["Fecha"].dt.date == ayer]
+    elif seleccion == "Esta semana":
+        inicio_semana = hoy - timedelta(days=hoy.weekday())
+        df_filtrado = df_historial[df_historial["Fecha"].dt.date >= inicio_semana]
+    elif seleccion == "La semana pasada":
+        inicio_sp = hoy - timedelta(days=hoy.weekday() + 7)
+        fin_sp = inicio_sp + timedelta(days=6)
+        mask = (df_historial["Fecha"].dt.date >= inicio_sp) & (df_historial["Fecha"].dt.date <= fin_sp)
+        df_filtrado = df_historial[mask]
+    elif seleccion == "Este mes":
+        df_filtrado = df_historial[(df_historial["Fecha"].dt.month == hoy.month) & (df_historial["Fecha"].dt.year == hoy.year)]
+    elif seleccion == "El mes pasado":
+        mes_pasado = hoy.replace(day=1) - timedelta(days=1)
+        df_filtrado = df_historial[(df_historial["Fecha"].dt.month == mes_pasado.month) & (df_historial["Fecha"].dt.year == mes_pasado.year)]
+    elif seleccion == "Personalizado":
+        f_min = df_historial["Fecha"].min().date()
+        f_max = df_historial["Fecha"].max().date()
+        c1, c2 = st.columns(2)
+        f_inicio = c1.date_input("Desde", f_min, key=f"ini_{key_prefix}")
+        f_fin = c2.date_input("Hasta", f_max, key=f"fin_{key_prefix}")
+        mask = (df_historial["Fecha"].dt.date >= f_inicio) & (df_historial["Fecha"].dt.date <= f_fin)
+        df_filtrado = df_historial[mask]
+        
+    # Calcular totales
+    total_pnl = df_filtrado["PnL (€)"].sum()
+    ops_cerradas = len(df_filtrado[df_filtrado["PnL (€)"] != 0])
+    total_registros = len(df_filtrado)
+
+    col_totales.metric(f"💰 Beneficio ({seleccion})", f"{total_pnl:+.2f} €", f"{ops_cerradas} cierres / {total_registros} movs")
+    
+    if df_filtrado.empty:
+        st.warning("No hay operaciones en este rango de fechas.")
+    else:
+        st.dataframe(df_filtrado.sort_values(by="Fecha", ascending=False), use_container_width=True)
+
 
 # ==========================================
 # ESTRUCTURA DE PESTAÑAS (3 BOTS)
@@ -199,35 +255,20 @@ with tab1:
         col1.metric("Capital Activo (Trabajo)", f"{total_activo:.2f} €")
         col2.metric("Efectivo Libre", f"{efectivo:.2f} €")
         col3.metric("🏦 Reserva Intocable", f"{reserva:.2f} €")
-        col4.metric(
-            "🎯 Progreso Meta (+5%)", f"{pnl_hoy_total:+.2f} € / {meta_dia:.2f} €"
-        )
+        col4.metric("🎯 Progreso Meta (+5%)", f"{pnl_hoy_total:+.2f} € / {meta_dia:.2f} €")
 
         st.divider()
 
         st.subheader("📡 Telemetría y Radar")
         c_tel1, c_tel2 = st.columns(2)
-        c_tel1.info(
-            "⏱️ **Última actualización:**"
-            f" {telemetria.get('ultima_actualizacion', 'N/A')}"
-        )
-        c_tel2.caption(
-            f"🟢 **Estado:** {telemetria.get('estado', 'Vigilando Scalping 5m')}"
-        )
+        c_tel1.info(f"⏱️ **Última actualización:** {telemetria.get('ultima_actualizacion', 'N/A')}")
+        c_tel2.caption(f"🟢 **Estado:** {telemetria.get('estado', 'Vigilando Scalping 5m')}")
 
         if radar_rsi:
             with st.expander("👁️ Radar Sniper (Sobreventa RSI)", expanded=True):
-                df_radar = pd.DataFrame(
-                    list(radar_rsi.items()), columns=["Activo", "RSI"]
-                )
-                df_radar = df_radar.sort_values(
-                    by="RSI", ascending=True
-                ).reset_index(drop=True)
-                st.dataframe(
-                    df_radar.style.map(color_rsi, subset=["RSI"]),
-                    use_container_width=True,
-                    height=200,
-                )
+                df_radar = pd.DataFrame(list(radar_rsi.items()), columns=["Activo", "RSI"])
+                df_radar = df_radar.sort_values(by="RSI", ascending=True).reset_index(drop=True)
+                st.dataframe(df_radar.style.map(color_rsi, subset=["RSI"]), use_container_width=True, height=200)
 
         st.divider()
 
@@ -255,30 +296,9 @@ with tab1:
             st.info("No hay posiciones abiertas (100% liquidez).")
 
         st.divider()
-
-        # HISTORIAL DE OPERACIONES CON FILTRO DE FECHAS
         st.subheader("📜 Historial de Operaciones")
-        if not df_historial_completo.empty:
-            f_min = df_historial_completo["Fecha"].min().date()
-            f_max = df_historial_completo["Fecha"].max().date()
+        mostrar_historial_con_filtros(df_historial_completo, "francotirador")
 
-            col_f1, col_f2 = st.columns(2)
-            f_inicio = col_f1.date_input("Desde", f_min, key="f_ini_t1")
-            f_fin = col_f2.date_input("Hasta", f_max, key="f_fin_t1")
-
-            mask_t1 = (df_historial_completo["Fecha"].dt.date >= f_inicio) & (
-                df_historial_completo["Fecha"].dt.date <= f_fin
-            )
-            df_hist_filtrado = df_historial_completo[mask_t1]
-
-            st.dataframe(
-                df_hist_filtrado.sort_values(
-                    by="Fecha", ascending=False
-                ),
-                use_container_width=True,
-            )
-        else:
-            st.info("Aún no hay operaciones registradas.")
     else:
         st.warning("Cargando datos de Francotirador...")
 
@@ -313,10 +333,7 @@ with tab2:
 with tab3:
     cartera_r = cargar_cartera("cartera_reaper.json")
     st.title("💀 Dashboard Bot Reaper Short Scalper")
-    st.caption(
-        "Estrategia Inversa (Fade the Breakout): Gana dinero cuando el precio"
-        " de la cripto cae."
-    )
+    st.caption("Estrategia Inversa (Fade the Breakout): Gana dinero cuando el precio de la cripto cae.")
 
     if cartera_r:
         efectivo_r = round(float(cartera_r.get("efectivo_disponible", 0.0)), 2)
@@ -337,28 +354,14 @@ with tab3:
 
         st.subheader("📡 Telemetría y Radar de Agotamiento (Bull Traps)")
         t1, t2 = st.columns(2)
-        t1.info(
-            "⏱️ **Última sincro:**"
-            f" {telemetria_r.get('ultima_actualizacion', 'N/A')}"
-        )
-        t2.caption(
-            "🟢 **Estado Bot:**"
-            f" {telemetria_r.get('estado', 'Escaneando sobrecompra 5m')}"
-        )
+        t1.info(f"⏱️ **Última sincro:** {telemetria_r.get('ultima_actualizacion', 'N/A')}")
+        t2.caption(f"🟢 **Estado Bot:** {telemetria_r.get('estado', 'Escaneando sobrecompra 5m')}")
 
         if radar_r:
             with st.expander("👁️ Radar Reaper (Sobrecompra RSI)", expanded=True):
-                df_radar_r = pd.DataFrame(
-                    list(radar_r.items()), columns=["Activo", "RSI"]
-                )
-                df_radar_r = df_radar_r.sort_values(
-                    by="RSI", ascending=False
-                ).reset_index(drop=True)
-                st.dataframe(
-                    df_radar_r.style.map(color_rsi_short, subset=["RSI"]),
-                    use_container_width=True,
-                    height=200,
-                )
+                df_radar_r = pd.DataFrame(list(radar_r.items()), columns=["Activo", "RSI"])
+                df_radar_r = df_radar_r.sort_values(by="RSI", ascending=False).reset_index(drop=True)
+                st.dataframe(df_radar_r.style.map(color_rsi_short, subset=["RSI"]), use_container_width=True, height=200)
 
         st.divider()
 
@@ -375,9 +378,7 @@ with tab3:
 
                 inversion_ini = cant * p_ent
                 pnl_eur_short = (p_ent - p_act) * cant
-                pct_pnl_short = (
-                    ((p_ent - p_act) / p_ent * 100) if p_ent > 0 else 0.0
-                )
+                pct_pnl_short = (((p_ent - p_act) / p_ent * 100) if p_ent > 0 else 0.0)
 
                 filas_r.append({
                     "Activo": ticker.replace("-USD", ""),
@@ -392,34 +393,13 @@ with tab3:
 
             st.dataframe(pd.DataFrame(filas_r), use_container_width=True)
         else:
-            st.info(
-                "Sin posiciones cortas abiertas en este momento. Esperando"
-                " trampas alcistas..."
-            )
+            st.info("Sin posiciones cortas abiertas en este momento. Esperando trampas alcistas...")
 
         st.divider()
 
-        # HISTORIAL DE SHORTS CON FILTRO DE FECHAS
         st.subheader("📜 Historial de Operaciones Short")
         df_hist_r = parsear_historial(historial_r_raw, es_short=True)
-        if not df_hist_r.empty:
-            f_min_r = df_hist_r["Fecha"].min().date()
-            f_max_r = df_hist_r["Fecha"].max().date()
+        mostrar_historial_con_filtros(df_hist_r, "reaper")
 
-            col_fr1, col_fr2 = st.columns(2)
-            f_ini_r = col_fr1.date_input("Desde", f_min_r, key="f_ini_t3")
-            f_fin_r = col_fr2.date_input("Hasta", f_max_r, key="f_fin_t3")
-
-            mask_t3 = (df_hist_r["Fecha"].dt.date >= f_ini_r) & (
-                df_hist_r["Fecha"].dt.date <= f_fin_r
-            )
-            df_hist_r_filtrado = df_hist_r[mask_t3]
-
-            st.dataframe(
-                df_hist_r_filtrado.sort_values(by="Fecha", ascending=False),
-                use_container_width=True,
-            )
-        else:
-            st.info("Aún no hay historial de posiciones cortas cerradas.")
     else:
         st.warning("Recuperando datos de cartera_reaper.json...")
