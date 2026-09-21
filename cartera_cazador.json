@@ -1,5 +1,5 @@
 {
-  "efectivo_disponible": 24.819947063556,
+  "efectivo_disponible": 69.133450502993,
   "vault_reservado": 0.0,
   "posiciones": {
     "WIF-USD": {
@@ -14,33 +14,9 @@
       "unidades": 632384.9079408684,
       "precio_compra": 2.3557845e-05,
       "coste_total": 14.936460438751,
-      "max_precio_alcanzado": 2.4901613e-05,
+      "max_precio_alcanzado": 2.5328696e-05,
       "confianza_gemini": 78,
       "fecha_entrada": "2026-09-21T11:54:39.651936+02:00"
-    },
-    "TURBO-USD": {
-      "unidades": 16341.914813381278,
-      "precio_compra": 0.000910386247,
-      "coste_total": 14.916236711197,
-      "max_precio_alcanzado": 0.000910386247,
-      "confianza_gemini": 82,
-      "fecha_entrada": "2026-09-21T17:28:28.175834+02:00"
-    },
-    "MEME-USD": {
-      "unidades": 28311.085529878554,
-      "precio_compra": 0.00052549926,
-      "coste_total": 14.916236711197,
-      "max_precio_alcanzado": 0.00052549926,
-      "confianza_gemini": 78,
-      "fecha_entrada": "2026-09-21T17:28:28.308192+02:00"
-    },
-    "PEOPLE-USD": {
-      "unidades": 1852.375970518925,
-      "precio_compra": 0.008031552305,
-      "coste_total": 14.916236711197,
-      "max_precio_alcanzado": 0.008031552305,
-      "confianza_gemini": 75,
-      "fecha_entrada": "2026-09-21T17:28:28.436152+02:00"
     }
   },
   "historial": [
@@ -98,6 +74,39 @@
       "pnl_pct": -0.03,
       "motivo_salida": "Time-Stop (2h estancado)",
       "fecha_salida": "2026-09-21T13:40:41.655931+02:00"
+    },
+    {
+      "ticker": "TURBO-USD",
+      "precio_entrada": 0.000910386247,
+      "precio_salida": 0.00090942748,
+      "monto_invertido": 14.916236711197,
+      "ingreso_obtenido": 14.82314576245,
+      "beneficio_neto": -0.093090948747,
+      "pnl_pct": -0.11,
+      "motivo_salida": "Time-Stop (2h estancado)",
+      "fecha_salida": "2026-09-21T19:29:43.005764+02:00"
+    },
+    {
+      "ticker": "MEME-USD",
+      "precio_entrada": 0.00052549926,
+      "precio_salida": 0.00052401484,
+      "monto_invertido": 14.916236711197,
+      "ingreso_obtenido": 14.796856838885,
+      "beneficio_neto": -0.119379872312,
+      "pnl_pct": -0.28,
+      "motivo_salida": "Time-Stop (2h estancado)",
+      "fecha_salida": "2026-09-21T19:29:43.005764+02:00"
+    },
+    {
+      "ticker": "PEOPLE-USD",
+      "precio_entrada": 0.008031552305,
+      "precio_salida": 0.007952923036,
+      "monto_invertido": 14.916236711197,
+      "ingreso_obtenido": 14.693500838102,
+      "beneficio_neto": -0.222735873095,
+      "pnl_pct": -0.98,
+      "motivo_salida": "Time-Stop (2h estancado)",
+      "fecha_salida": "2026-09-21T19:29:43.005764+02:00"
     }
   ],
   "capital_base_dia": 99.941735143088,
