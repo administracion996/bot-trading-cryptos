@@ -1,15 +1,7 @@
 {
-  "efectivo_disponible": 39.830561170001,
+  "efectivo_disponible": 54.714883843044,
   "vault_reservado": 0.0,
   "posiciones": {
-    "TURBO-USD": {
-      "unidades": 16900.920170578484,
-      "precio_compra": 0.000881468316,
-      "coste_total": 14.936460438751,
-      "max_precio_alcanzado": 0.000890930682,
-      "confianza_gemini": 82,
-      "fecha_entrada": "2026-09-21T10:53:58.259101+02:00"
-    },
     "PEPE24478-USD": {
       "unidades": 4034436.7358020023,
       "precio_compra": 3.692616e-06,
@@ -22,7 +14,7 @@
       "unidades": 81.163466226512,
       "precio_compra": 0.1835508799,
       "coste_total": 14.936460438751,
-      "max_precio_alcanzado": 0.1835508799,
+      "max_precio_alcanzado": 0.186207914285,
       "confianza_gemini": 82,
       "fecha_entrada": "2026-09-21T11:54:39.460243+02:00"
     },
@@ -30,7 +22,7 @@
       "unidades": 632384.9079408684,
       "precio_compra": 2.3557845e-05,
       "coste_total": 14.936460438751,
-      "max_precio_alcanzado": 2.3557845e-05,
+      "max_precio_alcanzado": 2.356985e-05,
       "confianza_gemini": 78,
       "fecha_entrada": "2026-09-21T11:54:39.651936+02:00"
     }
@@ -68,6 +60,17 @@
       "pnl_pct": -0.15,
       "motivo_salida": "Time-Stop (2h estancado)",
       "fecha_salida": "2026-09-21T07:52:11.706040+02:00"
+    },
+    {
+      "ticker": "TURBO-USD",
+      "precio_entrada": 0.000881468316,
+      "precio_salida": 0.000882976941,
+      "monto_invertido": 14.936460438751,
+      "ingreso_obtenido": 14.884322673043,
+      "beneficio_neto": -0.052137765708,
+      "pnl_pct": 0.17,
+      "motivo_salida": "Time-Stop (2h estancado)",
+      "fecha_salida": "2026-09-21T12:55:12.594661+02:00"
     }
   ],
   "capital_base_dia": 99.941735143088,
