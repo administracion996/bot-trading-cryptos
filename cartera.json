@@ -1,12 +1,7 @@
 {
-  "efectivo_disponible": 809.31,
+  "efectivo_disponible": 551.65,
   "total_cartera": 1097.87,
   "posiciones_abiertas": {
-    "AVAX-USD": {
-      "cantidad": 5.58511888816,
-      "precio_entrada": 9.779559055724,
-      "timestamp_entrada": "2026-09-21 16:04:47"
-    },
     "TRX-USD": {
       "cantidad": 476.1438575590782,
       "precio_entrada": 0.30047641637852784,
@@ -17,6 +12,18 @@
       "cantidad": 3641344.241793249,
       "precio_entrada": 2.514565883364754e-05,
       "timestamp_entrada": "2026-09-21 19:00:28",
+      "score_gemini": 80
+    },
+    "DOT-USD": {
+      "cantidad": 169.73882899757075,
+      "precio_entrada": 1.015617638212042,
+      "timestamp_entrada": "2026-09-21 19:54:51",
+      "score_gemini": 80
+    },
+    "NEAR-USD": {
+      "cantidad": 40.25396659614668,
+      "precio_entrada": 3.4260424638180638,
+      "timestamp_entrada": "2026-09-21 19:54:51",
       "score_gemini": 80
     }
   },
@@ -441,7 +448,10 @@
     "[2026-09-21 19:40:13] [VENTA \ud83d\udd34] ICP-USD | Motivo: TIME STOP (241m) | PnL: -0.20 \u20ac | Score Gemini: N/A",
     "[2026-09-21 19:42:18] [VENTA \ud83d\udd34] ALGO-USD | Motivo: TIME STOP (241m) | PnL: -1.22 \u20ac | Score Gemini: N/A",
     "[2026-09-21 19:44:24] [VENTA \ud83d\udd34] AAVE-USD | Motivo: TIME STOP (241m) | PnL: -0.65 \u20ac | Score Gemini: N/A",
-    "[2026-09-21 19:44:24] [VENTA \ud83d\udd34] BCH-USD | Motivo: TIME STOP (241m) | PnL: -0.92 \u20ac | Score Gemini: N/A"
+    "[2026-09-21 19:44:24] [VENTA \ud83d\udd34] BCH-USD | Motivo: TIME STOP (241m) | PnL: -0.92 \u20ac | Score Gemini: N/A",
+    "[2026-09-21 19:54:51] [VENTA \ud83d\udd34] AVAX-USD | Motivo: STOP LOSS (-3.63%) | PnL: -1.98 \u20ac | Score Gemini: N/A",
+    "[2026-09-21 19:54:51] [COMPRA \ud83d\udfe2] DOT-USD | Importe: 172.39 \u20ac | RSI: 24.9 | Score Gemini: 80",
+    "[2026-09-21 19:54:51] [COMPRA \ud83d\udfe2] NEAR-USD | Importe: 137.91 \u20ac | RSI: 24.0 | Score Gemini: 80"
   ],
   "reserva_intocable": 0.0,
   "fecha_control_diario": "2026-09-21",
@@ -449,35 +459,35 @@
   "meta_eur_dia": 53.56,
   "barrido_realizado": false,
   "telemetria": {
-    "ultima_actualizacion": "2026-09-21 19:52:45",
+    "ultima_actualizacion": "2026-09-21 19:54:51",
     "estado": "Vigilando Scalping 5m (Local Active)"
   },
   "radar_rsi": {
-    "BTC": 48.94,
-    "ETH": 30.26,
-    "SOL": 42.86,
-    "BNB": 37.15,
-    "XRP": 62.62,
-    "ADA": 34.21,
-    "AVAX": 32.64,
-    "DOT": 27.16,
-    "NEAR": 25.29,
-    "ATOM": 42.41,
-    "LTC": 40.1,
-    "BCH": 48.08,
-    "ETC": 56.03,
-    "LINK": 29.63,
-    "AAVE": 46.7,
-    "INJ": 66.4,
-    "FET": 32.43,
-    "ALGO": 32.05,
-    "XLM": 42.96,
+    "BTC": 43.25,
+    "ETH": 28.06,
+    "SOL": 37.12,
+    "BNB": 35.43,
+    "XRP": 54.42,
+    "ADA": 31.53,
+    "AVAX": 25.82,
+    "DOT": 24.91,
+    "NEAR": 23.96,
+    "ATOM": 38.77,
+    "LTC": 35.91,
+    "BCH": 41.88,
+    "ETC": 50.86,
+    "LINK": 26.73,
+    "AAVE": 40.48,
+    "INJ": 55.05,
+    "FET": 29.77,
+    "ALGO": 29.76,
+    "XLM": 39.04,
     "TRX": 26.05,
-    "DOGE": 61.04,
-    "SHIB": 54.29,
+    "DOGE": 58.37,
+    "SHIB": 51.43,
     "BONK": 58.82,
-    "FLOKI": 41.98,
-    "FIL": 37.39,
-    "ICP": 37.82
+    "FLOKI": 38.2,
+    "FIL": 35.79,
+    "ICP": 29.61
   }
 }
