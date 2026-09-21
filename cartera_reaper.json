@@ -2,15 +2,42 @@
   "efectivo_disponible": 100.0,
   "total_cartera": 100.0,
   "reserva_intocable": 0.0,
-  "fecha_control_diario": "",
+  "fecha_control_diario": "2026-09-21",
   "saldo_inicio_dia": 100.0,
   "meta_eur_dia": 5.0,
   "barrido_realizado": false,
   "posiciones_abiertas": {},
   "historial_operaciones": [],
   "telemetria": {
-    "estado": "Iniciando REAPER Short Scalper...",
-    "ultima_actualizacion": ""
+    "estado": "Vigilando Bull Traps & Agotamiento en Rupturas",
+    "ultima_actualizacion": "2026-09-21 17:53:07"
   },
-  "radar_rsi": {}
+  "radar_rsi": {
+    "BTC-USD": 59.55,
+    "ETH-USD": 67.35,
+    "SOL-USD": 57.24,
+    "BNB-USD": 68.12,
+    "XRP-USD": 55.92,
+    "ADA-USD": 65.36,
+    "AVAX-USD": 53.72,
+    "DOT-USD": 61.66,
+    "NEAR-USD": 46.41,
+    "ATOM-USD": 58.03,
+    "LTC-USD": 57.74,
+    "BCH-USD": 40.0,
+    "ETC-USD": 58.28,
+    "LINK-USD": 58.3,
+    "AAVE-USD": 38.14,
+    "INJ-USD": 36.05,
+    "FET-USD": 49.66,
+    "ALGO-USD": 47.83,
+    "XLM-USD": 65.5,
+    "TRX-USD": 65.37,
+    "DOGE-USD": 74.97,
+    "SHIB-USD": 77.27,
+    "BONK-USD": 65.63,
+    "FLOKI-USD": 79.09,
+    "FIL-USD": 49.64,
+    "ICP-USD": 50.76
+  }
 }
