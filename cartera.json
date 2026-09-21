@@ -1,30 +1,15 @@
 {
-  "efectivo_disponible": 377.5,
-  "total_cartera": 1077.39,
+  "efectivo_disponible": 593.22,
+  "total_cartera": 1078.48,
   "posiciones_abiertas": {
-    "TRX-USD": {
-      "cantidad": 179.287714125699,
-      "precio_entrada": 0.299128137483,
-      "timestamp_entrada": "2026-09-20 22:05:41"
-    },
     "BTC-USD": {
       "cantidad": 0.000757544905,
       "precio_entrada": 70464.46969371407,
       "timestamp_entrada": "2026-09-20 23:04:05"
     },
-    "SOL-USD": {
-      "cantidad": 0.558464059915,
-      "precio_entrada": 95.583590478722,
-      "timestamp_entrada": "2026-09-20 23:04:05"
-    },
     "BNB-USD": {
       "cantidad": 0.080030498037,
       "precio_entrada": 666.495914786631,
-      "timestamp_entrada": "2026-09-20 23:10:23"
-    },
-    "XRP-USD": {
-      "cantidad": 43.74668783918,
-      "precio_entrada": 1.219292308393,
       "timestamp_entrada": "2026-09-20 23:10:23"
     },
     "FLOKI-USD": {
@@ -36,11 +21,6 @@
       "cantidad": 4.938982816796,
       "precio_entrada": 10.799794609248,
       "timestamp_entrada": "2026-09-20 23:10:23"
-    },
-    "DOGE-USD": {
-      "cantidad": 706.719976770405,
-      "precio_entrada": 0.075305639786,
-      "timestamp_entrada": "2026-09-20 23:12:34"
     },
     "DOT-USD": {
       "cantidad": 54.390243961416,
@@ -389,7 +369,11 @@
     "[2026-09-21 01:24:01] \ud83d\udd34 VENTA BCH-USD por TAKE-PROFIT SNIPER (+2.31%). Neto: 54.36\u20ac | PnL: +1.14\u20ac",
     "[2026-09-21 01:26:09] \ud83d\udd34 VENTA ALGO-USD por TIME-STOP (240.2m transcurridos). Neto: 52.89\u20ac | PnL: -0.40\u20ac",
     "[2026-09-21 01:32:24] \ud83d\udfe2 COMPRA 570.719989171268 de ALGO-USD a 0.094116065705\u20ac (53.8\u20ac) | RSI P\u00e1nico",
-    "[2026-09-21 01:46:58] \ud83d\udfe2 COMPRA 7.949458602948 de INJ-USD a 6.75818400766\u20ac (53.81\u20ac) | RSI P\u00e1nico"
+    "[2026-09-21 01:46:58] \ud83d\udfe2 COMPRA 7.949458602948 de INJ-USD a 6.75818400766\u20ac (53.81\u20ac) | RSI P\u00e1nico",
+    "[2026-09-21 02:05:44] \ud83d\udd34 VENTA TRX-USD por TIME-STOP (240.1m transcurridos). Neto: 53.41\u20ac | PnL: -0.22\u20ac",
+    "[2026-09-21 02:05:44] \ud83d\udd34 VENTA SOL-USD por TAKE-PROFIT SNIPER (+1.80%). Neto: 54.26\u20ac | PnL: +0.88\u20ac",
+    "[2026-09-21 02:05:44] \ud83d\udd34 VENTA XRP-USD por TAKE-PROFIT SNIPER (+1.56%). Neto: 54.08\u20ac | PnL: +0.74\u20ac",
+    "[2026-09-21 02:05:44] \ud83d\udd34 VENTA DOGE-USD por TAKE-PROFIT SNIPER (+1.57%). Neto: 53.97\u20ac | PnL: +0.75\u20ac"
   ],
   "reserva_intocable": 0.0,
   "fecha_control_diario": "2026-09-21",
@@ -397,35 +381,35 @@
   "meta_eur_dia": 53.56,
   "barrido_realizado": false,
   "telemetria": {
-    "ultima_actualizacion": "2026-09-21 02:03:36",
+    "ultima_actualizacion": "2026-09-21 02:05:44",
     "estado": "Vigilando Scalping 5m (Multi-Compra | RSI <= 25)"
   },
   "radar_rsi": {
-    "BTC-USD": 54.8,
-    "ETH-USD": 69.26,
-    "SOL-USD": 72.09,
-    "BNB-USD": 64.73,
-    "XRP-USD": 63.66,
-    "ADA-USD": 57.08,
-    "AVAX-USD": 72.4,
-    "DOT-USD": 34.09,
-    "NEAR-USD": 74.37,
-    "ATOM-USD": 56.8,
-    "LTC-USD": 53.76,
-    "BCH-USD": 64.39,
-    "ETC-USD": 56.11,
-    "LINK-USD": 61.72,
-    "AAVE-USD": 72.43,
-    "INJ-USD": 20.08,
-    "FET-USD": 46.23,
-    "ALGO-USD": 30.43,
-    "XLM-USD": 63.03,
-    "TRX-USD": 17.83,
-    "DOGE-USD": 65.24,
-    "SHIB-USD": 47.06,
-    "BONK-USD": 55.56,
-    "FLOKI-USD": 45.76,
-    "FIL-USD": 49.79,
-    "ICP-USD": 47.34
+    "BTC-USD": 67.16,
+    "ETH-USD": 75.71,
+    "SOL-USD": 79.59,
+    "BNB-USD": 70.25,
+    "XRP-USD": 71.28,
+    "ADA-USD": 65.41,
+    "AVAX-USD": 74.44,
+    "DOT-USD": 40.64,
+    "NEAR-USD": 85.19,
+    "ATOM-USD": 66.43,
+    "LTC-USD": 68.4,
+    "BCH-USD": 72.74,
+    "ETC-USD": 67.55,
+    "LINK-USD": 72.92,
+    "AAVE-USD": 83.47,
+    "INJ-USD": 21.72,
+    "FET-USD": 59.77,
+    "ALGO-USD": 31.77,
+    "XLM-USD": 71.08,
+    "TRX-USD": 17.97,
+    "DOGE-USD": 73.25,
+    "SHIB-USD": 52.94,
+    "BONK-USD": 62.5,
+    "FLOKI-USD": 51.79,
+    "FIL-USD": 52.61,
+    "ICP-USD": 56.49
   }
 }
