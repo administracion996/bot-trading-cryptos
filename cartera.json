@@ -1,12 +1,7 @@
 {
-  "efectivo_disponible": 605.03,
+  "efectivo_disponible": 526.3,
   "total_cartera": 1097.87,
   "posiciones_abiertas": {
-    "NEAR-USD": {
-      "cantidad": 15.010118917401,
-      "precio_entrada": 3.63754613141,
-      "timestamp_entrada": "2026-09-21 13:36:17"
-    },
     "TRX-USD": {
       "cantidad": 182.136415415592,
       "precio_entrada": 0.29977530784,
@@ -46,6 +41,12 @@
       "cantidad": 5.58511888816,
       "precio_entrada": 9.779559055724,
       "timestamp_entrada": "2026-09-21 16:04:47"
+    },
+    "INJ-USD": {
+      "cantidad": 19.777382389093887,
+      "precio_entrada": 6.652814288240052,
+      "timestamp_entrada": "2026-09-21 17:24:13",
+      "score_gemini": 80
     }
   },
   "inyeccion_100_realizada": true,
@@ -455,7 +456,9 @@
     "[2026-09-21 16:46:47] \ud83d\udd34 VENTA ETH-USD por TIME-STOP (240.6m transcurridos). Neto: 54.86\u20ac | PnL: +0.28\u20ac",
     "[2026-09-21 16:53:05] \ud83d\udd34 VENTA ATOM-USD por TAKE-PROFIT SNIPER (+1.70%). Neto: 55.31\u20ac | PnL: +0.84\u20ac",
     "[2026-09-21 16:53:05] \ud83d\udd34 VENTA ADA-USD por TAKE-PROFIT SNIPER (+1.53%). Neto: 55.22\u20ac | PnL: +0.75\u20ac",
-    "[2026-09-21 16:55:13] \ud83d\udd34 VENTA XLM-USD por TAKE-PROFIT SNIPER (+1.78%). Neto: 55.47\u20ac | PnL: +0.88\u20ac"
+    "[2026-09-21 16:55:13] \ud83d\udd34 VENTA XLM-USD por TAKE-PROFIT SNIPER (+1.78%). Neto: 55.47\u20ac | PnL: +0.88\u20ac",
+    "[2026-09-21 17:24:13] [VENTA \ud83d\udd34] NEAR-USD | Motivo: STOP LOSS (-3.21%) | PnL: -1.75 \u20ac | Score Gemini: N/A",
+    "[2026-09-21 17:24:13] [COMPRA \ud83d\udfe2] INJ-USD | Importe: 131.58 \u20ac | RSI: 21.6 | Score Gemini: 80"
   ],
   "reserva_intocable": 0.0,
   "fecha_control_diario": "2026-09-21",
@@ -463,35 +466,35 @@
   "meta_eur_dia": 53.56,
   "barrido_realizado": false,
   "telemetria": {
-    "ultima_actualizacion": "2026-09-21 16:55:13",
-    "estado": "Vigilando Scalping 5m (Multi-Compra | RSI <= 25)"
+    "ultima_actualizacion": "2026-09-21 17:24:13",
+    "estado": "Vigilando Scalping 5m (Local Active)"
   },
   "radar_rsi": {
-    "BTC-USD": 70.16,
-    "ETH-USD": 63.14,
-    "SOL-USD": 64.01,
-    "BNB-USD": 71.21,
-    "XRP-USD": 67.76,
-    "ADA-USD": 50.58,
-    "AVAX-USD": 44.52,
-    "DOT-USD": 53.59,
-    "NEAR-USD": 49.62,
-    "ATOM-USD": 54.55,
-    "LTC-USD": 54.38,
-    "BCH-USD": 35.4,
-    "ETC-USD": 72.43,
-    "LINK-USD": 59.86,
-    "AAVE-USD": 52.06,
-    "INJ-USD": 31.27,
-    "FET-USD": 65.73,
-    "ALGO-USD": 44.07,
-    "XLM-USD": 67.76,
-    "TRX-USD": 83.27,
-    "DOGE-USD": 73.31,
-    "SHIB-USD": 70.37,
-    "BONK-USD": 71.43,
-    "FLOKI-USD": 79.68,
-    "FIL-USD": 48.09,
-    "ICP-USD": 64.22
+    "BTC": 62.6,
+    "ETH": 57.63,
+    "SOL": 43.91,
+    "BNB": 63.48,
+    "XRP": 54.1,
+    "ADA": 50.58,
+    "AVAX": 52.48,
+    "DOT": 52.4,
+    "NEAR": 38.5,
+    "ATOM": 65.82,
+    "LTC": 51.02,
+    "BCH": 29.31,
+    "ETC": 51.3,
+    "LINK": 50.9,
+    "AAVE": 44.01,
+    "INJ": 21.61,
+    "FET": 34.63,
+    "ALGO": 34.45,
+    "XLM": 56.45,
+    "TRX": 70.26,
+    "DOGE": 68.16,
+    "SHIB": 69.05,
+    "BONK": 57.14,
+    "FLOKI": 69.23,
+    "FIL": 37.03,
+    "ICP": 48.59
   }
 }
