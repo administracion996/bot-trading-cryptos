@@ -14,7 +14,7 @@ st.set_page_config(
 )
 
 # Configuración GitHub
-REPO = "administracion996/bot-trading-dashboard"
+REPO = "administracion996/bot-trading-cryptos"
 GITHUB_TOKEN = st.secrets.get("GITHUB_TOKEN", "")
 
 UNIVERSO_MERCADO = (
