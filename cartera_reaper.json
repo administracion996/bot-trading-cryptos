@@ -1,43 +1,52 @@
 {
-  "efectivo_disponible": 100.0,
+  "efectivo_disponible": 95.0,
   "total_cartera": 100.0,
   "reserva_intocable": 0.0,
   "fecha_control_diario": "2026-09-21",
   "saldo_inicio_dia": 100.0,
   "meta_eur_dia": 5.0,
   "barrido_realizado": false,
-  "posiciones_abiertas": {},
-  "historial_operaciones": [],
+  "posiciones_abiertas": {
+    "BNB-USD": {
+      "cantidad": 0.007161364474,
+      "precio_entrada": 698.190968795537,
+      "timestamp_entrada": "2026-09-21 20:24:05",
+      "tipo": "SHORT"
+    }
+  },
+  "historial_operaciones": [
+    "[2026-09-21 20:24:05] 🔴 APERTURA SHORT 0.007161364474 de BNB-USD a 697.073863245398€ (5.0€) | Motivo: Bull Trap / Agotamiento"
+  ],
   "telemetria": {
     "estado": "Vigilando Bull Traps & Agotamiento en Rupturas",
-    "ultima_actualizacion": "2026-09-21 20:16:08"
+    "ultima_actualizacion": "2026-09-21 20:24:05"
   },
   "radar_rsi": {
-    "BTC-USD": 50.52,
-    "ETH-USD": 47.2,
-    "SOL-USD": 46.97,
-    "BNB-USD": 55.27,
-    "XRP-USD": 65.15,
-    "ADA-USD": 46.14,
-    "AVAX-USD": 43.07,
-    "DOT-USD": 40.35,
-    "NEAR-USD": 44.94,
-    "ATOM-USD": 53.15,
-    "LTC-USD": 33.94,
-    "BCH-USD": 50.27,
-    "ETC-USD": 48.05,
-    "LINK-USD": 38.74,
-    "AAVE-USD": 45.17,
-    "INJ-USD": 69.11,
-    "FET-USD": 31.67,
-    "ALGO-USD": 38.66,
-    "XLM-USD": 53.99,
-    "TRX-USD": 34.13,
-    "DOGE-USD": 55.6,
-    "SHIB-USD": 47.06,
-    "BONK-USD": 62.5,
-    "FLOKI-USD": 32.98,
-    "FIL-USD": 43.72,
-    "ICP-USD": 37.93
+    "BTC-USD": 51.69,
+    "ETH-USD": 47.84,
+    "SOL-USD": 47.33,
+    "BNB-USD": 61.88,
+    "XRP-USD": 64.65,
+    "ADA-USD": 49.08,
+    "AVAX-USD": 44.87,
+    "DOT-USD": 40.8,
+    "NEAR-USD": 50.13,
+    "ATOM-USD": 58.81,
+    "LTC-USD": 33.52,
+    "BCH-USD": 57.12,
+    "ETC-USD": 49.58,
+    "LINK-USD": 41.16,
+    "AAVE-USD": 52.83,
+    "INJ-USD": 59.66,
+    "FET-USD": 36.1,
+    "ALGO-USD": 42.52,
+    "XLM-USD": 62.39,
+    "TRX-USD": 35.2,
+    "DOGE-USD": 59.48,
+    "SHIB-USD": 51.43,
+    "BONK-USD": 66.67,
+    "FLOKI-USD": 41.5,
+    "FIL-USD": 49.88,
+    "ICP-USD": 39.3
   }
 }
