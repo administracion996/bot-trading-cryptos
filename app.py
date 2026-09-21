@@ -138,6 +138,10 @@ def parsear_historial(historial_raw):
         val_matches = re.findall(r"(\d+(?:\.\d+)?)\s*€", log)
         valor = float(val_matches[-1]) if val_matches else 0.0
 
+        # Intentar extraer puntuación de Gemini si existe en el log
+        match_score = re.search(r"(?:Confianza|Score|Gemini):\s*(\d+)", log, re.IGNORECASE)
+        score_gemini = int(match_score.group(1)) if match_score else None
+
         if "COMPRA" in log:
             if ticker not in compras_memoria:
                 compras_memoria[ticker] = []
@@ -149,6 +153,7 @@ def parsear_historial(historial_raw):
                 "Ticker": ticker,
                 "Valor (€)": valor,
                 "PnL (€)": 0.0,
+                "Score_Gemini": score_gemini,
                 "Log": log,
             })
 
@@ -177,6 +182,7 @@ def parsear_historial(historial_raw):
                 "Ticker": ticker,
                 "Valor (€)": valor,
                 "PnL (€)": round(pnl_eur, 2),
+                "Score_Gemini": score_gemini,
                 "Log": log,
             })
 
@@ -187,6 +193,7 @@ def parsear_historial(historial_raw):
                 "Ticker": ticker,
                 "Valor (€)": valor,
                 "PnL (€)": 0.0,
+                "Score_Gemini": None,
                 "Log": log,
             })
 
@@ -204,7 +211,7 @@ def color_rsi(val):
 tab1, tab2 = st.tabs(["🎯 Bot 1: Francotirador", "⚡ Bot 2: Cazador Memecoins"])
 
 # ==========================================
-# TAB 1: BOT FRANCOTIRADOR (CÓDIGO ORIGINAL)
+# TAB 1: BOT FRANCOTIRADOR
 # ==========================================
 with tab1:
     cartera = cargar_cartera("cartera.json")
@@ -405,7 +412,62 @@ with tab1:
 
         st.divider()
 
-        # 5. HISTORIAL DE OPERACIONES
+        # 5. MÓDULO DE ANALÍTICA CUANTITATIVA AVANZADA
+        st.subheader("📊 Analítica Avanzada Quant (Bot Francotirador)")
+        if not df_historial_completo.empty:
+            df_ventas = df_historial_completo[df_historial_completo["Tipo"].str.contains("VENTA")].copy()
+            if not df_ventas.empty:
+                total_ops = len(df_ventas)
+                ganadoras = df_ventas[df_ventas["PnL (€)"] > 0]
+                perdedoras = df_ventas[df_ventas["PnL (€)"] < 0]
+
+                n_wins = len(ganadoras)
+                n_losses = len(perdedoras)
+                win_rate = (n_wins / total_ops * 100) if total_ops > 0 else 0.0
+
+                avg_win = ganadoras["PnL (€)"].mean() if n_wins > 0 else 0.0
+                avg_loss = perdedoras["PnL (€)"].mean() if n_losses > 0 else 0.0
+
+                sum_wins = ganadoras["PnL (€)"].sum()
+                sum_losses = abs(perdedoras["PnL (€)"].sum())
+                profit_factor = (sum_wins / sum_losses) if sum_losses > 0 else (sum_wins if sum_wins > 0 else 0.0)
+
+                # Drawdown Máximo
+                df_ventas_sorted = df_ventas.sort_values(by="Fecha").copy()
+                df_ventas_sorted["PnL_Acumulado"] = df_ventas_sorted["PnL (€)"].cumsum()
+                df_ventas_sorted["Peak"] = df_ventas_sorted["PnL_Acumulado"].cummax()
+                df_ventas_sorted["Drawdown"] = df_ventas_sorted["PnL_Acumulado"] - df_ventas_sorted["Peak"]
+                max_dd = df_ventas_sorted["Drawdown"].min() if not df_ventas_sorted.empty else 0.0
+
+                m1, m2, m3, m4, m5, m6 = st.columns(6)
+                m1.metric("Nº Operaciones", total_ops)
+                m2.metric("% Ganadoras", f"{win_rate:.1f}%")
+                m3.metric("Ganancia Media", f"{avg_win:+.2f} €")
+                m4.metric("Pérdida Media", f"{avg_loss:+.2f} €")
+                m5.metric("Profit Factor", f"{profit_factor:.2f}")
+                m6.metric("Max Drawdown", f"{max_dd:.2f} €")
+
+                col_g1, col_g2 = st.columns(2)
+                with col_g1:
+                    st.caption("📌 PnL Acumulado por Activo (€)")
+                    pnl_activo = df_ventas.groupby("Ticker")["PnL (€)"].sum().sort_values(ascending=False)
+                    st.bar_chart(pnl_activo)
+
+                with col_g2:
+                    st.caption("🧠 Rendimiento por Puntuación Gemini")
+                    if df_ventas["Score_Gemini"].notnull().any():
+                        pnl_gemini = df_ventas.dropna(subset=["Score_Gemini"]).groupby("Score_Gemini")["PnL (€)"].sum()
+                        st.bar_chart(pnl_gemini)
+                    else:
+                        st.info("No hay datos de puntuación Gemini registrados en los logs del historial.")
+            else:
+                st.info("Aún no hay ventas registradas para calcular analíticas cuant de rendimiento.")
+        else:
+            st.info("Aún no hay historial de operaciones disponible.")
+
+        st.divider()
+
+        # 6. HISTORIAL DE OPERACIONES
         st.subheader("📜 Historial de Operaciones y Movimientos")
 
         c1, c2 = st.columns([3, 3])
@@ -597,13 +659,72 @@ with tab2:
 
         st.divider()
 
-        # 4. HISTORIAL DE CAZA
-        st.subheader("📜 Historial de Caza")
+        # 4. ANALÍTICA CUANT CAZADOR
+        st.subheader("📊 Analítica Avanzada Quant (Bot Cazador)")
         if historial_c:
             df_hist_c = pd.DataFrame(historial_c)
-            if not df_hist_c.empty and "fecha_salida" in df_hist_c.columns:
-                df_hist_c = df_hist_c.sort_values(by="fecha_salida", ascending=False)
-            st.dataframe(df_hist_c, use_container_width=True)
+            if not df_hist_c.empty:
+                # Normalizar columna de PnL
+                if "beneficio_neto" in df_hist_c.columns:
+                    df_hist_c["pnl_val"] = df_hist_c["beneficio_neto"].astype(float)
+                elif "pnl_eur" in df_hist_c.columns:
+                    df_hist_c["pnl_val"] = df_hist_c["pnl_eur"].astype(float)
+                else:
+                    df_hist_c["pnl_val"] = 0.0
+
+                n_ops_c = len(df_hist_c)
+                wins_c = df_hist_c[df_hist_c["pnl_val"] > 0]
+                losses_c = df_hist_c[df_hist_c["pnl_val"] < 0]
+
+                win_rate_c = (len(wins_c) / n_ops_c * 100) if n_ops_c > 0 else 0.0
+                avg_win_c = wins_c["pnl_val"].mean() if len(wins_c) > 0 else 0.0
+                avg_loss_c = losses_c["pnl_val"].mean() if len(losses_c) > 0 else 0.0
+
+                tot_win_c = wins_c["pnl_val"].sum()
+                tot_loss_c = abs(losses_c["pnl_val"].sum())
+                pf_c = (tot_win_c / tot_loss_c) if tot_loss_c > 0 else (tot_win_c if tot_win_c > 0 else 0.0)
+
+                # Max Drawdown
+                df_hist_c["pnl_acum"] = df_hist_c["pnl_val"].cumsum()
+                df_hist_c["peak"] = df_hist_c["pnl_acum"].cummax()
+                df_hist_c["dd"] = df_hist_c["pnl_acum"] - df_hist_c["peak"]
+                max_dd_c = df_hist_c["dd"].min() if not df_hist_c.empty else 0.0
+
+                mc1, mc2, mc3, mc4, mc5, mc6 = st.columns(6)
+                mc1.metric("Nº Operaciones", n_ops_c)
+                mc2.metric("% Ganadoras", f"{win_rate_c:.1f}%")
+                mc3.metric("Ganancia Media", f"{avg_win_c:+.2f} €")
+                mc4.metric("Pérdida Media", f"{avg_loss_c:+.2f} €")
+                mc5.metric("Profit Factor", f"{pf_c:.2f}")
+                mc6.metric("Max Drawdown", f"{max_dd_c:.2f} €")
+
+                col_cg1, col_cg2 = st.columns(2)
+                with col_cg1:
+                    st.caption("📌 PnL Acumulado por Memecoin (€)")
+                    if "ticker" in df_hist_c.columns:
+                        pnl_c_activo = df_hist_c.groupby("ticker")["pnl_val"].sum().sort_values(ascending=False)
+                        st.bar_chart(pnl_c_activo)
+                    elif "activo" in df_hist_c.columns:
+                        pnl_c_activo = df_hist_c.groupby("activo")["pnl_val"].sum().sort_values(ascending=False)
+                        st.bar_chart(pnl_c_activo)
+
+                with col_cg2:
+                    st.caption("🧠 Rendimiento por Puntuación Gemini")
+                    if "confianza_gemini" in df_hist_c.columns:
+                        pnl_c_gemini = df_hist_c.groupby("confianza_gemini")["pnl_val"].sum()
+                        st.bar_chart(pnl_c_gemini)
+                    else:
+                        st.info("Sin datos de confianza Gemini en el historial estructurado.")
+
+        st.divider()
+
+        # 5. HISTORIAL DE CAZA
+        st.subheader("📜 Historial de Caza")
+        if historial_c:
+            df_hist_c_tabla = pd.DataFrame(historial_c)
+            if not df_hist_c_tabla.empty and "fecha_salida" in df_hist_c_tabla.columns:
+                df_hist_c_tabla = df_hist_c_tabla.sort_values(by="fecha_salida", ascending=False)
+            st.dataframe(df_hist_c_tabla, use_container_width=True)
         else:
             st.info("No hay presas cazadas todavía.")
 
