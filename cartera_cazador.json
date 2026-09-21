@@ -1,16 +1,7 @@
 {
-  "efectivo_disponible": 84.724417168933,
+  "efectivo_disponible": 99.576402925005,
   "vault_reservado": 0.0,
-  "posiciones": {
-    "MEME-USD": {
-      "unidades": 29863.83960183704,
-      "precio_compra": 0.000499349527,
-      "coste_total": 14.951367735694,
-      "max_precio_alcanzado": 0.000499349527,
-      "confianza_gemini": 82,
-      "fecha_entrada": "2026-09-21T05:51:14.298608+02:00"
-    }
-  },
+  "posiciones": {},
   "historial": [
     {
       "ticker": "AVAX-USD",
@@ -33,6 +24,17 @@
       "pnl_pct": -1.26,
       "motivo_salida": "Time-Stop (2h estancado)",
       "fecha_salida": "2026-09-21T04:35:29.116471+02:00"
+    },
+    {
+      "ticker": "MEME-USD",
+      "precio_entrada": 0.000499349527,
+      "precio_salida": 0.000498619795,
+      "monto_invertido": 14.951367735694,
+      "ingreso_obtenido": 14.851985756072,
+      "beneficio_neto": -0.099381979622,
+      "pnl_pct": -0.15,
+      "motivo_salida": "Time-Stop (2h estancado)",
+      "fecha_salida": "2026-09-21T07:52:11.706040+02:00"
     }
   ],
   "capital_base_dia": 99.941735143088,
