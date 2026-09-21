@@ -1,14 +1,22 @@
 {
-  "efectivo_disponible": 84.639942486254,
+  "efectivo_disponible": 69.703482047503,
   "vault_reservado": 0.0,
   "posiciones": {
     "TURBO-USD": {
       "unidades": 16900.920170578484,
       "precio_compra": 0.000881468316,
       "coste_total": 14.936460438751,
-      "max_precio_alcanzado": 0.000881468316,
+      "max_precio_alcanzado": 0.000890930682,
       "confianza_gemini": 82,
       "fecha_entrada": "2026-09-21T10:53:58.259101+02:00"
+    },
+    "PEPE24478-USD": {
+      "unidades": 4034436.7358020023,
+      "precio_compra": 3.692616e-06,
+      "coste_total": 14.936460438751,
+      "max_precio_alcanzado": 3.692616e-06,
+      "confianza_gemini": 78,
+      "fecha_entrada": "2026-09-21T11:39:27.449524+02:00"
     }
   },
   "historial": [
