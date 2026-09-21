@@ -1,7 +1,16 @@
 {
-  "efectivo_disponible": 99.941735143088,
+  "efectivo_disponible": 84.950474871625,
   "vault_reservado": 0.0,
-  "posiciones": {},
+  "posiciones": {
+    "SHIB-USD": {
+      "unidades": 3094182.892041341,
+      "precio_compra": 4.832385e-06,
+      "coste_total": 14.991260271463,
+      "max_precio_alcanzado": 4.832385e-06,
+      "confianza_gemini": 78,
+      "fecha_entrada": "2026-09-21T02:34:33.229935+02:00"
+    }
+  },
   "historial": [
     {
       "ticker": "AVAX-USD",
