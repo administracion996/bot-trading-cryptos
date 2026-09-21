@@ -1,12 +1,12 @@
 {
-  "efectivo_disponible": 69.568657197147,
+  "efectivo_disponible": 24.819947063556,
   "vault_reservado": 0.0,
   "posiciones": {
     "WIF-USD": {
       "unidades": 81.163466226512,
       "precio_compra": 0.1835508799,
       "coste_total": 14.936460438751,
-      "max_precio_alcanzado": 0.189015960673,
+      "max_precio_alcanzado": 0.211415298734,
       "confianza_gemini": 82,
       "fecha_entrada": "2026-09-21T11:54:39.460243+02:00"
     },
@@ -14,9 +14,33 @@
       "unidades": 632384.9079408684,
       "precio_compra": 2.3557845e-05,
       "coste_total": 14.936460438751,
-      "max_precio_alcanzado": 2.3880558e-05,
+      "max_precio_alcanzado": 2.4901613e-05,
       "confianza_gemini": 78,
       "fecha_entrada": "2026-09-21T11:54:39.651936+02:00"
+    },
+    "TURBO-USD": {
+      "unidades": 16341.914813381278,
+      "precio_compra": 0.000910386247,
+      "coste_total": 14.916236711197,
+      "max_precio_alcanzado": 0.000910386247,
+      "confianza_gemini": 82,
+      "fecha_entrada": "2026-09-21T17:28:28.175834+02:00"
+    },
+    "MEME-USD": {
+      "unidades": 28311.085529878554,
+      "precio_compra": 0.00052549926,
+      "coste_total": 14.916236711197,
+      "max_precio_alcanzado": 0.00052549926,
+      "confianza_gemini": 78,
+      "fecha_entrada": "2026-09-21T17:28:28.308192+02:00"
+    },
+    "PEOPLE-USD": {
+      "unidades": 1852.375970518925,
+      "precio_compra": 0.008031552305,
+      "coste_total": 14.916236711197,
+      "max_precio_alcanzado": 0.008031552305,
+      "confianza_gemini": 75,
+      "fecha_entrada": "2026-09-21T17:28:28.436152+02:00"
     }
   },
   "historial": [
