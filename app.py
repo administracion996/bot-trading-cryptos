@@ -1,5 +1,5 @@
 import base64
-from datetime import datetime
+from datetime import datetime, timedelta
 import json
 import re
 import pandas as pd
@@ -12,11 +12,11 @@ st.set_page_config(
     page_title="Crypto Trading Dashboard", page_icon="🎯", layout="wide"
 )
 
-# Configuración GitHub (REPOS RUTA EXACTA)
+# Configuración GitHub (REPOSITORIO EXACTO)
 REPO = "administracion996/bot-trading-cryptos"
 GITHUB_TOKEN = st.secrets.get("GITHUB_TOKEN", "")
 
-# OPTIMIZACIÓN: Precompilación de expresiones regulares para procesar los logs al instante
+# Expresiones regulares precompiladas para máxima velocidad
 REGEX_FECHA = re.compile(r"\[(\d{4}-\d{2}-\d{2}\s+\d{2}:\d{2}:\d{2})\]")
 REGEX_TICKER = re.compile(r"([A-Z0-9]{2,10}-USD)")
 REGEX_VALOR = re.compile(r"(\d+(?:\.\d+)?)\s*€")
@@ -255,14 +255,30 @@ with tab1:
             st.info("No hay posiciones abiertas (100% liquidez).")
 
         st.divider()
+
+        # HISTORIAL DE OPERACIONES CON FILTRO DE FECHAS
         st.subheader("📜 Historial de Operaciones")
         if not df_historial_completo.empty:
+            f_min = df_historial_completo["Fecha"].min().date()
+            f_max = df_historial_completo["Fecha"].max().date()
+
+            col_f1, col_f2 = st.columns(2)
+            f_inicio = col_f1.date_input("Desde", f_min, key="f_ini_t1")
+            f_fin = col_f2.date_input("Hasta", f_max, key="f_fin_t1")
+
+            mask_t1 = (df_historial_completo["Fecha"].dt.date >= f_inicio) & (
+                df_historial_completo["Fecha"].dt.date <= f_fin
+            )
+            df_hist_filtrado = df_historial_completo[mask_t1]
+
             st.dataframe(
-                df_historial_completo.sort_values(
+                df_hist_filtrado.sort_values(
                     by="Fecha", ascending=False
                 ),
                 use_container_width=True,
             )
+        else:
+            st.info("Aún no hay operaciones registradas.")
     else:
         st.warning("Cargando datos de Francotirador...")
 
@@ -383,11 +399,24 @@ with tab3:
 
         st.divider()
 
+        # HISTORIAL DE SHORTS CON FILTRO DE FECHAS
         st.subheader("📜 Historial de Operaciones Short")
         df_hist_r = parsear_historial(historial_r_raw, es_short=True)
         if not df_hist_r.empty:
+            f_min_r = df_hist_r["Fecha"].min().date()
+            f_max_r = df_hist_r["Fecha"].max().date()
+
+            col_fr1, col_fr2 = st.columns(2)
+            f_ini_r = col_fr1.date_input("Desde", f_min_r, key="f_ini_t3")
+            f_fin_r = col_fr2.date_input("Hasta", f_max_r, key="f_fin_t3")
+
+            mask_t3 = (df_hist_r["Fecha"].dt.date >= f_ini_r) & (
+                df_hist_r["Fecha"].dt.date <= f_fin_r
+            )
+            df_hist_r_filtrado = df_hist_r[mask_t3]
+
             st.dataframe(
-                df_hist_r.sort_values(by="Fecha", ascending=False),
+                df_hist_r_filtrado.sort_values(by="Fecha", ascending=False),
                 use_container_width=True,
             )
         else:
