@@ -1,5 +1,5 @@
 {
-  "efectivo_disponible": 69.703482047503,
+  "efectivo_disponible": 39.830561170001,
   "vault_reservado": 0.0,
   "posiciones": {
     "TURBO-USD": {
@@ -17,6 +17,22 @@
       "max_precio_alcanzado": 3.692616e-06,
       "confianza_gemini": 78,
       "fecha_entrada": "2026-09-21T11:39:27.449524+02:00"
+    },
+    "WIF-USD": {
+      "unidades": 81.163466226512,
+      "precio_compra": 0.1835508799,
+      "coste_total": 14.936460438751,
+      "max_precio_alcanzado": 0.1835508799,
+      "confianza_gemini": 82,
+      "fecha_entrada": "2026-09-21T11:54:39.460243+02:00"
+    },
+    "FLOKI-USD": {
+      "unidades": 632384.9079408684,
+      "precio_compra": 2.3557845e-05,
+      "coste_total": 14.936460438751,
+      "max_precio_alcanzado": 2.3557845e-05,
+      "confianza_gemini": 78,
+      "fecha_entrada": "2026-09-21T11:54:39.651936+02:00"
     }
   },
   "historial": [
