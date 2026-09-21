@@ -1,7 +1,16 @@
 {
-  "efectivo_disponible": 99.675784904627,
+  "efectivo_disponible": 84.724417168933,
   "vault_reservado": 0.0,
-  "posiciones": {},
+  "posiciones": {
+    "MEME-USD": {
+      "unidades": 29863.83960183704,
+      "precio_compra": 0.000499349527,
+      "coste_total": 14.951367735694,
+      "max_precio_alcanzado": 0.000499349527,
+      "confianza_gemini": 82,
+      "fecha_entrada": "2026-09-21T05:51:14.298608+02:00"
+    }
+  },
   "historial": [
     {
       "ticker": "AVAX-USD",
