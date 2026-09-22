@@ -1,13 +1,7 @@
 {
-  "efectivo_disponible": 288.62,
+  "efectivo_disponible": 479.5,
   "total_cartera": 1097.87,
   "posiciones_abiertas": {
-    "AAVE-USD": {
-      "cantidad": 1.5211135822316049,
-      "precio_entrada": 126.02740665740203,
-      "timestamp_entrada": "2026-09-21 23:25:52",
-      "score_gemini": 80
-    },
     "LTC-USD": {
       "cantidad": 2.2863104091085167,
       "precio_entrada": 53.66287950717924,
@@ -496,7 +490,8 @@
     "[2026-09-22 01:31:20] [COMPRA \ud83d\udfe2] BCH-USD | Importe: 140.92 \u20ac | RSI: 23.0 | Score Gemini: 80",
     "[2026-09-22 02:25:44] [COMPRA \ud83d\udfe2] ETH-USD | Importe: 112.74 \u20ac | RSI: 23.8 | Score Gemini: 80",
     "[2026-09-22 02:31:59] [COMPRA \ud83d\udfe2] BTC-USD | Importe: 90.19 \u20ac | RSI: 23.2 | Score Gemini: 80",
-    "[2026-09-22 03:13:43] [COMPRA \ud83d\udfe2] INJ-USD | Importe: 72.15 \u20ac | RSI: 24.9 | Score Gemini: 80"
+    "[2026-09-22 03:13:43] [COMPRA \ud83d\udfe2] INJ-USD | Importe: 72.15 \u20ac | RSI: 24.9 | Score Gemini: 80",
+    "[2026-09-22 03:26:15] [VENTA \ud83d\udd34] AAVE-USD | Motivo: TIME STOP (240m) | PnL: -0.83 \u20ac | Score Gemini: 80"
   ],
   "reserva_intocable": 0.0,
   "fecha_control_diario": "2026-09-21",
@@ -504,35 +499,35 @@
   "meta_eur_dia": 53.56,
   "barrido_realizado": false,
   "telemetria": {
-    "ultima_actualizacion": "2026-09-22 03:24:09",
+    "ultima_actualizacion": "2026-09-22 03:26:15",
     "estado": "Vigilando Scalping 5m (Local Active)"
   },
   "radar_rsi": {
-    "BTC": 25.53,
-    "ETH": 34.45,
-    "SOL": 37.84,
-    "BNB": 33.93,
-    "XRP": 38.56,
-    "ADA": 50.96,
-    "AVAX": 47.74,
-    "DOT": 48.97,
-    "NEAR": 57.23,
-    "ATOM": 45.56,
-    "LTC": 37.22,
-    "BCH": 38.3,
-    "ETC": 40.24,
-    "LINK": 31.98,
-    "AAVE": 35.68,
-    "INJ": 34.5,
-    "FET": 36.91,
-    "ALGO": 47.1,
-    "XLM": 36.33,
+    "BTC": 26.39,
+    "ETH": 34.61,
+    "SOL": 34.02,
+    "BNB": 31.72,
+    "XRP": 36.41,
+    "ADA": 48.86,
+    "AVAX": 47.01,
+    "DOT": 46.47,
+    "NEAR": 59.43,
+    "ATOM": 47.84,
+    "LTC": 38.45,
+    "BCH": 37.37,
+    "ETC": 43.46,
+    "LINK": 28.57,
+    "AAVE": 35.96,
+    "INJ": 30.57,
+    "FET": 30.09,
+    "ALGO": 48.57,
+    "XLM": 32.63,
     "TRX": 98.91,
-    "DOGE": 42.63,
-    "SHIB": 44.9,
+    "DOGE": 34.6,
+    "SHIB": 38.64,
     "BONK": 56.25,
-    "FLOKI": 46.89,
-    "FIL": 58.75,
-    "ICP": 36.26
+    "FLOKI": 39.73,
+    "FIL": 62.26,
+    "ICP": 34.01
   }
 }
