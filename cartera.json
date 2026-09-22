@@ -1,5 +1,5 @@
 {
-  "efectivo_disponible": 626.78,
+  "efectivo_disponible": 320.91,
   "total_cartera": 1097.87,
   "posiciones_abiertas": {
     "FET-USD": {
@@ -18,6 +18,24 @@
       "cantidad": 23.45840804152607,
       "precio_entrada": 6.679651906583786,
       "timestamp_entrada": "2026-09-22 18:21:08",
+      "score_gemini": 80
+    },
+    "XRP-USD": {
+      "cantidad": 92.57542697227444,
+      "precio_entrada": 1.354095834065589,
+      "timestamp_entrada": "2026-09-22 18:31:36",
+      "score_gemini": 80
+    },
+    "ADA-USD": {
+      "cantidad": 463.1500296206608,
+      "precio_entrada": 0.21652767696492958,
+      "timestamp_entrada": "2026-09-22 18:31:36",
+      "score_gemini": 80
+    },
+    "DOGE-USD": {
+      "cantidad": 928.4747286672122,
+      "precio_entrada": 0.08640821071690752,
+      "timestamp_entrada": "2026-09-22 18:31:36",
       "score_gemini": 80
     }
   },
@@ -576,7 +594,10 @@
     "[2026-09-22 17:32:52] [VENTA \ud83d\udd34] FIL-USD | Motivo: TAKE PROFIT (+2.44%) | PnL: +2.65 \u20ac | Score Gemini: 80",
     "[2026-09-22 17:34:57] [VENTA \ud83d\udd34] TRX-USD | Motivo: TIME STOP (241m) | PnL: -0.52 \u20ac | Score Gemini: 80",
     "[2026-09-22 17:34:57] [COMPRA \ud83d\udfe2] TRX-USD | Importe: 195.87 \u20ac | RSI: 23.5 | Score Gemini: 80",
-    "[2026-09-22 18:21:08] [COMPRA \ud83d\udfe2] INJ-USD | Importe: 156.69 \u20ac | RSI: 23.6 | Score Gemini: 80"
+    "[2026-09-22 18:21:08] [COMPRA \ud83d\udfe2] INJ-USD | Importe: 156.69 \u20ac | RSI: 23.6 | Score Gemini: 80",
+    "[2026-09-22 18:31:36] [COMPRA \ud83d\udfe2] XRP-USD | Importe: 125.36 \u20ac | RSI: 24.0 | Score Gemini: 80",
+    "[2026-09-22 18:31:36] [COMPRA \ud83d\udfe2] ADA-USD | Importe: 100.28 \u20ac | RSI: 20.5 | Score Gemini: 80",
+    "[2026-09-22 18:31:36] [COMPRA \ud83d\udfe2] DOGE-USD | Importe: 80.23 \u20ac | RSI: 24.2 | Score Gemini: 80"
   ],
   "reserva_intocable": 0.0,
   "fecha_control_diario": "2026-09-21",
@@ -584,35 +605,35 @@
   "meta_eur_dia": 53.56,
   "barrido_realizado": false,
   "telemetria": {
-    "ultima_actualizacion": "2026-09-22 18:29:30",
+    "ultima_actualizacion": "2026-09-22 18:31:36",
     "estado": "Vigilando Scalping 5m (Local Active)"
   },
   "radar_rsi": {
-    "BTC": 44.66,
-    "ETH": 39.76,
-    "SOL": 42.53,
-    "BNB": 36.47,
-    "XRP": 31.75,
-    "ADA": 28.89,
-    "AVAX": 57.14,
-    "DOT": 54.63,
-    "NEAR": 54.68,
-    "ATOM": 43.94,
-    "LTC": 53.41,
-    "BCH": 50.96,
-    "ETC": 62.13,
-    "LINK": 34.27,
-    "AAVE": 33.45,
-    "INJ": 29.55,
-    "FET": 30.93,
-    "ALGO": 40.24,
-    "XLM": 40.64,
-    "TRX": 33.61,
-    "DOGE": 34.94,
-    "SHIB": 42.86,
-    "BONK": 37.5,
-    "FLOKI": 43.55,
-    "FIL": 55.58,
-    "ICP": 49.94
+    "BTC": 42.47,
+    "ETH": 36.07,
+    "SOL": 31.85,
+    "BNB": 26.06,
+    "XRP": 24.0,
+    "ADA": 20.54,
+    "AVAX": 43.65,
+    "DOT": 52.67,
+    "NEAR": 55.48,
+    "ATOM": 37.56,
+    "LTC": 55.43,
+    "BCH": 42.21,
+    "ETC": 56.84,
+    "LINK": 33.23,
+    "AAVE": 28.47,
+    "INJ": 22.85,
+    "FET": 28.54,
+    "ALGO": 37.25,
+    "XLM": 32.35,
+    "TRX": 30.39,
+    "DOGE": 24.19,
+    "SHIB": 33.33,
+    "BONK": 33.33,
+    "FLOKI": 46.55,
+    "FIL": 50.6,
+    "ICP": 42.53
   }
 }
