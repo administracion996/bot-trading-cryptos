@@ -1,16 +1,7 @@
 {
-  "efectivo_disponible": 80.223442767313,
+  "efectivo_disponible": 98.289141597754,
   "vault_reservado": 4.95,
-  "posiciones": {
-    "WIF-USD": {
-      "unidades": 81.163466226512,
-      "precio_compra": 0.1835508799,
-      "coste_total": 14.936460438751,
-      "max_precio_alcanzado": 0.226903110032,
-      "confianza_gemini": 82,
-      "fecha_entrada": "2026-09-21T11:54:39.460243+02:00"
-    }
-  },
+  "posiciones": {},
   "historial": [
     {
       "ticker": "AVAX-USD",
@@ -110,6 +101,17 @@
       "pnl_pct": 7.95,
       "motivo_salida": "Trailing Stop ATR (0.00002547\u20ac)",
       "fecha_salida": "2026-09-22T12:54:28.412641+02:00"
+    },
+    {
+      "ticker": "WIF-USD",
+      "precio_entrada": 0.1835508799,
+      "precio_salida": 0.223164348838,
+      "monto_invertido": 14.936460438751,
+      "ingreso_obtenido": 18.065698830441,
+      "beneficio_neto": 3.12923839169,
+      "pnl_pct": 21.58,
+      "motivo_salida": "Trailing Stop ATR (0.22372654\u20ac)",
+      "fecha_salida": "2026-09-22T22:12:27.008269+02:00"
     }
   ],
   "capital_base_dia": 99.006371380495,
