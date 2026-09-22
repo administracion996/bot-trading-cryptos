@@ -1,6 +1,6 @@
 {
-  "efectivo_disponible": 0.09,
-  "total_cartera": 100.35,
+  "efectivo_disponible": 0.0,
+  "total_cartera": 99.0,
   "reserva_intocable": 0.0,
   "fecha_control_diario": "2026-09-22",
   "saldo_inicio_dia": 100.04,
@@ -11,12 +11,6 @@
       "cantidad": 205.866538149105,
       "precio_entrada": 0.097198894876,
       "timestamp_entrada": "2026-09-22 09:29:48",
-      "tipo": "SHORT"
-    },
-    "FET-USD": {
-      "cantidad": 113.22546440124,
-      "precio_entrada": 0.176727029611,
-      "timestamp_entrada": "2026-09-22 10:03:16",
       "tipo": "SHORT"
     },
     "AVAX-USD": {
@@ -35,6 +29,24 @@
       "cantidad": 2.917234096063,
       "precio_entrada": 6.83181374676,
       "timestamp_entrada": "2026-09-22 10:13:55",
+      "tipo": "SHORT"
+    },
+    "NEAR-USD": {
+      "cantidad": 4.96935357066,
+      "precio_entrada": 3.905940626684,
+      "timestamp_entrada": "2026-09-22 10:45:20",
+      "tipo": "SHORT"
+    },
+    "ADA-USD": {
+      "cantidad": 0.0,
+      "precio_entrada": NaN,
+      "timestamp_entrada": "2026-09-22 10:45:20",
+      "tipo": "SHORT"
+    },
+    "AAVE-USD": {
+      "cantidad": 0.0,
+      "precio_entrada": NaN,
+      "timestamp_entrada": "2026-09-22 10:45:20",
       "tipo": "SHORT"
     }
   },
@@ -84,38 +96,42 @@
     "[2026-09-22 10:03:16] 🔴 APERTURA SHORT 113.22546440124 de FET-USD a 0.176444266364€ (20.01€) | Motivo: Bull Trap / Agotamiento",
     "[2026-09-22 10:07:31] 🔴 APERTURA SHORT 2.125014029615 de AVAX-USD a 9.396643844098€ (20.0€) | Motivo: Bull Trap / Agotamiento",
     "[2026-09-22 10:09:40] 🔴 APERTURA SHORT 0.085290815273 de BCH-USD a 234.11665061631€ (20.0€) | Motivo: Bull Trap / Agotamiento",
-    "[2026-09-22 10:13:55] 🔴 APERTURA SHORT 2.917234096063 de INJ-USD a 6.820882844765€ (19.93€) | Motivo: Bull Trap / Agotamiento"
+    "[2026-09-22 10:13:55] 🔴 APERTURA SHORT 2.917234096063 de INJ-USD a 6.820882844765€ (19.93€) | Motivo: Bull Trap / Agotamiento",
+    "[2026-09-22 10:45:20] 🟢 CIERRE SHORT FET-USD por STOP-LOSS (-3.27%). Capital Liberado: 19.32€ | PnL: -0.65€",
+    "[2026-09-22 10:45:20] 🔴 APERTURA SHORT 4.96935357066 de NEAR-USD a 3.899691121682€ (19.41€) | Motivo: Bull Trap / Agotamiento",
+    "[2026-09-22 10:45:20] 🔴 APERTURA SHORT 0.0 de ADA-USD a 0.21670479235€ (0.0€) | Motivo: Bull Trap / Agotamiento",
+    "[2026-09-22 10:45:20] 🔴 APERTURA SHORT 0.0 de AAVE-USD a 124.515997935305€ (0.0€) | Motivo: Bull Trap / Agotamiento"
   ],
   "telemetria": {
     "estado": "Vigilando Bull Traps & Agotamiento en Rupturas",
-    "ultima_actualizacion": "2026-09-22 10:30:40"
+    "ultima_actualizacion": "2026-09-22 10:45:20"
   },
   "radar_rsi": {
-    "BTC-USD": 63.81,
-    "ETH-USD": 49.16,
-    "SOL-USD": 39.6,
-    "BNB-USD": 40.93,
-    "XRP-USD": 54.74,
-    "ADA-USD": 48.71,
-    "AVAX-USD": 65.28,
-    "DOT-USD": 63.68,
-    "NEAR-USD": 64.62,
-    "ATOM-USD": 37.93,
-    "LTC-USD": 38.94,
-    "BCH-USD": 56.68,
-    "ETC-USD": 47.45,
-    "LINK-USD": 44.13,
-    "AAVE-USD": 43.05,
-    "INJ-USD": 59.93,
-    "FET-USD": 71.21,
-    "ALGO-USD": 38.57,
-    "XLM-USD": 38.71,
-    "TRX-USD": 55.57,
-    "DOGE-USD": 32.22,
-    "SHIB-USD": 21.43,
-    "BONK-USD": 30.3,
-    "FLOKI-USD": 36.65,
-    "FIL-USD": 50.93,
-    "ICP-USD": 38.66
+    "BTC-USD": 87.76,
+    "ETH-USD": 73.45,
+    "SOL-USD": 74.78,
+    "BNB-USD": 68.73,
+    "XRP-USD": 78.74,
+    "ADA-USD": 72.13,
+    "AVAX-USD": 77.46,
+    "DOT-USD": 83.8,
+    "NEAR-USD": 70.99,
+    "ATOM-USD": 70.53,
+    "LTC-USD": 62.32,
+    "BCH-USD": 71.24,
+    "ETC-USD": 68.63,
+    "LINK-USD": 74.93,
+    "AAVE-USD": 70.45,
+    "INJ-USD": 68.92,
+    "FET-USD": 90.87,
+    "ALGO-USD": 63.69,
+    "XLM-USD": 58.67,
+    "TRX-USD": 65.97,
+    "DOGE-USD": 54.1,
+    "SHIB-USD": 66.67,
+    "BONK-USD": 41.38,
+    "FLOKI-USD": 58.45,
+    "FIL-USD": 71.17,
+    "ICP-USD": 64.56
   }
 }
