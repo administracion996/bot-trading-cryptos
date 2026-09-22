@@ -1,12 +1,12 @@
 {
-  "efectivo_disponible": 69.133450502993,
-  "vault_reservado": 0.0,
+  "efectivo_disponible": 64.183450502993,
+  "vault_reservado": 4.95,
   "posiciones": {
     "WIF-USD": {
       "unidades": 81.163466226512,
       "precio_compra": 0.1835508799,
       "coste_total": 14.936460438751,
-      "max_precio_alcanzado": 0.211415298734,
+      "max_precio_alcanzado": 0.226903110032,
       "confianza_gemini": 82,
       "fecha_entrada": "2026-09-21T11:54:39.460243+02:00"
     },
@@ -14,7 +14,7 @@
       "unidades": 632384.9079408684,
       "precio_compra": 2.3557845e-05,
       "coste_total": 14.936460438751,
-      "max_precio_alcanzado": 2.5328696e-05,
+      "max_precio_alcanzado": 2.6090238e-05,
       "confianza_gemini": 78,
       "fecha_entrada": "2026-09-21T11:54:39.651936+02:00"
     }
@@ -110,6 +110,6 @@
     }
   ],
   "capital_base_dia": 99.006371380495,
-  "barrido_realizado": false,
+  "barrido_realizado": true,
   "meta_eur_dia": 4.95
 }
