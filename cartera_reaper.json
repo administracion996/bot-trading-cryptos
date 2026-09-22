@@ -1,12 +1,25 @@
 {
-  "efectivo_disponible": 101.03,
+  "efectivo_disponible": 60.61,
   "total_cartera": 101.03,
   "reserva_intocable": 0.0,
   "fecha_control_diario": "2026-09-22",
   "saldo_inicio_dia": 100.04,
   "meta_eur_dia": 5.0,
   "barrido_realizado": false,
-  "posiciones_abiertas": {},
+  "posiciones_abiertas": {
+    "ALGO-USD": {
+      "cantidad": 210.498238093544,
+      "precio_entrada": 0.096010304804,
+      "timestamp_entrada": "2026-09-22 14:30:10",
+      "tipo": "SHORT"
+    },
+    "FET-USD": {
+      "cantidad": 109.486566642654,
+      "precio_entrada": 0.184588855233,
+      "timestamp_entrada": "2026-09-22 14:30:10",
+      "tipo": "SHORT"
+    }
+  },
   "historial_operaciones": [
     "[2026-09-21 20:24:05] 🔴 APERTURA SHORT 0.007161364474 de BNB-USD a 697.073863245398€ (5.0€) | Motivo: Bull Trap / Agotamiento",
     "[2026-09-21 20:27:17] 🔴 APERTURA SHORT 15.190839144963 de XRP-USD a 1.314476429475€ (20.0€) | Motivo: Bull Trap / Agotamiento",
@@ -80,38 +93,40 @@
     "[2026-09-22 14:14:59] 🟢 CIERRE SHORT INJ-USD por TAKE-PROFIT RÁPIDO (Pánico cobrado: +0.76%). Neto: 20.19€ | PnL: +0.15€",
     "[2026-09-22 14:16:05] 🟢 CIERRE SHORT LINK-USD por TAKE-PROFIT RÁPIDO (Pánico cobrado: +0.90%). Neto: 20.2€ | PnL: +0.18€",
     "[2026-09-22 14:16:05] 🟢 CIERRE SHORT XRP-USD por TAKE-PROFIT RÁPIDO (Pánico cobrado: +0.95%). Neto: 20.21€ | PnL: +0.19€",
-    "[2026-09-22 14:16:05] 🟢 CIERRE SHORT FET-USD por TAKE-PROFIT RÁPIDO (Pánico cobrado: +1.01%). Neto: 20.27€ | PnL: +0.20€"
+    "[2026-09-22 14:16:05] 🟢 CIERRE SHORT FET-USD por TAKE-PROFIT RÁPIDO (Pánico cobrado: +1.01%). Neto: 20.27€ | PnL: +0.20€",
+    "[2026-09-22 14:30:10] 🔴 APERTURA SHORT 210.498238093544 de ALGO-USD a 0.095856688316€ (20.21€) | Motivo: Bull Trap / Agotamiento",
+    "[2026-09-22 14:30:10] 🔴 APERTURA SHORT 109.486566642654 de FET-USD a 0.184293513065€ (20.21€) | Motivo: Bull Trap / Agotamiento"
   ],
   "telemetria": {
     "estado": "Vigilando Bull Traps & Agotamiento en Rupturas",
-    "ultima_actualizacion": "2026-09-22 14:17:36"
+    "ultima_actualizacion": "2026-09-22 14:30:10"
   },
   "radar_rsi": {
-    "BTC-USD": 52.18,
-    "ETH-USD": 52.66,
-    "SOL-USD": 57.94,
-    "BNB-USD": 48.17,
-    "XRP-USD": 58.42,
-    "ADA-USD": 54.03,
-    "AVAX-USD": 35.45,
-    "DOT-USD": 48.33,
-    "NEAR-USD": 57.41,
-    "ATOM-USD": 43.53,
-    "LTC-USD": 57.46,
-    "BCH-USD": 52.01,
-    "ETC-USD": 60.73,
-    "LINK-USD": 49.56,
-    "AAVE-USD": 60.1,
-    "INJ-USD": 55.53,
-    "FET-USD": 65.09,
-    "ALGO-USD": 61.38,
-    "XLM-USD": 51.64,
-    "TRX-USD": 25.53,
-    "DOGE-USD": 53.98,
-    "SHIB-USD": 47.37,
-    "BONK-USD": 58.33,
-    "FLOKI-USD": 48.98,
-    "FIL-USD": 53.24,
-    "ICP-USD": 47.26
+    "BTC-USD": 53.37,
+    "ETH-USD": 55.88,
+    "SOL-USD": 57.8,
+    "BNB-USD": 54.14,
+    "XRP-USD": 54.31,
+    "ADA-USD": 56.86,
+    "AVAX-USD": 39.21,
+    "DOT-USD": 36.73,
+    "NEAR-USD": 64.14,
+    "ATOM-USD": 49.62,
+    "LTC-USD": 46.6,
+    "BCH-USD": 56.85,
+    "ETC-USD": 55.02,
+    "LINK-USD": 44.33,
+    "AAVE-USD": 62.15,
+    "INJ-USD": 55.95,
+    "FET-USD": 68.79,
+    "ALGO-USD": 67.62,
+    "XLM-USD": 51.86,
+    "TRX-USD": 32.29,
+    "DOGE-USD": 52.87,
+    "SHIB-USD": 61.9,
+    "BONK-USD": 60.0,
+    "FLOKI-USD": 57.14,
+    "FIL-USD": 48.35,
+    "ICP-USD": 40.19
   }
 }
