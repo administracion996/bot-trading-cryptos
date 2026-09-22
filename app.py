@@ -10,17 +10,14 @@ import streamlit as st
 import yfinance as yf
 import pytz
 
-# Configuración de página
 st.set_page_config(
     page_title="Crypto Trading Dashboard", page_icon="🎯", layout="wide"
 )
 
-# Configuración GitHub
 REPO = "administracion996/bot-trading-cryptos"
 GITHUB_TOKEN = st.secrets.get("GITHUB_TOKEN", "")
 tz_madrid = pytz.timezone("Europe/Madrid")
 
-# Expresiones regulares para procesamiento rápido
 REGEX_FECHA = re.compile(r"\[(\d{4}-\d{2}-\d{2}\s+\d{2}:\d{2}:\d{2})\]")
 REGEX_TICKER = re.compile(r"([A-Z0-9]{2,10}-USD)")
 REGEX_VALOR = re.compile(r"(\d+(?:\.\d+)?)\s*€")
@@ -29,12 +26,10 @@ REGEX_PNL = re.compile(r"PnL:\s*([+-]?\d+(?:\.\d+)?)\s*€")
 
 
 def safe_float(val, default=0.0):
-    if val is None:
-        return default
+    if val is None: return default
     try:
         f = float(val)
-        if math.isnan(f) or math.isinf(f):
-            return default
+        if math.isnan(f) or math.isinf(f): return default
         return f
     except Exception:
         return default
@@ -58,10 +53,37 @@ def cargar_cartera(file_path="cartera.json"):
     return None
 
 
+def obtener_sincro(cartera_data):
+    if not isinstance(cartera_data, dict): return "Sin datos"
+    claves = ["ultima_actualizacion", "timestamp", "fecha", "last_update", "fecha_actualizacion"]
+    
+    tel = cartera_data.get("telemetria")
+    if isinstance(tel, dict):
+        for k in claves:
+            val = tel.get(k)
+            if val and str(val).strip(): return str(val)
+            
+    for k in claves:
+        val = cartera_data.get(k)
+        if val and str(val).strip(): return str(val)
+        
+    return "Sincronizado"
+
+
+def obtener_estado(cartera_data, estado_defecto="Activo"):
+    if not isinstance(cartera_data, dict): return estado_defecto
+    tel = cartera_data.get("telemetria")
+    if isinstance(tel, dict):
+        est = tel.get("estado")
+        if est and str(est).strip(): return str(est)
+    est = cartera_data.get("estado")
+    if est and str(est).strip(): return str(est)
+    return estado_defecto
+
+
 @st.cache_data(ttl=60)
 def obtener_precios_posiciones(pos_tickers_tuple):
-    if not pos_tickers_tuple:
-        return {}, 0.92
+    if not pos_tickers_tuple: return {}, 0.92
     precios_live, tasa_eur = {}, 0.92
     try:
         df_live = yf.download(
@@ -69,8 +91,7 @@ def obtener_precios_posiciones(pos_tickers_tuple):
         )["Close"]
         try:
             df_t = yf.Ticker("EUR=X").history(period="1d")
-            if not df_t.empty:
-                tasa_eur = float(df_t["Close"].iloc[-1])
+            if not df_t.empty: tasa_eur = float(df_t["Close"].iloc[-1])
         except Exception:
             pass
 
@@ -92,96 +113,45 @@ def obtener_precios_posiciones(pos_tickers_tuple):
 def parsear_historial(historial_raw, es_short=False):
     registros = []
     if not isinstance(historial_raw, list):
-        return pd.DataFrame(
-            columns=[
-                "Fecha",
-                "Tipo",
-                "Ticker",
-                "Valor (€)",
-                "PnL (€)",
-                "Score_Gemini",
-                "Log",
-            ]
-        )
+        return pd.DataFrame(columns=["Fecha", "Tipo", "Ticker", "Valor (€)", "PnL (€)", "Score_Gemini", "Log"])
 
     for log in historial_raw:
         try:
-            # 1. Si es diccionario (Formatos variados de Cazador / Memecoins)
             if isinstance(log, dict):
-                fecha_raw = (
-                    log.get("fecha")
-                    or log.get("Fecha")
-                    or log.get("timestamp")
-                    or ""
-                )
+                fecha_raw = log.get("fecha") or log.get("Fecha") or log.get("timestamp") or ""
                 try:
-                    fecha_dt = datetime.strptime(
-                        str(fecha_raw), "%Y-%m-%d %H:%M:%S"
-                    )
+                    fecha_dt = datetime.strptime(str(fecha_raw), "%Y-%m-%d %H:%M:%S")
                 except Exception:
                     fecha_dt = datetime.now(tz_madrid)
 
-                ticker = str(
-                    log.get("ticker")
-                    or log.get("Ticker")
-                    or log.get("moneda")
-                    or "DESCONOCIDO"
-                ).replace("-USD", "")
-                valor = safe_float(
-                    log.get("valor")
-                    or log.get("importe")
-                    or log.get("monto")
-                    or log.get("precio", 0.0)
-                )
-                pnl_eur = safe_float(
-                    log.get("pnl")
-                    or log.get("PnL (€)")
-                    or log.get("pnl_eur")
-                    or 0.0
-                )
+                ticker = str(log.get("ticker") or log.get("Ticker") or log.get("moneda") or "DESCONOCIDO").replace("-USD", "")
+                valor = safe_float(log.get("valor") or log.get("importe") or log.get("monto") or log.get("precio", 0.0))
+                pnl_eur = safe_float(log.get("pnl") or log.get("PnL (€)") or log.get("pnl_eur") or 0.0)
                 score_gemini = log.get("score") or log.get("score_gemini")
 
-                tipo = str(
-                    log.get("tipo") or log.get("Tipo") or "OPERACIÓN"
-                ).upper()
-                if "COMPRA" in tipo:
-                    tipo = "COMPRA 🟢"
-                elif "VENTA" in tipo:
-                    tipo = "VENTA 🔴" if not es_short else "CIERRE SHORT 🟢"
-                elif "SHORT" in tipo:
-                    tipo = "APERTURA SHORT 🔴"
+                tipo = str(log.get("tipo") or log.get("Tipo") or "OPERACIÓN").upper()
+                if "COMPRA" in tipo: tipo = "COMPRA 🟢"
+                elif "VENTA" in tipo: tipo = "VENTA 🔴" if not es_short else "CIERRE SHORT 🟢"
+                elif "SHORT" in tipo: tipo = "APERTURA SHORT 🔴"
 
                 registros.append({
-                    "Fecha": fecha_dt,
-                    "Tipo": tipo,
-                    "Ticker": ticker,
-                    "Valor (€)": valor,
-                    "PnL (€)": round(pnl_eur, 2),
-                    "Score_Gemini": score_gemini,
-                    "Log": str(log),
+                    "Fecha": fecha_dt, "Tipo": tipo, "Ticker": ticker,
+                    "Valor (€)": valor, "PnL (€)": round(pnl_eur, 2),
+                    "Score_Gemini": score_gemini, "Log": str(log)
                 })
                 continue
 
-            # 2. Si es cadena de texto plano (Sniper / Reaper)
-            if not isinstance(log, str):
-                log = str(log)
+            if not isinstance(log, str): log = str(log)
 
             m_fecha = REGEX_FECHA.search(log)
-            if not m_fecha:
-                continue
+            if not m_fecha: continue
             try:
-                fecha_dt = datetime.strptime(
-                    m_fecha.group(1), "%Y-%m-%d %H:%M:%S"
-                )
+                fecha_dt = datetime.strptime(m_fecha.group(1), "%Y-%m-%d %H:%M:%S")
             except Exception:
                 fecha_dt = datetime.now(tz_madrid)
 
             m_ticker = REGEX_TICKER.search(log)
-            ticker = (
-                m_ticker.group(1).replace("-USD", "")
-                if m_ticker
-                else ("EUR" if "BARRIDO" in log else "DESCONOCIDO")
-            )
+            ticker = m_ticker.group(1).replace("-USD", "") if m_ticker else ("EUR" if "BARRIDO" in log else "DESCONOCIDO")
             val_matches = REGEX_VALOR.findall(log)
             valor = float(val_matches[-1]) if val_matches else 0.0
             m_score = REGEX_SCORE.search(log)
@@ -190,45 +160,25 @@ def parsear_historial(historial_raw, es_short=False):
             pnl_eur = float(m_pnl.group(1)) if m_pnl else 0.0
 
             tipo = "OTRO ⚪"
-            if "COMPRA" in log:
-                tipo = "COMPRA 🟢"
-            elif "VENTA" in log and not es_short:
-                tipo = "VENTA 🔴"
-            elif "APERTURA SHORT" in log:
-                tipo = "APERTURA SHORT 🔴"
-            elif "CIERRE SHORT" in log:
-                tipo = "CIERRE SHORT 🟢"
+            if "COMPRA" in log: tipo = "COMPRA 🟢"
+            elif "VENTA" in log and not es_short: tipo = "VENTA 🔴"
+            elif "APERTURA SHORT" in log: tipo = "APERTURA SHORT 🔴"
+            elif "CIERRE SHORT" in log: tipo = "CIERRE SHORT 🟢"
 
             registros.append({
-                "Fecha": fecha_dt,
-                "Tipo": tipo,
-                "Ticker": ticker,
-                "Valor (€)": valor,
-                "PnL (€)": round(pnl_eur, 2),
-                "Score_Gemini": score_gemini,
-                "Log": log,
+                "Fecha": fecha_dt, "Tipo": tipo, "Ticker": ticker,
+                "Valor (€)": valor, "PnL (€)": round(pnl_eur, 2),
+                "Score_Gemini": score_gemini, "Log": log
             })
         except Exception:
             continue
 
     if not registros:
-        return pd.DataFrame(
-            columns=[
-                "Fecha",
-                "Tipo",
-                "Ticker",
-                "Valor (€)",
-                "PnL (€)",
-                "Score_Gemini",
-                "Log",
-            ]
-        )
+        return pd.DataFrame(columns=["Fecha", "Tipo", "Ticker", "Valor (€)", "PnL (€)", "Score_Gemini", "Log"])
     return pd.DataFrame(registros)
 
 
-def calcular_metricas_live(
-    efectivo, posiciones, df_historial, precios_live, es_short=False
-):
+def calcular_metricas_live(efectivo, posiciones, df_historial, precios_live, es_short=False):
     hoy = datetime.now(tz_madrid).date()
     pnl_realizado = 0.0
     if not df_historial.empty and "Fecha" in df_historial.columns:
@@ -241,12 +191,9 @@ def calcular_metricas_live(
 
     if isinstance(posiciones, dict):
         for t, pos in posiciones.items():
-            if not isinstance(pos, dict):
-                continue
+            if not isinstance(pos, dict): continue
             cant = safe_float(pos.get("cantidad") or pos.get("unidades") or 0)
-            p_ent = safe_float(
-                pos.get("precio_entrada") or pos.get("precio") or 0
-            )
+            p_ent = safe_float(pos.get("precio_entrada") or pos.get("precio") or 0)
             p_act = precios_live.get(t, p_ent)
             inv_inicial = cant * p_ent
 
@@ -268,36 +215,24 @@ def calcular_metricas_live(
 
 def generar_tabla_posiciones(posiciones, precios_live, es_short=False):
     filas = []
-    if not isinstance(posiciones, dict):
-        return pd.DataFrame(filas)
+    if not isinstance(posiciones, dict): return pd.DataFrame(filas)
 
     ahora = datetime.now(tz_madrid)
     for ticker, pos in posiciones.items():
-        if not isinstance(pos, dict):
-            continue
+        if not isinstance(pos, dict): continue
         cant = safe_float(pos.get("cantidad") or pos.get("unidades") or 0)
-        p_ent = safe_float(
-            pos.get("precio_entrada") or pos.get("precio") or 0
-        )
+        p_ent = safe_float(pos.get("precio_entrada") or pos.get("precio") or 0)
         p_act = precios_live.get(ticker, p_ent)
         inversion = cant * p_ent
 
-        pnl_flotante = (
-            (p_ent - p_act) * cant if es_short else (p_act - p_ent) * cant
-        )
-        pct_pnl = (
-            ((p_ent - p_act) / p_ent * 100)
-            if es_short and p_ent > 0
-            else (((p_act - p_ent) / p_ent * 100) if not es_short and p_ent > 0 else 0.0)
-        )
+        pnl_flotante = (p_ent - p_act) * cant if es_short else (p_act - p_ent) * cant
+        pct_pnl = (((p_ent - p_act) / p_ent * 100) if es_short and p_ent > 0 else (((p_act - p_ent) / p_ent * 100) if not es_short and p_ent > 0 else 0.0))
 
         t_restante = "N/A"
         timestamp = pos.get("timestamp_entrada") or pos.get("fecha") or pos.get("timestamp")
         if timestamp:
             try:
-                f_ent = tz_madrid.localize(
-                    datetime.strptime(str(timestamp), "%Y-%m-%d %H:%M:%S")
-                )
+                f_ent = tz_madrid.localize(datetime.strptime(str(timestamp), "%Y-%m-%d %H:%M:%S"))
                 mins = (ahora - f_ent).total_seconds() / 60
                 mins_restantes = max(0, 240 - mins)
                 t_restante = f"{int(mins_restantes)} min"
@@ -322,109 +257,45 @@ def mostrar_historial_con_filtros(df_historial, key_prefix):
         st.info("Aún no hay operaciones registradas.")
         return
 
-    opciones = [
-        "Todo",
-        "Hoy",
-        "Ayer",
-        "Esta semana",
-        "La semana pasada",
-        "Este mes",
-        "El mes pasado",
-        "Personalizado",
-    ]
+    opciones = ["Todo", "Hoy", "Ayer", "Esta semana", "La semana pasada", "Este mes", "El mes pasado", "Personalizado"]
     col_filtro, col_totales = st.columns([2, 1])
-    seleccion = col_filtro.selectbox(
-        "📅 Selecciona el periodo:",
-        opciones,
-        index=0,
-        key=f"sel_{key_prefix}",
-    )
+    seleccion = col_filtro.selectbox("📅 Selecciona el periodo:", opciones, index=0, key=f"sel_{key_prefix}")
 
     hoy = datetime.now(tz_madrid).date()
     df_filtrado = df_historial.copy()
 
-    if seleccion == "Hoy":
-        df_filtrado = df_historial[df_historial["Fecha"].dt.date == hoy]
-    elif seleccion == "Ayer":
-        df_filtrado = df_historial[
-            df_historial["Fecha"].dt.date == (hoy - timedelta(days=1))
-        ]
-    elif seleccion == "Esta semana":
-        df_filtrado = df_historial[
-            df_historial["Fecha"].dt.date
-            >= (hoy - timedelta(days=hoy.weekday()))
-        ]
+    if seleccion == "Hoy": df_filtrado = df_historial[df_historial["Fecha"].dt.date == hoy]
+    elif seleccion == "Ayer": df_filtrado = df_historial[df_historial["Fecha"].dt.date == (hoy - timedelta(days=1))]
+    elif seleccion == "Esta semana": df_filtrado = df_historial[df_historial["Fecha"].dt.date >= (hoy - timedelta(days=hoy.weekday()))]
     elif seleccion == "La semana pasada":
         ini_sp = hoy - timedelta(days=hoy.weekday() + 7)
-        df_filtrado = df_historial[
-            (df_historial["Fecha"].dt.date >= ini_sp)
-            & (df_historial["Fecha"].dt.date <= ini_sp + timedelta(days=6))
-        ]
-    elif seleccion == "Este mes":
-        df_filtrado = df_historial[
-            (df_historial["Fecha"].dt.month == hoy.month)
-            & (df_historial["Fecha"].dt.year == hoy.year)
-        ]
+        df_filtrado = df_historial[(df_historial["Fecha"].dt.date >= ini_sp) & (df_historial["Fecha"].dt.date <= ini_sp + timedelta(days=6))]
+    elif seleccion == "Este mes": df_filtrado = df_historial[(df_historial["Fecha"].dt.month == hoy.month) & (df_historial["Fecha"].dt.year == hoy.year)]
     elif seleccion == "El mes pasado":
         mp = hoy.replace(day=1) - timedelta(days=1)
-        df_filtrado = df_historial[
-            (df_historial["Fecha"].dt.month == mp.month)
-            & (df_historial["Fecha"].dt.year == mp.year)
-        ]
+        df_filtrado = df_historial[(df_historial["Fecha"].dt.month == mp.month) & (df_historial["Fecha"].dt.year == mp.year)]
     elif seleccion == "Personalizado":
         c1, c2 = st.columns(2)
-        f_min = (
-            df_historial["Fecha"].min().date()
-            if not df_historial.empty
-            else hoy
-        )
-        f_max = (
-            df_historial["Fecha"].max().date()
-            if not df_historial.empty
-            else hoy
-        )
+        f_min = df_historial["Fecha"].min().date() if not df_historial.empty else hoy
+        f_max = df_historial["Fecha"].max().date() if not df_historial.empty else hoy
         f_inicio = c1.date_input("Desde", f_min, key=f"ini_{key_prefix}")
         f_fin = c2.date_input("Hasta", f_max, key=f"fin_{key_prefix}")
-        df_filtrado = df_historial[
-            (df_historial["Fecha"].dt.date >= f_inicio)
-            & (df_historial["Fecha"].dt.date <= f_fin)
-        ]
+        df_filtrado = df_historial[(df_historial["Fecha"].dt.date >= f_inicio) & (df_historial["Fecha"].dt.date <= f_fin)]
 
-    total_pnl = (
-        safe_float(df_filtrado["PnL (€)"].sum())
-        if not df_filtrado.empty
-        else 0.0
-    )
-    ops_cerradas = (
-        len(df_filtrado[df_filtrado["PnL (€)"] != 0])
-        if not df_filtrado.empty
-        else 0
-    )
-    col_totales.metric(
-        f"💰 Beneficio ({seleccion})",
-        f"{total_pnl:+.2f} €",
-        f"{ops_cerradas} cierres",
-    )
+    total_pnl = safe_float(df_filtrado["PnL (€)"].sum()) if not df_filtrado.empty else 0.0
+    ops_cerradas = len(df_filtrado[df_filtrado["PnL (€)"] != 0]) if not df_filtrado.empty else 0
+    col_totales.metric(f"💰 Beneficio ({seleccion})", f"{total_pnl:+.2f} €", f"{ops_cerradas} cierres")
 
     if df_filtrado.empty:
         st.warning("No hay operaciones en este rango de fechas.")
     else:
         df_chart = df_filtrado[df_filtrado["PnL (€)"] != 0]
         if not df_chart.empty:
-            pnl_agrupado = (
-                df_chart.groupby("Ticker")["PnL (€)"]
-                .sum()
-                .reset_index()
-                .sort_values("PnL (€)", ascending=False)
-            )
+            pnl_agrupado = df_chart.groupby("Ticker")["PnL (€)"].sum().reset_index().sort_values("PnL (€)", ascending=False)
             fig = go.Figure(data=[
                 go.Bar(
-                    x=pnl_agrupado["Ticker"],
-                    y=pnl_agrupado["PnL (€)"],
-                    marker_color=[
-                        "#2ecc71" if val > 0 else "#e74c3c"
-                        for val in pnl_agrupado["PnL (€)"]
-                    ],
+                    x=pnl_agrupado["Ticker"], y=pnl_agrupado["PnL (€)"],
+                    marker_color=["#2ecc71" if val > 0 else "#e74c3c" for val in pnl_agrupado["PnL (€)"]],
                     text=[f"{val:+.2f}€" for val in pnl_agrupado["PnL (€)"]],
                     textposition="auto",
                 )
@@ -437,36 +308,24 @@ def mostrar_historial_con_filtros(df_historial, key_prefix):
             )
             st.plotly_chart(fig, use_container_width=True)
 
-        st.dataframe(
-            df_filtrado.sort_values(by="Fecha", ascending=False),
-            use_container_width=True,
-        )
+        st.dataframe(df_filtrado.sort_values(by="Fecha", ascending=False), use_container_width=True)
 
 
 def color_rsi(val, inverso=False):
-    if not isinstance(val, (int, float)):
-        return ""
+    if not isinstance(val, (int, float)): return ""
     if inverso:
-        if val >= 70:
-            return 'background-color: #ff4b4b; color: white; font-weight: bold;'
-        elif val >= 60:
-            return 'background-color: #ffa500; color: black; font-weight: bold;'
+        if val >= 70: return 'background-color: #ff4b4b; color: white; font-weight: bold;'
+        elif val >= 60: return 'background-color: #ffa500; color: black; font-weight: bold;'
     else:
-        if val <= 25:
-            return 'background-color: #ff4b4b; color: white; font-weight: bold;'
-        elif val <= 32:
-            return 'background-color: #ffa500; color: black; font-weight: bold;'
+        if val <= 25: return 'background-color: #ff4b4b; color: white; font-weight: bold;'
+        elif val <= 32: return 'background-color: #ffa500; color: black; font-weight: bold;'
     return ""
 
 
 # ==========================================
 # ESTRUCTURA DE PESTAÑAS (3 BOTS)
 # ==========================================
-tab1, tab2, tab3 = st.tabs([
-    "🎯 Bot 1: Francotirador",
-    "⚡ Bot 2: Cazador Memecoins",
-    "💀 Bot 3: Reaper Short",
-])
+tab1, tab2, tab3 = st.tabs(["🎯 Bot 1: Francotirador", "⚡ Bot 2: Cazador Memecoins", "💀 Bot 3: Reaper Short"])
 
 # ------------------------------------------
 # TAB 1: BOT FRANCOTIRADOR
@@ -475,71 +334,36 @@ with tab1:
     cartera = cargar_cartera("cartera.json")
     st.title("🎯 Dashboard Crypto Sniper")
     if cartera:
-        efectivo = safe_float(
-            cartera.get("efectivo_disponible") or cartera.get("efectivo")
-        )
-        reserva = safe_float(
-            cartera.get("reserva_intocable") or cartera.get("reserva")
-        )
+        efectivo = safe_float(cartera.get("efectivo_disponible") or cartera.get("efectivo"))
+        reserva = safe_float(cartera.get("reserva_intocable") or cartera.get("reserva"))
         meta_dia = safe_float(cartera.get("meta_eur_dia"))
         posiciones = cartera.get("posiciones_abiertas", {})
         df_hist = parsear_historial(cartera.get("historial_operaciones", []))
 
-        precios_live, _ = obtener_precios_posiciones(
-            tuple(posiciones.keys()) if isinstance(posiciones, dict) else ()
-        )
-        total_live, pnl_hoy = calcular_metricas_live(
-            efectivo, posiciones, df_hist, precios_live, es_short=False
-        )
+        precios_live, _ = obtener_precios_posiciones(tuple(posiciones.keys()) if isinstance(posiciones, dict) else ())
+        total_live, pnl_hoy = calcular_metricas_live(efectivo, posiciones, df_hist, precios_live, es_short=False)
 
         c1, c2, c3, c4 = st.columns(4)
         c1.metric("Capital Activo (Trabajo)", f"{total_live:.2f} €")
         c2.metric("Efectivo Libre", f"{efectivo:.2f} €")
         c3.metric("🏦 Beneficios Asegurados (Reserva)", f"{reserva:.2f} €")
-        c4.metric(
-            "📈 PnL Hoy (Abiertas + Cerradas)",
-            f"{pnl_hoy:+.2f} €",
-            f"Meta: {meta_dia:.2f}€",
-        )
+        c4.metric("📈 PnL Hoy (Abiertas + Cerradas)", f"{pnl_hoy:+.2f} €", f"Meta: {meta_dia:.2f}€")
         st.divider()
 
-        tel = cartera.get("telemetria", {})
-        sincro_txt = (
-            tel.get("ultima_actualizacion")
-            or cartera.get("ultima_actualizacion")
-            or "Esperando sincronización..."
-        )
-        estado_txt = (
-            tel.get("estado") or cartera.get("estado") or "Vigilando mercado"
-        )
-
         c_t1, c_t2 = st.columns(2)
-        c_t1.info(f"⏱️ **Última sincro:** {sincro_txt}")
-        c_t2.caption(f"🟢 **Estado:** {estado_txt}")
+        c_t1.info(f"⏱️ **Última sincro:** {obtener_sincro(cartera)}")
+        c_t2.caption(f"🟢 **Estado:** {obtener_estado(cartera, 'Vigilando mercado')}")
 
         radar = cartera.get("radar_rsi", {})
         if radar and isinstance(radar, dict):
             with st.expander("👁️ Radar Sniper (Sobreventa RSI <= 25)", expanded=True):
-                df_radar = pd.DataFrame(
-                    list(radar.items()), columns=["Activo", "RSI"]
-                ).sort_values(by="RSI", ascending=True)
-                st.dataframe(
-                    df_radar.style.map(
-                        lambda x: color_rsi(x, False), subset=["RSI"]
-                    ),
-                    use_container_width=True,
-                    height=200,
-                )
+                df_radar = pd.DataFrame(list(radar.items()), columns=["Activo", "RSI"]).sort_values(by="RSI", ascending=True)
+                st.dataframe(df_radar.style.map(lambda x: color_rsi(x, False), subset=["RSI"]), use_container_width=True, height=200)
 
         st.divider()
         st.subheader("📌 Posiciones Actuales")
-        if posiciones and isinstance(posiciones, dict):
-            st.dataframe(
-                generar_tabla_posiciones(posiciones, precios_live),
-                use_container_width=True,
-            )
-        else:
-            st.info("100% liquidez disponible.")
+        if posiciones and isinstance(posiciones, dict): st.dataframe(generar_tabla_posiciones(posiciones, precios_live), use_container_width=True)
+        else: st.info("100% liquidez disponible.")
 
         st.divider()
         st.subheader("📜 Historial y Gráficos")
@@ -554,33 +378,15 @@ with tab2:
     cartera_c = cargar_cartera("cartera_cazador.json")
     st.title("⚡ Dashboard Bot Cazador")
     if cartera_c:
-        efectivo_c = safe_float(
-            cartera_c.get("efectivo_disponible")
-            or cartera_c.get("efectivo")
-            or cartera_c.get("saldo_disponible")
-        )
-        reserva_c = safe_float(
-            cartera_c.get("reserva_intocable") or cartera_c.get("reserva")
-        )
-        posiciones_c = (
-            cartera_c.get("posiciones_abiertas")
-            or cartera_c.get("posiciones")
-            or {}
-        )
+        efectivo_c = safe_float(cartera_c.get("efectivo_disponible") or cartera_c.get("efectivo") or cartera_c.get("saldo_disponible"))
+        reserva_c = safe_float(cartera_c.get("reserva_intocable") or cartera_c.get("reserva"))
+        posiciones_c = cartera_c.get("posiciones_abiertas") or cartera_c.get("posiciones") or {}
 
-        raw_hist_c = (
-            cartera_c.get("historial_operaciones")
-            or cartera_c.get("historial")
-            or []
-        )
+        raw_hist_c = cartera_c.get("historial_operaciones") or cartera_c.get("historial") or []
         df_hist_c = parsear_historial(raw_hist_c)
 
-        precios_live_c, _ = obtener_precios_posiciones(
-            tuple(posiciones_c.keys()) if isinstance(posiciones_c, dict) else ()
-        )
-        total_live_c, pnl_hoy_c = calcular_metricas_live(
-            efectivo_c, posiciones_c, df_hist_c, precios_live_c, es_short=False
-        )
+        precios_live_c, _ = obtener_precios_posiciones(tuple(posiciones_c.keys()) if isinstance(posiciones_c, dict) else ())
+        total_live_c, pnl_hoy_c = calcular_metricas_live(efectivo_c, posiciones_c, df_hist_c, precios_live_c, es_short=False)
 
         c1, c2, c3, c4 = st.columns(4)
         c1.metric("Capital Activo (Trabajo)", f"{total_live_c:.2f} €")
@@ -589,31 +395,14 @@ with tab2:
         c4.metric("📈 PnL Hoy (Abiertas + Cerradas)", f"{pnl_hoy_c:+.2f} €")
         st.divider()
 
-        tel_c = cartera_c.get("telemetria", {})
-        sincro_c_txt = (
-            tel_c.get("ultima_actualizacion")
-            or cartera_c.get("ultima_actualizacion")
-            or "Esperando sincronización..."
-        )
-        estado_c_txt = (
-            tel_c.get("estado")
-            or cartera_c.get("estado")
-            or "Buscando oportunidades"
-        )
-
         c_t1, c_t2 = st.columns(2)
-        c_t1.info(f"⏱️ **Última sincro:** {sincro_c_txt}")
-        c_t2.caption(f"🟢 **Estado:** {estado_c_txt}")
+        c_t1.info(f"⏱️ **Última sincro:** {obtener_sincro(cartera_c)}")
+        c_t2.caption(f"🟢 **Estado:** {obtener_estado(cartera_c, 'Buscando oportunidades')}")
 
         st.divider()
         st.subheader("📌 Posiciones Actuales")
-        if posiciones_c and isinstance(posiciones_c, dict):
-            st.dataframe(
-                generar_tabla_posiciones(posiciones_c, precios_live_c),
-                use_container_width=True,
-            )
-        else:
-            st.info("100% liquidez disponible.")
+        if posiciones_c and isinstance(posiciones_c, dict): st.dataframe(generar_tabla_posiciones(posiciones_c, precios_live_c), use_container_width=True)
+        else: st.info("100% liquidez disponible.")
 
         st.divider()
         st.subheader("📜 Historial y Gráficos")
@@ -628,80 +417,37 @@ with tab3:
     cartera_r = cargar_cartera("cartera_reaper.json")
     st.title("💀 Dashboard Bot Reaper Short Scalper")
     if cartera_r:
-        efectivo_r = safe_float(
-            cartera_r.get("efectivo_disponible") or cartera_r.get("efectivo")
-        )
-        reserva_r = safe_float(
-            cartera_r.get("reserva_intocable") or cartera_r.get("reserva")
-        )
+        efectivo_r = safe_float(cartera_r.get("efectivo_disponible") or cartera_r.get("efectivo"))
+        reserva_r = safe_float(cartera_r.get("reserva_intocable") or cartera_r.get("reserva"))
         meta_dia_r = safe_float(cartera_r.get("meta_eur_dia"))
         posiciones_r = cartera_r.get("posiciones_abiertas", {})
-        df_hist_r = parsear_historial(
-            cartera_r.get("historial_operaciones", []), es_short=True
-        )
+        df_hist_r = parsear_historial(cartera_r.get("historial_operaciones", []), es_short=True)
 
-        precios_live_r, _ = obtener_precios_posiciones(
-            tuple(posiciones_r.keys()) if isinstance(posiciones_r, dict) else ()
-        )
-        total_live_r, pnl_hoy_r = calcular_metricas_live(
-            efectivo_r, posiciones_r, df_hist_r, precios_live_r, es_short=True
-        )
+        precios_live_r, _ = obtener_precios_posiciones(tuple(posiciones_r.keys()) if isinstance(posiciones_r, dict) else ())
+        total_live_r, pnl_hoy_r = calcular_metricas_live(efectivo_r, posiciones_r, df_hist_r, precios_live_r, es_short=True)
 
         c1, c2, c3, c4 = st.columns(4)
         c1.metric("Capital Activo (Trabajo)", f"{total_live_r:.2f} €")
         c2.metric("Efectivo Libre", f"{efectivo_r:.2f} €")
         c3.metric("🏦 Beneficios Asegurados (Reserva)", f"{reserva_r:.2f} €")
-        c4.metric(
-            "📈 PnL Hoy (Abiertas + Cerradas)",
-            f"{pnl_hoy_r:+.2f} €",
-            f"Meta: {meta_dia_r:.2f}€",
-        )
+        c4.metric("📈 PnL Hoy (Abiertas + Cerradas)", f"{pnl_hoy_r:+.2f} €", f"Meta: {meta_dia_r:.2f}€")
         st.divider()
 
-        tel_r = cartera_r.get("telemetria", {})
-        sincro_r_txt = (
-            tel_r.get("ultima_actualizacion")
-            or cartera_r.get("ultima_actualizacion")
-            or "Esperando sincronización..."
-        )
-        estado_r_txt = (
-            tel_r.get("estado")
-            or cartera_r.get("estado")
-            or "Escaneando Bull Traps 5m"
-        )
-
         c_t1, c_t2 = st.columns(2)
-        c_t1.info(f"⏱️ **Última sincro:** {sincro_r_txt}")
-        c_t2.caption(f"🟢 **Estado:** {estado_r_txt}")
+        c_t1.info(f"⏱️ **Última sincro:** {obtener_sincro(cartera_r)}")
+        c_t2.caption(f"🟢 **Estado:** {obtener_estado(cartera_r, 'Escaneando Bull Traps 5m')}")
 
         radar_r = cartera_r.get("radar_rsi", {})
         if radar_r and isinstance(radar_r, dict):
             with st.expander("👁️ Radar Reaper (Sobrecompra RSI >= 60)", expanded=True):
-                df_radar_r = pd.DataFrame(
-                    list(radar_r.items()), columns=["Activo", "RSI"]
-                )
-                df_radar_r = df_radar_r[df_radar_r["RSI"] >= 50].sort_values(
-                    by="RSI", ascending=False
-                )
-                st.dataframe(
-                    df_radar_r.style.map(
-                        lambda x: color_rsi(x, True), subset=["RSI"]
-                    ),
-                    use_container_width=True,
-                    height=200,
-                )
+                df_radar_r = pd.DataFrame(list(radar_r.items()), columns=["Activo", "RSI"])
+                df_radar_r = df_radar_r[df_radar_r["RSI"] >= 50].sort_values(by="RSI", ascending=False)
+                st.dataframe(df_radar_r.style.map(lambda x: color_rsi(x, True), subset=["RSI"]), use_container_width=True, height=200)
 
         st.divider()
         st.subheader("📌 Posiciones Cortas Activas (Shorts)")
-        if posiciones_r and isinstance(posiciones_r, dict):
-            st.dataframe(
-                generar_tabla_posiciones(
-                    posiciones_r, precios_live_r, es_short=True
-                ),
-                use_container_width=True,
-            )
-        else:
-            st.info("100% liquidez disponible.")
+        if posiciones_r and isinstance(posiciones_r, dict): st.dataframe(generar_tabla_posiciones(posiciones_r, precios_live_r, es_short=True), use_container_width=True)
+        else: st.info("100% liquidez disponible.")
 
         st.divider()
         st.subheader("📜 Historial y Gráficos")
