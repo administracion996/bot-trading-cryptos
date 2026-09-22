@@ -1,13 +1,7 @@
 {
-  "efectivo_disponible": 651.9,
+  "efectivo_disponible": 347.77,
   "total_cartera": 1097.87,
   "posiciones_abiertas": {
-    "ICP-USD": {
-      "cantidad": 10.823309328425816,
-      "precio_entrada": 2.548943134013939,
-      "timestamp_entrada": "2026-09-22 12:35:39",
-      "score_gemini": 80
-    },
     "ATOM-USD": {
       "cantidad": 14.48748570561893,
       "precio_entrada": 1.5233837291339114,
@@ -36,6 +30,24 @@
       "cantidad": 904.7494195444773,
       "precio_entrada": 0.18013164361249778,
       "timestamp_entrada": "2026-09-22 16:06:58",
+      "score_gemini": 80
+    },
+    "INJ-USD": {
+      "cantidad": 20.390058185695054,
+      "precio_entrada": 6.662405984739593,
+      "timestamp_entrada": "2026-09-22 16:36:21",
+      "score_gemini": 80
+    },
+    "FIL-USD": {
+      "cantidad": 126.28841435590047,
+      "precio_entrada": 0.8605498540996841,
+      "timestamp_entrada": "2026-09-22 16:36:21",
+      "score_gemini": 80
+    },
+    "ICP-USD": {
+      "cantidad": 34.42570032873894,
+      "precio_entrada": 2.5254963706919966,
+      "timestamp_entrada": "2026-09-22 16:36:21",
       "score_gemini": 80
     }
   },
@@ -581,7 +593,11 @@
     "[2026-09-22 15:04:07] [VENTA \ud83d\udd34] XLM-USD | Motivo: TAKE PROFIT (+2.02%) | PnL: +0.79 \u20ac | Score Gemini: 80",
     "[2026-09-22 15:50:13] [VENTA \ud83d\udd34] ALGO-USD | Motivo: TIME STOP (241m) | PnL: +0.81 \u20ac | Score Gemini: 80",
     "[2026-09-22 16:00:40] [COMPRA \ud83d\udfe2] NEAR-USD | Importe: 203.72 \u20ac | RSI: 20.7 | Score Gemini: 80",
-    "[2026-09-22 16:06:58] [COMPRA \ud83d\udfe2] FET-USD | Importe: 162.97 \u20ac | RSI: 19.4 | Score Gemini: 80"
+    "[2026-09-22 16:06:58] [COMPRA \ud83d\udfe2] FET-USD | Importe: 162.97 \u20ac | RSI: 19.4 | Score Gemini: 80",
+    "[2026-09-22 16:36:20] [VENTA \ud83d\udd34] ICP-USD | Motivo: TIME STOP (241m) | PnL: -0.25 \u20ac | Score Gemini: 80",
+    "[2026-09-22 16:36:21] [COMPRA \ud83d\udfe2] INJ-USD | Importe: 135.85 \u20ac | RSI: 18.5 | Score Gemini: 80",
+    "[2026-09-22 16:36:21] [COMPRA \ud83d\udfe2] FIL-USD | Importe: 108.68 \u20ac | RSI: 20.1 | Score Gemini: 80",
+    "[2026-09-22 16:36:21] [COMPRA \ud83d\udfe2] ICP-USD | Importe: 86.94 \u20ac | RSI: 24.7 | Score Gemini: 80"
   ],
   "reserva_intocable": 0.0,
   "fecha_control_diario": "2026-09-21",
@@ -589,35 +605,35 @@
   "meta_eur_dia": 53.56,
   "barrido_realizado": false,
   "telemetria": {
-    "ultima_actualizacion": "2026-09-22 16:34:15",
+    "ultima_actualizacion": "2026-09-22 16:36:21",
     "estado": "Vigilando Scalping 5m (Local Active)"
   },
   "radar_rsi": {
-    "BTC": 47.83,
-    "ETH": 40.65,
-    "SOL": 42.99,
-    "BNB": 35.87,
-    "XRP": 49.11,
-    "ADA": 39.36,
-    "AVAX": 57.04,
-    "DOT": 34.54,
-    "NEAR": 25.84,
-    "ATOM": 32.92,
-    "LTC": 46.19,
-    "BCH": 49.28,
-    "ETC": 43.27,
-    "LINK": 41.6,
-    "AAVE": 36.51,
-    "INJ": 26.38,
-    "FET": 28.36,
-    "ALGO": 35.71,
-    "XLM": 42.3,
+    "BTC": 46.32,
+    "ETH": 37.89,
+    "SOL": 40.25,
+    "BNB": 31.99,
+    "XRP": 46.21,
+    "ADA": 38.75,
+    "AVAX": 43.48,
+    "DOT": 30.78,
+    "NEAR": 24.05,
+    "ATOM": 31.36,
+    "LTC": 45.52,
+    "BCH": 54.34,
+    "ETC": 42.71,
+    "LINK": 37.69,
+    "AAVE": 35.81,
+    "INJ": 18.54,
+    "FET": 25.54,
+    "ALGO": 32.92,
+    "XLM": 38.04,
     "TRX": 9.71,
-    "DOGE": 44.81,
-    "SHIB": 36.36,
+    "DOGE": 41.36,
+    "SHIB": 33.33,
     "BONK": 44.44,
-    "FLOKI": 38.12,
-    "FIL": 28.22,
-    "ICP": 25.86
+    "FLOKI": 35.03,
+    "FIL": 20.14,
+    "ICP": 24.71
   }
 }
