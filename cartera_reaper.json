@@ -1,31 +1,12 @@
 {
-  "efectivo_disponible": 40.35,
-  "total_cartera": 100.94,
+  "efectivo_disponible": 101.03,
+  "total_cartera": 101.03,
   "reserva_intocable": 0.0,
   "fecha_control_diario": "2026-09-22",
   "saldo_inicio_dia": 100.04,
   "meta_eur_dia": 5.0,
   "barrido_realizado": false,
-  "posiciones_abiertas": {
-    "LINK-USD": {
-      "cantidad": 1.77036920655,
-      "precio_entrada": 11.325321252663,
-      "timestamp_entrada": "2026-09-22 13:43:40",
-      "tipo": "SHORT"
-    },
-    "XRP-USD": {
-      "cantidad": 14.872608340243,
-      "precio_entrada": 1.34811591493,
-      "timestamp_entrada": "2026-09-22 13:47:59",
-      "tipo": "SHORT"
-    },
-    "FET-USD": {
-      "cantidad": 109.748359016284,
-      "precio_entrada": 0.183146246378,
-      "timestamp_entrada": "2026-09-22 14:00:41",
-      "tipo": "SHORT"
-    }
-  },
+  "posiciones_abiertas": {},
   "historial_operaciones": [
     "[2026-09-21 20:24:05] 🔴 APERTURA SHORT 0.007161364474 de BNB-USD a 697.073863245398€ (5.0€) | Motivo: Bull Trap / Agotamiento",
     "[2026-09-21 20:27:17] 🔴 APERTURA SHORT 15.190839144963 de XRP-USD a 1.314476429475€ (20.0€) | Motivo: Bull Trap / Agotamiento",
@@ -96,38 +77,41 @@
     "[2026-09-22 13:58:07] 🟢 CIERRE SHORT AVAX-USD por TAKE-PROFIT RÁPIDO (Pánico cobrado: +0.73%). Neto: 20.13€ | PnL: +0.15€",
     "[2026-09-22 14:00:41] 🔴 APERTURA SHORT 109.748359016284 de FET-USD a 0.182853212384€ (20.1€) | Motivo: Bull Trap / Agotamiento",
     "[2026-09-22 14:14:59] 🟢 CIERRE SHORT FIL-USD por TAKE-PROFIT RÁPIDO (Pánico cobrado: +0.70%). Neto: 20.13€ | PnL: +0.14€",
-    "[2026-09-22 14:14:59] 🟢 CIERRE SHORT INJ-USD por TAKE-PROFIT RÁPIDO (Pánico cobrado: +0.76%). Neto: 20.19€ | PnL: +0.15€"
+    "[2026-09-22 14:14:59] 🟢 CIERRE SHORT INJ-USD por TAKE-PROFIT RÁPIDO (Pánico cobrado: +0.76%). Neto: 20.19€ | PnL: +0.15€",
+    "[2026-09-22 14:16:05] 🟢 CIERRE SHORT LINK-USD por TAKE-PROFIT RÁPIDO (Pánico cobrado: +0.90%). Neto: 20.2€ | PnL: +0.18€",
+    "[2026-09-22 14:16:05] 🟢 CIERRE SHORT XRP-USD por TAKE-PROFIT RÁPIDO (Pánico cobrado: +0.95%). Neto: 20.21€ | PnL: +0.19€",
+    "[2026-09-22 14:16:05] 🟢 CIERRE SHORT FET-USD por TAKE-PROFIT RÁPIDO (Pánico cobrado: +1.01%). Neto: 20.27€ | PnL: +0.20€"
   ],
   "telemetria": {
     "estado": "Verdugo Rápido (Escaneando a 1 Minuto)",
-    "ultima_actualizacion": "2026-09-22 14:14:59"
+    "ultima_actualizacion": "2026-09-22 14:16:05"
   },
   "radar_rsi": {
-    "BTC-USD": 38.72,
-    "ETH-USD": 45.32,
-    "SOL-USD": 39.22,
-    "BNB-USD": 36.89,
-    "XRP-USD": 43.75,
-    "ADA-USD": 40.42,
+    "BTC-USD": 42.13,
+    "ETH-USD": 39.9,
+    "SOL-USD": 36.36,
+    "BNB-USD": 31.95,
+    "XRP-USD": 36.93,
+    "ADA-USD": 38.62,
     "AVAX-USD": 38.51,
-    "DOT-USD": 30.77,
-    "NEAR-USD": 59.44,
-    "ATOM-USD": 42.86,
-    "LTC-USD": 40.3,
-    "BCH-USD": 62.23,
-    "ETC-USD": 27.78,
-    "LINK-USD": 35.42,
-    "AAVE-USD": 53.04,
-    "INJ-USD": 27.18,
-    "FET-USD": 35.75,
-    "ALGO-USD": 14.58,
-    "XLM-USD": 35.96,
-    "TRX-USD": 4.51,
-    "DOGE-USD": 50.49,
-    "SHIB-USD": 45.45,
+    "DOT-USD": 28.13,
+    "NEAR-USD": 44.1,
+    "ATOM-USD": 34.34,
+    "LTC-USD": 42.79,
+    "BCH-USD": 49.43,
+    "ETC-USD": 34.48,
+    "LINK-USD": 31.29,
+    "AAVE-USD": 42.96,
+    "INJ-USD": 25.63,
+    "FET-USD": 38.93,
+    "ALGO-USD": 14.89,
+    "XLM-USD": 34.52,
+    "TRX-USD": 4.48,
+    "DOGE-USD": 38.66,
+    "SHIB-USD": 41.67,
     "BONK-USD": 57.14,
-    "FLOKI-USD": 46.94,
-    "FIL-USD": 40.4,
-    "ICP-USD": 19.54
+    "FLOKI-USD": 38.33,
+    "FIL-USD": 35.88,
+    "ICP-USD": 16.03
   }
 }
