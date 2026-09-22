@@ -1,6 +1,6 @@
 {
-  "efectivo_disponible": 40.02,
-  "total_cartera": 100.01,
+  "efectivo_disponible": 20.02,
+  "total_cartera": 100.02,
   "reserva_intocable": 0.0,
   "fecha_control_diario": "2026-09-22",
   "saldo_inicio_dia": 100.04,
@@ -23,6 +23,12 @@
       "cantidad": 2.125014029615,
       "precio_entrada": 9.411702568205,
       "timestamp_entrada": "2026-09-22 10:07:31",
+      "tipo": "SHORT"
+    },
+    "BCH-USD": {
+      "cantidad": 0.085290815273,
+      "precio_entrada": 234.491837555823,
+      "timestamp_entrada": "2026-09-22 10:09:40",
       "tipo": "SHORT"
     }
   },
@@ -70,38 +76,39 @@
     "[2026-09-22 07:07:53] 🟢 CIERRE SHORT TRX-USD por TIME-STOP (241.8m). Capital Liberado: 78.69€ | PnL: -0.44€",
     "[2026-09-22 09:29:48] 🔴 APERTURA SHORT 205.866538149105 de ALGO-USD a 0.097043376644€ (20.01€) | Motivo: Bull Trap / Agotamiento",
     "[2026-09-22 10:03:16] 🔴 APERTURA SHORT 113.22546440124 de FET-USD a 0.176444266364€ (20.01€) | Motivo: Bull Trap / Agotamiento",
-    "[2026-09-22 10:07:31] 🔴 APERTURA SHORT 2.125014029615 de AVAX-USD a 9.396643844098€ (20.0€) | Motivo: Bull Trap / Agotamiento"
+    "[2026-09-22 10:07:31] 🔴 APERTURA SHORT 2.125014029615 de AVAX-USD a 9.396643844098€ (20.0€) | Motivo: Bull Trap / Agotamiento",
+    "[2026-09-22 10:09:40] 🔴 APERTURA SHORT 0.085290815273 de BCH-USD a 234.11665061631€ (20.0€) | Motivo: Bull Trap / Agotamiento"
   ],
   "telemetria": {
     "estado": "Vigilando Bull Traps & Agotamiento en Rupturas",
-    "ultima_actualizacion": "2026-09-22 10:07:31"
+    "ultima_actualizacion": "2026-09-22 10:09:40"
   },
   "radar_rsi": {
-    "BTC-USD": 51.84,
-    "ETH-USD": 46.47,
-    "SOL-USD": 43.14,
-    "BNB-USD": 46.66,
+    "BTC-USD": 55.21,
+    "ETH-USD": 50.69,
+    "SOL-USD": 45.64,
+    "BNB-USD": 49.54,
     "XRP-USD": 51.62,
-    "ADA-USD": 57.5,
-    "AVAX-USD": 65.79,
-    "DOT-USD": 60.0,
-    "NEAR-USD": 63.78,
+    "ADA-USD": 57.07,
+    "AVAX-USD": 66.95,
+    "DOT-USD": 58.78,
+    "NEAR-USD": 59.54,
     "ATOM-USD": 54.29,
-    "LTC-USD": 46.24,
-    "BCH-USD": 68.16,
-    "ETC-USD": 48.48,
-    "LINK-USD": 45.81,
-    "AAVE-USD": 41.94,
-    "INJ-USD": 66.59,
-    "FET-USD": 64.21,
-    "ALGO-USD": 64.34,
-    "XLM-USD": 50.72,
-    "TRX-USD": 46.57,
-    "DOGE-USD": 34.29,
+    "LTC-USD": 47.73,
+    "BCH-USD": 66.67,
+    "ETC-USD": 51.65,
+    "LINK-USD": 47.21,
+    "AAVE-USD": 43.33,
+    "INJ-USD": 68.92,
+    "FET-USD": 64.33,
+    "ALGO-USD": 64.62,
+    "XLM-USD": 50.65,
+    "TRX-USD": 45.33,
+    "DOGE-USD": 36.33,
     "SHIB-USD": 37.5,
-    "BONK-USD": 46.67,
-    "FLOKI-USD": 41.8,
-    "FIL-USD": 44.02,
-    "ICP-USD": 41.58
+    "BONK-USD": 39.39,
+    "FLOKI-USD": 44.72,
+    "FIL-USD": 47.9,
+    "ICP-USD": 41.18
   }
 }
