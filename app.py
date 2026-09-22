@@ -31,6 +31,7 @@ REGEX_PNL = re.compile(r"PnL:\s*([+-]?\d+(?:\.\d+)?)\s*€")
 # --- FUNCIONES DE SEGURIDAD Y CARGA ---
 def safe_float(val, default=0.0):
     try:
+        if val is None: return default
         f = float(val)
         if math.isnan(f): return default
         return f
@@ -70,33 +71,79 @@ def obtener_precios_posiciones(pos_tickers_tuple):
 
 def parsear_historial(historial_raw, es_short=False):
     registros = []
+    if not isinstance(historial_raw, list):
+        return pd.DataFrame(columns=["Fecha", "Tipo", "Ticker", "Valor (€)", "PnL (€)", "Score_Gemini", "Log"])
+
     for log in historial_raw:
-        m_fecha = REGEX_FECHA.search(log)
-        if not m_fecha: continue
-        fecha_dt = datetime.strptime(m_fecha.group(1), "%Y-%m-%d %H:%M:%S")
-        m_ticker = REGEX_TICKER.search(log)
-        ticker = m_ticker.group(1).replace("-USD", "") if m_ticker else ("EUR" if "BARRIDO" in log else "DESCONOCIDO")
-        val_matches = REGEX_VALOR.findall(log)
-        valor = float(val_matches[-1]) if val_matches else 0.0
-        m_score = REGEX_SCORE.search(log)
-        score_gemini = int(m_score.group(1)) if m_score else None
-        m_pnl = REGEX_PNL.search(log)
-        pnl_eur = float(m_pnl.group(1)) if m_pnl else 0.0
+        try:
+            # 1. Si el log viene en formato Diccionario (ej. Cazador de Memecoins)
+            if isinstance(log, dict):
+                fecha_raw = log.get("fecha") or log.get("Fecha") or log.get("timestamp") or ""
+                try:
+                    fecha_dt = datetime.strptime(str(fecha_raw), "%Y-%m-%d %H:%M:%S")
+                except:
+                    fecha_dt = datetime.now(tz_madrid)
+                
+                ticker = str(log.get("ticker") or log.get("Ticker") or log.get("moneda") or "DESCONOCIDO").replace("-USD", "")
+                valor = safe_float(log.get("valor") or log.get("importe") or log.get("monto") or log.get("precio", 0.0))
+                pnl_eur = safe_float(log.get("pnl") or log.get("PnL (€)") or log.get("pnl_eur") or 0.0)
+                score_gemini = log.get("score") or log.get("score_gemini")
+                
+                tipo = str(log.get("tipo") or log.get("Tipo") or "OPERACIÓN").upper()
+                if "COMPRA" in tipo: tipo = "COMPRA 🟢"
+                elif "VENTA" in tipo: tipo = "VENTA 🔴" if not es_short else "CIERRE SHORT 🟢"
+                elif "SHORT" in tipo: tipo = "APERTURA SHORT 🔴"
+                
+                registros.append({
+                    "Fecha": fecha_dt, "Tipo": tipo, "Ticker": ticker, 
+                    "Valor (€)": valor, "PnL (€)": round(pnl_eur, 2), 
+                    "Score_Gemini": score_gemini, "Log": str(log)
+                })
+                continue
 
-        tipo = "OTRO ⚪"
-        if "COMPRA" in log: tipo = "COMPRA 🟢"
-        elif "VENTA" in log and not es_short: tipo = "VENTA 🔴"
-        elif "APERTURA SHORT" in log: tipo = "APERTURA SHORT 🔴"
-        elif "CIERRE SHORT" in log: tipo = "CIERRE SHORT 🟢"
+            # 2. Si el log viene en formato Texto Plano (ej. Sniper y Reaper)
+            if not isinstance(log, str):
+                log = str(log)
 
-        registros.append({"Fecha": fecha_dt, "Tipo": tipo, "Ticker": ticker, "Valor (€)": valor, "PnL (€)": round(pnl_eur, 2), "Score_Gemini": score_gemini, "Log": log})
+            m_fecha = REGEX_FECHA.search(log)
+            if not m_fecha: continue
+            try:
+                fecha_dt = datetime.strptime(m_fecha.group(1), "%Y-%m-%d %H:%M:%S")
+            except:
+                fecha_dt = datetime.now(tz_madrid)
+
+            m_ticker = REGEX_TICKER.search(log)
+            ticker = m_ticker.group(1).replace("-USD", "") if m_ticker else ("EUR" if "BARRIDO" in log else "DESCONOCIDO")
+            val_matches = REGEX_VALOR.findall(log)
+            valor = float(val_matches[-1]) if val_matches else 0.0
+            m_score = REGEX_SCORE.search(log)
+            score_gemini = int(m_score.group(1)) if m_score else None
+            m_pnl = REGEX_PNL.search(log)
+            pnl_eur = float(m_pnl.group(1)) if m_pnl else 0.0
+
+            tipo = "OTRO ⚪"
+            if "COMPRA" in log: tipo = "COMPRA 🟢"
+            elif "VENTA" in log and not es_short: tipo = "VENTA 🔴"
+            elif "APERTURA SHORT" in log: tipo = "APERTURA SHORT 🔴"
+            elif "CIERRE SHORT" in log: tipo = "CIERRE SHORT 🟢"
+
+            registros.append({"Fecha": fecha_dt, "Tipo": tipo, "Ticker": ticker, "Valor (€)": valor, "PnL (€)": round(pnl_eur, 2), "Score_Gemini": score_gemini, "Log": log})
+        except Exception:
+            continue
+
+    if not registros:
+        return pd.DataFrame(columns=["Fecha", "Tipo", "Ticker", "Valor (€)", "PnL (€)", "Score_Gemini", "Log"])
     return pd.DataFrame(registros)
 
 # --- FUNCIONES DE RENDERIZADO VISUAL ---
 def generar_tabla_posiciones(posiciones, precios_live, es_short=False):
     filas = []
+    if not isinstance(posiciones, dict):
+        return pd.DataFrame(filas)
+
     ahora = datetime.now(tz_madrid)
     for ticker, pos in posiciones.items():
+        if not isinstance(pos, dict): continue
         cant = safe_float(pos.get("cantidad", 0))
         p_ent = safe_float(pos.get("precio_entrada", 0))
         p_act = precios_live.get(ticker, p_ent)
@@ -105,7 +152,6 @@ def generar_tabla_posiciones(posiciones, precios_live, es_short=False):
         pnl_flotante = (p_ent - p_act) * cant if es_short else (p_act - p_ent) * cant
         pct_pnl = ((p_ent - p_act) / p_ent * 100) if es_short and p_ent > 0 else (((p_act - p_ent) / p_ent * 100) if not es_short and p_ent > 0 else 0.0)
 
-        # Cálculo Time Stop
         t_restante = "N/A"
         if "timestamp_entrada" in pos:
             try:
@@ -130,15 +176,19 @@ def generar_tabla_posiciones(posiciones, precios_live, es_short=False):
 def calcular_pnl_hoy(df_historial, posiciones, precios_live, es_short=False):
     hoy = datetime.now(tz_madrid).date()
     pnl_realizado = 0.0
-    if not df_historial.empty:
-        pnl_realizado = df_historial[(df_historial["Fecha"].dt.date == hoy)]["PnL (€)"].sum()
+    if not df_historial.empty and "Fecha" in df_historial.columns:
+        df_hoy = df_historial[df_historial["Fecha"].dt.date == hoy]
+        if not df_hoy.empty:
+            pnl_realizado = safe_float(df_hoy["PnL (€)"].sum())
     
     pnl_flotante = 0.0
-    for t, pos in posiciones.items():
-        cant = safe_float(pos.get("cantidad", 0))
-        p_ent = safe_float(pos.get("precio_entrada", 0))
-        p_act = precios_live.get(t, p_ent)
-        pnl_flotante += (p_ent - p_act) * cant if es_short else (p_act - p_ent) * cant
+    if isinstance(posiciones, dict):
+        for t, pos in posiciones.items():
+            if not isinstance(pos, dict): continue
+            cant = safe_float(pos.get("cantidad", 0))
+            p_ent = safe_float(pos.get("precio_entrada", 0))
+            p_act = precios_live.get(t, p_ent)
+            pnl_flotante += (p_ent - p_act) * cant if es_short else (p_act - p_ent) * cant
     return round(pnl_realizado + pnl_flotante, 2)
 
 def mostrar_historial_con_filtros(df_historial, key_prefix):
@@ -165,12 +215,14 @@ def mostrar_historial_con_filtros(df_historial, key_prefix):
         df_filtrado = df_historial[(df_historial["Fecha"].dt.month == mp.month) & (df_historial["Fecha"].dt.year == mp.year)]
     elif seleccion == "Personalizado":
         c1, c2 = st.columns(2)
-        f_inicio = c1.date_input("Desde", df_historial["Fecha"].min().date(), key=f"ini_{key_prefix}")
-        f_fin = c2.date_input("Hasta", df_historial["Fecha"].max().date(), key=f"fin_{key_prefix}")
+        f_min = df_historial["Fecha"].min().date() if not df_historial.empty else hoy
+        f_max = df_historial["Fecha"].max().date() if not df_historial.empty else hoy
+        f_inicio = c1.date_input("Desde", f_min, key=f"ini_{key_prefix}")
+        f_fin = c2.date_input("Hasta", f_max, key=f"fin_{key_prefix}")
         df_filtrado = df_historial[(df_historial["Fecha"].dt.date >= f_inicio) & (df_historial["Fecha"].dt.date <= f_fin)]
 
-    total_pnl = df_filtrado["PnL (€)"].sum()
-    ops_cerradas = len(df_filtrado[df_filtrado["PnL (€)"] != 0])
+    total_pnl = safe_float(df_filtrado["PnL (€)"].sum()) if not df_filtrado.empty else 0.0
+    ops_cerradas = len(df_filtrado[df_filtrado["PnL (€)"] != 0]) if not df_filtrado.empty else 0
     col_totales.metric(f"💰 Beneficio ({seleccion})", f"{total_pnl:+.2f} €", f"{ops_cerradas} cierres")
     
     if df_filtrado.empty:
@@ -220,7 +272,7 @@ with tab1:
         posiciones = cartera.get("posiciones_abiertas", {})
         df_hist = parsear_historial(cartera.get("historial_operaciones", []))
         
-        precios_live, _ = obtener_precios_posiciones(tuple(posiciones.keys()))
+        precios_live, _ = obtener_precios_posiciones(tuple(posiciones.keys()) if isinstance(posiciones, dict) else ())
         pnl_hoy = calcular_pnl_hoy(df_hist, posiciones, precios_live)
 
         c1, c2, c3, c4 = st.columns(4)
@@ -236,14 +288,14 @@ with tab1:
         c_t2.caption(f"🟢 **Estado:** {tel.get('estado', 'Activo')}")
         
         radar = cartera.get("radar_rsi", {})
-        if radar:
+        if radar and isinstance(radar, dict):
             with st.expander("👁️ Radar Sniper (Sobreventa RSI <= 25)", expanded=True):
                 df_radar = pd.DataFrame(list(radar.items()), columns=["Activo", "RSI"]).sort_values(by="RSI", ascending=True)
                 st.dataframe(df_radar.style.map(lambda x: color_rsi(x, False), subset=["RSI"]), use_container_width=True, height=200)
         
         st.divider()
         st.subheader("📌 Posiciones Actuales")
-        if posiciones: st.dataframe(generar_tabla_posiciones(posiciones, precios_live), use_container_width=True)
+        if posiciones and isinstance(posiciones, dict): st.dataframe(generar_tabla_posiciones(posiciones, precios_live), use_container_width=True)
         else: st.info("100% liquidez disponible.")
 
         st.divider()
@@ -263,9 +315,11 @@ with tab2:
         total_c = safe_float(cartera_c.get("total_cartera", efectivo_c))
         reserva_c = safe_float(cartera_c.get("reserva_intocable"))
         posiciones_c = cartera_c.get("posiciones_abiertas", cartera_c.get("posiciones", {}))
-        df_hist_c = parsear_historial(cartera_c.get("historial_operaciones", cartera_c.get("historial", [])))
+        
+        raw_hist_c = cartera_c.get("historial_operaciones") or cartera_c.get("historial") or []
+        df_hist_c = parsear_historial(raw_hist_c)
 
-        precios_live_c, _ = obtener_precios_posiciones(tuple(posiciones_c.keys()))
+        precios_live_c, _ = obtener_precios_posiciones(tuple(posiciones_c.keys()) if isinstance(posiciones_c, dict) else ())
         pnl_hoy_c = calcular_pnl_hoy(df_hist_c, posiciones_c, precios_live_c)
 
         c1, c2, c3, c4 = st.columns(4)
@@ -282,7 +336,7 @@ with tab2:
 
         st.divider()
         st.subheader("📌 Posiciones Actuales")
-        if posiciones_c: st.dataframe(generar_tabla_posiciones(posiciones_c, precios_live_c), use_container_width=True)
+        if posiciones_c and isinstance(posiciones_c, dict): st.dataframe(generar_tabla_posiciones(posiciones_c, precios_live_c), use_container_width=True)
         else: st.info("100% liquidez disponible.")
 
         st.divider()
@@ -305,7 +359,7 @@ with tab3:
         posiciones_r = cartera_r.get("posiciones_abiertas", {})
         df_hist_r = parsear_historial(cartera_r.get("historial_operaciones", []), es_short=True)
 
-        precios_live_r, _ = obtener_precios_posiciones(tuple(posiciones_r.keys()))
+        precios_live_r, _ = obtener_precios_posiciones(tuple(posiciones_r.keys()) if isinstance(posiciones_r, dict) else ())
         pnl_hoy_r = calcular_pnl_hoy(df_hist_r, posiciones_r, precios_live_r, es_short=True)
 
         c1, c2, c3, c4 = st.columns(4)
@@ -321,7 +375,7 @@ with tab3:
         c_t2.caption(f"🟢 **Estado:** {tel_r.get('estado', 'Activo')}")
 
         radar_r = cartera_r.get("radar_rsi", {})
-        if radar_r:
+        if radar_r and isinstance(radar_r, dict):
             with st.expander("👁️ Radar Reaper (Sobrecompra RSI >= 60)", expanded=True):
                 df_radar_r = pd.DataFrame(list(radar_r.items()), columns=["Activo", "RSI"])
                 df_radar_r = df_radar_r[df_radar_r["RSI"] >= 50].sort_values(by="RSI", ascending=False)
@@ -329,7 +383,7 @@ with tab3:
 
         st.divider()
         st.subheader("📌 Posiciones Cortas Activas (Shorts)")
-        if posiciones_r: st.dataframe(generar_tabla_posiciones(posiciones_r, precios_live_r, es_short=True), use_container_width=True)
+        if posiciones_r and isinstance(posiciones_r, dict): st.dataframe(generar_tabla_posiciones(posiciones_r, precios_live_r, es_short=True), use_container_width=True)
         else: st.info("100% liquidez disponible.")
 
         st.divider()
