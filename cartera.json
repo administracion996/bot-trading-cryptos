@@ -1,13 +1,7 @@
 {
-  "efectivo_disponible": 370.67,
+  "efectivo_disponible": 599.32,
   "total_cartera": 1097.87,
   "posiciones_abiertas": {
-    "FIL-USD": {
-      "cantidad": 195.76012318602918,
-      "precio_entrada": 0.8569365265498163,
-      "timestamp_entrada": "2026-09-22 11:45:24",
-      "score_gemini": 80
-    },
     "ALGO-USD": {
       "cantidad": 1117.9248167969058,
       "precio_entrada": 0.09603794314864444,
@@ -29,12 +23,6 @@
     "ADA-USD": {
       "cantidad": 315.35787324590723,
       "precio_entrada": 0.21356688928290168,
-      "timestamp_entrada": "2026-09-22 12:27:18",
-      "score_gemini": 80
-    },
-    "ETC-USD": {
-      "cantidad": 7.1956693243322505,
-      "precio_entrada": 7.487837138069153,
       "timestamp_entrada": "2026-09-22 12:27:18",
       "score_gemini": 80
     },
@@ -607,7 +595,9 @@
     "[2026-09-22 13:34:14] [VENTA \ud83d\udd34] TRX-USD | Motivo: TIME STOP (241m) | PnL: -0.48 \u20ac | Score Gemini: 80",
     "[2026-09-22 13:34:14] [COMPRA \ud83d\udfe2] TRX-USD | Importe: 45.79 \u20ac | RSI: 8.0 | Score Gemini: 80",
     "[2026-09-22 13:57:12] [VENTA \ud83d\udd34] FET-USD | Motivo: TAKE PROFIT (+2.22%) | PnL: +1.09 \u20ac | Score Gemini: 80",
-    "[2026-09-22 14:01:24] [VENTA \ud83d\udd34] INJ-USD | Motivo: TAKE PROFIT (+2.29%) | PnL: +3.08 \u20ac | Score Gemini: 80"
+    "[2026-09-22 14:01:24] [VENTA \ud83d\udd34] INJ-USD | Motivo: TAKE PROFIT (+2.29%) | PnL: +3.08 \u20ac | Score Gemini: 80",
+    "[2026-09-22 14:39:03] [VENTA \ud83d\udd34] FIL-USD | Motivo: TAKE PROFIT (+3.52%) | PnL: +5.91 \u20ac | Score Gemini: 80",
+    "[2026-09-22 14:39:03] [VENTA \ud83d\udd34] ETC-USD | Motivo: TAKE PROFIT (+2.05%) | PnL: +1.10 \u20ac | Score Gemini: 80"
   ],
   "reserva_intocable": 0.0,
   "fecha_control_diario": "2026-09-21",
@@ -615,35 +605,35 @@
   "meta_eur_dia": 53.56,
   "barrido_realizado": false,
   "telemetria": {
-    "ultima_actualizacion": "2026-09-22 14:36:58",
+    "ultima_actualizacion": "2026-09-22 14:39:03",
     "estado": "Vigilando Scalping 5m (Local Active)"
   },
   "radar_rsi": {
-    "BTC": 58.67,
-    "ETH": 66.67,
-    "SOL": 71.43,
-    "BNB": 61.24,
-    "XRP": 67.14,
-    "ADA": 69.29,
-    "AVAX": 39.24,
-    "DOT": 57.14,
-    "NEAR": 69.88,
-    "ATOM": 55.99,
-    "LTC": 60.04,
-    "BCH": 84.31,
-    "ETC": 55.38,
-    "LINK": 52.99,
-    "AAVE": 78.76,
-    "INJ": 56.17,
+    "BTC": 55.71,
+    "ETH": 65.58,
+    "SOL": 65.13,
+    "BNB": 59.39,
+    "XRP": 65.48,
+    "ADA": 69.98,
+    "AVAX": 38.07,
+    "DOT": 59.43,
+    "NEAR": 65.44,
+    "ATOM": 57.21,
+    "LTC": 61.97,
+    "BCH": 85.25,
+    "ETC": 62.5,
+    "LINK": 50.57,
+    "AAVE": 77.35,
+    "INJ": 53.35,
     "FET": 68.13,
-    "ALGO": 79.67,
-    "XLM": 58.24,
-    "TRX": 36.26,
-    "DOGE": 71.2,
-    "SHIB": 70.0,
-    "BONK": 75.0,
-    "FLOKI": 72.03,
-    "FIL": 62.2,
-    "ICP": 36.68
+    "ALGO": 80.99,
+    "XLM": 60.21,
+    "TRX": 34.95,
+    "DOGE": 70.37,
+    "SHIB": 68.42,
+    "BONK": 73.33,
+    "FLOKI": 71.43,
+    "FIL": 81.1,
+    "ICP": 49.51
   }
 }
