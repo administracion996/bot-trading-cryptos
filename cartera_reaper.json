@@ -1,31 +1,12 @@
 {
-  "efectivo_disponible": 39.15,
-  "total_cartera": 97.5,
+  "efectivo_disponible": 94.39,
+  "total_cartera": 94.39,
   "reserva_intocable": 0.0,
   "fecha_control_diario": "2026-09-22",
   "saldo_inicio_dia": 100.04,
   "meta_eur_dia": 5.0,
   "barrido_realizado": false,
-  "posiciones_abiertas": {
-    "LTC-USD": {
-      "cantidad": 0.358747010154,
-      "precio_entrada": 54.244354515028,
-      "timestamp_entrada": "2026-09-22 19:00:49",
-      "tipo": "SHORT"
-    },
-    "ETH-USD": {
-      "cantidad": 0.008096173581,
-      "precio_entrada": 2406.074895147434,
-      "timestamp_entrada": "2026-09-22 19:18:16",
-      "tipo": "SHORT"
-    },
-    "AAVE-USD": {
-      "cantidad": 0.154777265835,
-      "precio_entrada": 125.858277020907,
-      "timestamp_entrada": "2026-09-22 19:18:16",
-      "tipo": "SHORT"
-    }
-  },
+  "posiciones_abiertas": {},
   "historial_operaciones": [
     "[2026-09-21 20:24:05] 🔴 APERTURA SHORT 0.007161364474 de BNB-USD a 697.073863245398€ (5.0€) | Motivo: Bull Trap / Agotamiento",
     "[2026-09-21 20:27:17] 🔴 APERTURA SHORT 15.190839144963 de XRP-USD a 1.314476429475€ (20.0€) | Motivo: Bull Trap / Agotamiento",
@@ -140,38 +121,41 @@
     "[2026-09-22 19:18:16] 🔴 APERTURA SHORT 0.008096173581 de ETH-USD a 2402.225175196872€ (19.48€) | Motivo: Bull Trap / Agotamiento",
     "[2026-09-22 19:18:16] 🔴 APERTURA SHORT 0.154777265835 de AAVE-USD a 125.65690377769€ (19.48€) | Motivo: Bull Trap / Agotamiento",
     "[2026-09-22 19:18:16] 🔴 APERTURA SHORT 4.973154091822 de NEAR-USD a 3.910764002262€ (19.48€) | Motivo: Bull Trap / Agotamiento",
-    "[2026-09-22 20:00:18] 🟢 CIERRE SHORT NEAR-USD por TAKE-PROFIT RÁPIDO (Pánico cobrado: +1.65%). Neto: 19.77€ | PnL: +0.32€"
+    "[2026-09-22 20:00:18] 🟢 CIERRE SHORT NEAR-USD por TAKE-PROFIT RÁPIDO (Pánico cobrado: +1.65%). Neto: 19.77€ | PnL: +0.32€",
+    "[2026-09-22 20:37:09] 🟢 CIERRE SHORT LTC-USD por STOP-LOSS FAKEOUT (Recuperó el soporte: -5.39%). Neto: 18.38€ | PnL: -1.05€",
+    "[2026-09-22 20:37:09] 🟢 CIERRE SHORT ETH-USD por STOP-LOSS FAKEOUT (Recuperó el soporte: -5.02%). Neto: 18.47€ | PnL: -0.98€",
+    "[2026-09-22 20:37:09] 🟢 CIERRE SHORT AAVE-USD por STOP-LOSS FAKEOUT (Recuperó el soporte: -5.47%). Neto: 18.39€ | PnL: -1.06€"
   ],
   "telemetria": {
     "estado": "El Verdugo (Cazando roturas de soporte a 1m)",
-    "ultima_actualizacion": "2026-09-22 20:31:31"
+    "ultima_actualizacion": "2026-09-22 20:37:09"
   },
   "radar_rsi": {
-    "BTC-USD": 10.66,
-    "ETH-USD": 27.49,
-    "SOL-USD": 27.52,
-    "BNB-USD": 27.63,
-    "XRP-USD": 47.06,
-    "ADA-USD": 57.81,
-    "AVAX-USD": 29.81,
-    "DOT-USD": 19.32,
-    "NEAR-USD": 23.29,
-    "ATOM-USD": 45.71,
-    "LTC-USD": 59.46,
-    "BCH-USD": 63.83,
-    "ETC-USD": 45.54,
-    "LINK-USD": 28.57,
-    "AAVE-USD": 53.45,
-    "INJ-USD": 51.2,
+    "BTC-USD": 26.08,
+    "ETH-USD": 33.71,
+    "SOL-USD": 31.37,
+    "BNB-USD": 29.26,
+    "XRP-USD": 49.09,
+    "ADA-USD": 46.84,
+    "AVAX-USD": 38.6,
+    "DOT-USD": 10.81,
+    "NEAR-USD": 26.79,
+    "ATOM-USD": 45.29,
+    "LTC-USD": 41.21,
+    "BCH-USD": 51.38,
+    "ETC-USD": 31.94,
+    "LINK-USD": 32.9,
+    "AAVE-USD": 43.88,
+    "INJ-USD": 38.89,
     "FET-USD": 17.88,
-    "ALGO-USD": 38.52,
-    "XLM-USD": 52.59,
-    "TRX-USD": 75.84,
-    "DOGE-USD": 46.92,
-    "SHIB-USD": 55.56,
-    "BONK-USD": 37.5,
-    "FLOKI-USD": 46.55,
-    "FIL-USD": 34.21,
-    "ICP-USD": 31.11
+    "ALGO-USD": 33.14,
+    "XLM-USD": 50.73,
+    "TRX-USD": 65.27,
+    "DOGE-USD": 40.0,
+    "SHIB-USD": 42.86,
+    "BONK-USD": 28.57,
+    "FLOKI-USD": 29.63,
+    "FIL-USD": 36.73,
+    "ICP-USD": 25.5
   }
 }
