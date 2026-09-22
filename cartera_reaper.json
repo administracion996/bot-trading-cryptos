@@ -1,12 +1,19 @@
 {
-  "efectivo_disponible": 100.04,
+  "efectivo_disponible": 80.03,
   "total_cartera": 100.04,
   "reserva_intocable": 0.0,
   "fecha_control_diario": "2026-09-22",
   "saldo_inicio_dia": 100.04,
   "meta_eur_dia": 5.0,
   "barrido_realizado": false,
-  "posiciones_abiertas": {},
+  "posiciones_abiertas": {
+    "ALGO-USD": {
+      "cantidad": 205.866538149105,
+      "precio_entrada": 0.097198894876,
+      "timestamp_entrada": "2026-09-22 09:29:48",
+      "tipo": "SHORT"
+    }
+  },
   "historial_operaciones": [
     "[2026-09-21 20:24:05] 🔴 APERTURA SHORT 0.007161364474 de BNB-USD a 697.073863245398€ (5.0€) | Motivo: Bull Trap / Agotamiento",
     "[2026-09-21 20:27:17] 🔴 APERTURA SHORT 15.190839144963 de XRP-USD a 1.314476429475€ (20.0€) | Motivo: Bull Trap / Agotamiento",
@@ -48,11 +55,39 @@
     "[2026-09-22 03:41:30] 🔴 APERTURA SHORT 5.038210122827 de NEAR-USD a 3.854321182838€ (19.45€) | Motivo: Bull Trap / Agotamiento",
     "[2026-09-22 03:43:42] 🟢 CIERRE SHORT FIL-USD por TIME-STOP (241.2m). Capital Liberado: 0.27€ | PnL: -0.00€",
     "[2026-09-22 03:45:50] 🟢 CIERRE SHORT NEAR-USD por TAKE-PROFIT (+1.60%). Capital Liberado: 19.73€ | PnL: +0.31€",
-    "[2026-09-22 07:07:53] 🟢 CIERRE SHORT TRX-USD por TIME-STOP (241.8m). Capital Liberado: 78.69€ | PnL: -0.44€"
+    "[2026-09-22 07:07:53] 🟢 CIERRE SHORT TRX-USD por TIME-STOP (241.8m). Capital Liberado: 78.69€ | PnL: -0.44€",
+    "[2026-09-22 09:29:48] 🔴 APERTURA SHORT 205.866538149105 de ALGO-USD a 0.097043376644€ (20.01€) | Motivo: Bull Trap / Agotamiento"
   ],
   "telemetria": {
     "estado": "Vigilando Bull Traps & Agotamiento en Rupturas",
-    "ultima_actualizacion": "2026-09-22 09:21:26"
+    "ultima_actualizacion": "2026-09-22 09:29:48"
   },
-  "radar_rsi": {}
+  "radar_rsi": {
+    "BTC-USD": 52.35,
+    "ETH-USD": 51.61,
+    "SOL-USD": 46.62,
+    "BNB-USD": 43.15,
+    "XRP-USD": 53.44,
+    "ADA-USD": 54.17,
+    "AVAX-USD": 51.96,
+    "DOT-USD": 38.7,
+    "NEAR-USD": 28.87,
+    "ATOM-USD": 39.25,
+    "LTC-USD": 46.42,
+    "BCH-USD": 49.22,
+    "ETC-USD": 49.63,
+    "LINK-USD": 46.77,
+    "AAVE-USD": 31.98,
+    "INJ-USD": 52.58,
+    "FET-USD": 66.14,
+    "ALGO-USD": 69.17,
+    "XLM-USD": 49.51,
+    "TRX-USD": 29.61,
+    "DOGE-USD": 39.85,
+    "SHIB-USD": 52.38,
+    "BONK-USD": 26.92,
+    "FLOKI-USD": 60.16,
+    "FIL-USD": 44.91,
+    "ICP-USD": 56.41
+  }
 }
