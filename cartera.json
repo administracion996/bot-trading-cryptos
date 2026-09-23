@@ -1,5 +1,5 @@
 {
-  "efectivo_disponible": 504.19,
+  "efectivo_disponible": 403.35,
   "total_cartera": 1097.87,
   "posiciones_abiertas": {
     "XRP-USD": {
@@ -36,6 +36,12 @@
       "cantidad": 30324726.540506877,
       "precio_entrada": 3.278857950097554e-06,
       "timestamp_entrada": "2026-09-23 15:46:32",
+      "score_gemini": 80
+    },
+    "INJ-USD": {
+      "cantidad": 14.309971536388916,
+      "precio_entrada": 7.046694659285549,
+      "timestamp_entrada": "2026-09-23 16:05:24",
       "score_gemini": 80
     }
   },
@@ -709,7 +715,8 @@
     "[2026-09-23 15:36:02] [COMPRA \ud83d\udfe2] AVAX-USD | Importe: 104.59 \u20ac | RSI: 13.7 | Score Gemini: 80",
     "[2026-09-23 15:46:31] [VENTA \ud83d\udd34] BONK-USD | Motivo: STOP LOSS (-2.27%) | PnL: -1.83 \u20ac | Score Gemini: 80",
     "[2026-09-23 15:46:32] [COMPRA \ud83d\udfe2] BONK-USD | Importe: 99.43 \u20ac | RSI: 21.7 | Score Gemini: 80",
-    "[2026-09-23 15:54:55] [VENTA \ud83d\udd34] AVAX-USD | Motivo: TAKE PROFIT (+1.80%) | PnL: +1.89 \u20ac | Score Gemini: 80"
+    "[2026-09-23 15:54:55] [VENTA \ud83d\udd34] AVAX-USD | Motivo: TAKE PROFIT (+1.80%) | PnL: +1.89 \u20ac | Score Gemini: 80",
+    "[2026-09-23 16:05:24] [COMPRA \ud83d\udfe2] INJ-USD | Importe: 100.84 \u20ac | RSI: 24.4 | Score Gemini: 80"
   ],
   "reserva_intocable": 0.0,
   "fecha_control_diario": "2026-09-21",
@@ -717,35 +724,35 @@
   "meta_eur_dia": 53.56,
   "barrido_realizado": false,
   "telemetria": {
-    "ultima_actualizacion": "2026-09-23 16:03:18",
+    "ultima_actualizacion": "2026-09-23 16:05:24",
     "estado": "Vigilando Scalping 5m (Local Active)"
   },
   "radar_rsi": {
-    "BTC": 66.29,
-    "ETH": 47.5,
-    "SOL": 49.79,
-    "BNB": 60.37,
-    "XRP": 63.79,
-    "ADA": 44.4,
-    "AVAX": 56.32,
-    "DOT": 42.17,
-    "NEAR": 54.85,
-    "ATOM": 32.65,
-    "LTC": 67.99,
-    "BCH": 46.12,
-    "ETC": 47.78,
-    "LINK": 53.83,
-    "AAVE": 48.69,
-    "INJ": 41.05,
-    "FET": 41.35,
-    "ALGO": 48.16,
-    "XLM": 50.63,
+    "BTC": 63.87,
+    "ETH": 43.58,
+    "SOL": 44.88,
+    "BNB": 57.4,
+    "XRP": 61.86,
+    "ADA": 38.96,
+    "AVAX": 53.66,
+    "DOT": 41.57,
+    "NEAR": 50.91,
+    "ATOM": 32.7,
+    "LTC": 67.51,
+    "BCH": 35.38,
+    "ETC": 45.95,
+    "LINK": 50.41,
+    "AAVE": 42.26,
+    "INJ": 24.41,
+    "FET": 36.28,
+    "ALGO": 41.83,
+    "XLM": 46.42,
     "TRX": 45.3,
-    "DOGE": 54.2,
-    "SHIB": 50.0,
-    "BONK": 40.91,
-    "FLOKI": 42.73,
-    "FIL": 44.6,
-    "ICP": 82.51
+    "DOGE": 50.82,
+    "SHIB": 43.75,
+    "BONK": 35.0,
+    "FLOKI": 33.64,
+    "FIL": 37.5,
+    "ICP": 82.74
   }
 }
