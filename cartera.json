@@ -1,19 +1,7 @@
 {
-  "efectivo_disponible": 553.84,
+  "efectivo_disponible": 629.06,
   "total_cartera": 1097.87,
   "posiciones_abiertas": {
-    "SOL-USD": {
-      "cantidad": 0.44611844209419416,
-      "precio_entrada": 103.71685102906031,
-      "timestamp_entrada": "2026-09-23 07:51:04",
-      "score_gemini": 80
-    },
-    "ALGO-USD": {
-      "cantidad": 302.1638790392885,
-      "precio_entrada": 0.09800244851949902,
-      "timestamp_entrada": "2026-09-23 07:51:04",
-      "score_gemini": 80
-    },
     "BNB-USD": {
       "cantidad": 0.06117562931339521,
       "precio_entrada": 691.2675170898438,
@@ -708,7 +696,9 @@
     "[2026-09-23 11:30:49] [VENTA \ud83d\udd34] XRP-USD | Motivo: TIME STOP (241m) | PnL: -0.53 \u20ac | Score Gemini: 80",
     "[2026-09-23 11:32:55] [VENTA \ud83d\udd34] LINK-USD | Motivo: TIME STOP (241m) | PnL: -0.22 \u20ac | Score Gemini: 80",
     "[2026-09-23 11:41:18] [VENTA \ud83d\udd34] BTC-USD | Motivo: TIME STOP (241m) | PnL: -0.28 \u20ac | Score Gemini: 80",
-    "[2026-09-23 11:41:18] [VENTA \ud83d\udd34] ETH-USD | Motivo: TIME STOP (241m) | PnL: -0.23 \u20ac | Score Gemini: 80"
+    "[2026-09-23 11:41:18] [VENTA \ud83d\udd34] ETH-USD | Motivo: TIME STOP (241m) | PnL: -0.23 \u20ac | Score Gemini: 80",
+    "[2026-09-23 11:51:45] [VENTA \ud83d\udd34] SOL-USD | Motivo: TIME STOP (241m) | PnL: -0.43 \u20ac | Score Gemini: 80",
+    "[2026-09-23 11:51:45] [VENTA \ud83d\udd34] ALGO-USD | Motivo: TIME STOP (241m) | PnL: -0.22 \u20ac | Score Gemini: 80"
   ],
   "reserva_intocable": 0.0,
   "fecha_control_diario": "2026-09-21",
@@ -716,35 +706,35 @@
   "meta_eur_dia": 53.56,
   "barrido_realizado": false,
   "telemetria": {
-    "ultima_actualizacion": "2026-09-23 11:49:40",
+    "ultima_actualizacion": "2026-09-23 11:51:45",
     "estado": "Vigilando Scalping 5m (Local Active)"
   },
   "radar_rsi": {
-    "BTC": 33.95,
-    "ETH": 40.58,
-    "SOL": 34.36,
-    "BNB": 33.68,
-    "XRP": 32.51,
-    "ADA": 36.35,
-    "AVAX": 52.78,
-    "DOT": 38.83,
-    "NEAR": 61.88,
-    "ATOM": 35.66,
-    "LTC": 41.4,
-    "BCH": 43.41,
-    "ETC": 44.02,
-    "LINK": 42.11,
-    "AAVE": 35.07,
-    "INJ": 59.13,
-    "FET": 45.56,
-    "ALGO": 45.37,
-    "XLM": 38.9,
-    "TRX": 0.87,
-    "DOGE": 35.91,
-    "SHIB": 39.13,
-    "BONK": 52.38,
+    "BTC": 36.8,
+    "ETH": 41.32,
+    "SOL": 35.62,
+    "BNB": 34.18,
+    "XRP": 33.41,
+    "ADA": 39.01,
+    "AVAX": 48.12,
+    "DOT": 37.15,
+    "NEAR": 48.02,
+    "ATOM": 35.71,
+    "LTC": 42.61,
+    "BCH": 40.77,
+    "ETC": 46.75,
+    "LINK": 43.0,
+    "AAVE": 36.15,
+    "INJ": 56.41,
+    "FET": 45.36,
+    "ALGO": 42.58,
+    "XLM": 39.58,
+    "TRX": 0.76,
+    "DOGE": 37.95,
+    "SHIB": 43.48,
+    "BONK": 52.27,
     "FLOKI": 35.88,
-    "FIL": 44.04,
-    "ICP": 57.22
+    "FIL": 42.47,
+    "ICP": 49.67
   }
 }
