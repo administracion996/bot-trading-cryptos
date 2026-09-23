@@ -1,5 +1,5 @@
 {
-  "efectivo_disponible": 48.27,
+  "efectivo_disponible": 43.41,
   "total_cartera": 1097.87,
   "posiciones_abiertas": {
     "TRX-USD": {
@@ -14,12 +14,6 @@
       "timestamp_entrada": "2026-09-23 16:11:43",
       "score_gemini": 80
     },
-    "ALGO-USD": {
-      "cantidad": 509.00875163533664,
-      "precio_entrada": 0.09308985488349819,
-      "timestamp_entrada": "2026-09-23 16:11:43",
-      "score_gemini": 80
-    },
     "ATOM-USD": {
       "cantidad": 27.70261204857484,
       "precio_entrada": 1.518970369330006,
@@ -30,12 +24,6 @@
       "cantidad": 5427284.066777392,
       "precio_entrada": 4.962122058792826e-06,
       "timestamp_entrada": "2026-09-23 16:13:48",
-      "score_gemini": 80
-    },
-    "FLOKI-USD": {
-      "cantidad": 710509.3918369876,
-      "precio_entrada": 2.4258287968827587e-05,
-      "timestamp_entrada": "2026-09-23 16:13:49",
       "score_gemini": 80
     },
     "BNB-USD": {
@@ -54,12 +42,6 @@
       "cantidad": 6.430750157725581,
       "precio_entrada": 1.3317264378109357,
       "timestamp_entrada": "2026-09-23 16:30:40",
-      "score_gemini": 80
-    },
-    "FET-USD": {
-      "cantidad": 110.41847035325189,
-      "precio_entrada": 0.17202918985592142,
-      "timestamp_entrada": "2026-09-23 16:51:39",
       "score_gemini": 80
     },
     "INJ-USD": {
@@ -104,12 +86,6 @@
       "timestamp_entrada": "2026-09-23 18:00:51",
       "score_gemini": 80
     },
-    "NEAR-USD": {
-      "cantidad": 9.89806356265467,
-      "precio_entrada": 3.720950847290993,
-      "timestamp_entrada": "2026-09-23 18:00:51",
-      "score_gemini": 80
-    },
     "LTC-USD": {
       "cantidad": 0.5639563457894854,
       "precio_entrada": 52.24547364344835,
@@ -138,6 +114,42 @@
       "cantidad": 3963487.738263942,
       "precio_entrada": 3.044924913209437e-06,
       "timestamp_entrada": "2026-09-23 18:00:51",
+      "score_gemini": 80
+    },
+    "SOL-USD": {
+      "cantidad": 0.3325864522260737,
+      "precio_entrada": 99.5900525585671,
+      "timestamp_entrada": "2026-09-23 18:02:57",
+      "score_gemini": 80
+    },
+    "ADA-USD": {
+      "cantidad": 128.58159536538096,
+      "precio_entrada": 0.20607802952415266,
+      "timestamp_entrada": "2026-09-23 18:02:57",
+      "score_gemini": 80
+    },
+    "NEAR-USD": {
+      "cantidad": 5.887686570147056,
+      "precio_entrada": 3.6004419040000357,
+      "timestamp_entrada": "2026-09-23 18:02:57",
+      "score_gemini": 80
+    },
+    "FET-USD": {
+      "cantidad": 101.06620550263486,
+      "precio_entrada": 0.16779712537420277,
+      "timestamp_entrada": "2026-09-23 18:02:57",
+      "score_gemini": 80
+    },
+    "ALGO-USD": {
+      "cantidad": 148.85976983205634,
+      "precio_entrada": 0.09113876113044261,
+      "timestamp_entrada": "2026-09-23 18:02:57",
+      "score_gemini": 80
+    },
+    "FLOKI-USD": {
+      "cantidad": 459408.2177271028,
+      "precio_entrada": 2.362499316495108e-05,
+      "timestamp_entrada": "2026-09-23 18:02:57",
       "score_gemini": 80
     }
   },
@@ -886,7 +898,17 @@
     "[2026-09-23 18:00:51] [COMPRA \ud83d\udfe2] ETC-USD | Importe: 23.57 \u20ac | RSI: 21.6 | Score Gemini: 80",
     "[2026-09-23 18:00:51] [COMPRA \ud83d\udfe2] AAVE-USD | Importe: 18.86 \u20ac | RSI: 18.5 | Score Gemini: 80",
     "[2026-09-23 18:00:51] [COMPRA \ud83d\udfe2] XLM-USD | Importe: 15.09 \u20ac | RSI: 21.7 | Score Gemini: 80",
-    "[2026-09-23 18:00:51] [COMPRA \ud83d\udfe2] BONK-USD | Importe: 12.07 \u20ac | RSI: 16.7 | Score Gemini: 80"
+    "[2026-09-23 18:00:51] [COMPRA \ud83d\udfe2] BONK-USD | Importe: 12.07 \u20ac | RSI: 16.7 | Score Gemini: 80",
+    "[2026-09-23 18:02:57] [VENTA \ud83d\udd34] ALGO-USD | Motivo: STOP LOSS (-2.10%) | PnL: -0.99 \u20ac | Score Gemini: 80",
+    "[2026-09-23 18:02:57] [VENTA \ud83d\udd34] FLOKI-USD | Motivo: STOP LOSS (-2.61%) | PnL: -0.45 \u20ac | Score Gemini: 80",
+    "[2026-09-23 18:02:57] [VENTA \ud83d\udd34] FET-USD | Motivo: STOP LOSS (-2.46%) | PnL: -0.47 \u20ac | Score Gemini: 80",
+    "[2026-09-23 18:02:57] [VENTA \ud83d\udd34] NEAR-USD | Motivo: STOP LOSS (-3.24%) | PnL: -1.19 \u20ac | Score Gemini: 80",
+    "[2026-09-23 18:02:57] [COMPRA \ud83d\udfe2] SOL-USD | Importe: 33.12 \u20ac | RSI: 22.1 | Score Gemini: 80",
+    "[2026-09-23 18:02:57] [COMPRA \ud83d\udfe2] ADA-USD | Importe: 26.50 \u20ac | RSI: 19.2 | Score Gemini: 80",
+    "[2026-09-23 18:02:57] [COMPRA \ud83d\udfe2] NEAR-USD | Importe: 21.20 \u20ac | RSI: 14.3 | Score Gemini: 80",
+    "[2026-09-23 18:02:57] [COMPRA \ud83d\udfe2] FET-USD | Importe: 16.96 \u20ac | RSI: 7.8 | Score Gemini: 80",
+    "[2026-09-23 18:02:57] [COMPRA \ud83d\udfe2] ALGO-USD | Importe: 13.57 \u20ac | RSI: 20.0 | Score Gemini: 80",
+    "[2026-09-23 18:02:57] [COMPRA \ud83d\udfe2] FLOKI-USD | Importe: 10.85 \u20ac | RSI: 6.4 | Score Gemini: 80"
   ],
   "reserva_intocable": 0.0,
   "fecha_control_diario": "2026-09-21",
@@ -894,35 +916,35 @@
   "meta_eur_dia": 53.56,
   "barrido_realizado": false,
   "telemetria": {
-    "ultima_actualizacion": "2026-09-23 18:00:51",
+    "ultima_actualizacion": "2026-09-23 18:02:57",
     "estado": "Vigilando Scalping 5m (Local Active)"
   },
   "radar_rsi": {
-    "BTC": 20.46,
-    "ETH": 18.05,
-    "SOL": 28.63,
-    "BNB": 15.61,
-    "XRP": 12.91,
-    "ADA": 26.62,
-    "AVAX": 14.2,
-    "DOT": 23.42,
-    "NEAR": 19.78,
-    "ATOM": 23.04,
-    "LTC": 23.54,
-    "BCH": 52.07,
-    "ETC": 21.62,
-    "LINK": 19.93,
-    "AAVE": 18.47,
-    "INJ": 15.16,
-    "FET": 10.64,
-    "ALGO": 32.14,
-    "XLM": 21.67,
-    "TRX": 12.9,
-    "DOGE": 9.43,
-    "SHIB": 26.32,
-    "BONK": 16.67,
-    "FLOKI": 8.43,
-    "FIL": 13.4,
-    "ICP": 14.72
+    "BTC": 10.55,
+    "ETH": 12.4,
+    "SOL": 22.07,
+    "BNB": 12.78,
+    "XRP": 9.07,
+    "ADA": 19.18,
+    "AVAX": 10.82,
+    "DOT": 15.64,
+    "NEAR": 14.3,
+    "ATOM": 17.67,
+    "LTC": 20.08,
+    "BCH": 44.58,
+    "ETC": 14.61,
+    "LINK": 14.71,
+    "AAVE": 15.62,
+    "INJ": 12.18,
+    "FET": 7.76,
+    "ALGO": 20.0,
+    "XLM": 16.67,
+    "TRX": 8.88,
+    "DOGE": 4.46,
+    "SHIB": 20.83,
+    "BONK": 13.79,
+    "FLOKI": 6.42,
+    "FIL": 10.06,
+    "ICP": 7.72
   }
 }
