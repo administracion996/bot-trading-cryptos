@@ -1,13 +1,7 @@
 {
-  "efectivo_disponible": 503.15,
+  "efectivo_disponible": 631.77,
   "total_cartera": 1097.87,
   "posiciones_abiertas": {
-    "BCH-USD": {
-      "cantidad": 0.43546311326674636,
-      "precio_entrada": 296.39249816536903,
-      "timestamp_entrada": "2026-09-23 22:58:41",
-      "score_gemini": 80
-    },
     "AVAX-USD": {
       "cantidad": 18.47306522532126,
       "precio_entrada": 9.060542901704025,
@@ -830,7 +824,8 @@
     "[2026-09-24 01:39:46] [COMPRA \ud83d\udfe2] FLOKI-USD | Importe: 133.90 \u20ac | RSI: 22.6 | Score Gemini: 80",
     "[2026-09-24 01:56:34] [COMPRA \ud83d\udfe2] BTC-USD | Importe: 107.12 \u20ac | RSI: 19.7 | Score Gemini: 80",
     "[2026-09-24 02:02:50] [COMPRA \ud83d\udfe2] FET-USD | Importe: 85.70 \u20ac | RSI: 21.8 | Score Gemini: 80",
-    "[2026-09-24 02:34:10] [VENTA \ud83d\udd34] ALGO-USD | Motivo: TIME STOP (241m) | PnL: -0.97 \u20ac | Score Gemini: 80"
+    "[2026-09-24 02:34:10] [VENTA \ud83d\udd34] ALGO-USD | Motivo: TIME STOP (241m) | PnL: -0.97 \u20ac | Score Gemini: 80",
+    "[2026-09-24 02:59:14] [VENTA \ud83d\udd34] BCH-USD | Motivo: TIME STOP (241m) | PnL: -0.45 \u20ac | Score Gemini: 80"
   ],
   "reserva_intocable": 0.0,
   "fecha_control_diario": "2026-09-21",
@@ -838,35 +833,35 @@
   "meta_eur_dia": 53.56,
   "barrido_realizado": false,
   "telemetria": {
-    "ultima_actualizacion": "2026-09-24 02:57:09",
+    "ultima_actualizacion": "2026-09-24 02:59:14",
     "estado": "Vigilando Scalping 5m (Local Active)"
   },
   "radar_rsi": {
-    "BTC": 42.4,
-    "ETH": 53.54,
-    "SOL": 62.21,
-    "BNB": 54.54,
-    "XRP": 58.36,
-    "ADA": 50.95,
-    "AVAX": 40.38,
-    "DOT": 51.71,
-    "NEAR": 52.6,
-    "ATOM": 51.57,
-    "LTC": 60.59,
-    "BCH": 61.56,
+    "BTC": 40.36,
+    "ETH": 52.33,
+    "SOL": 61.08,
+    "BNB": 53.87,
+    "XRP": 55.76,
+    "ADA": 49.64,
+    "AVAX": 38.41,
+    "DOT": 49.55,
+    "NEAR": 54.06,
+    "ATOM": 42.54,
+    "LTC": 60.57,
+    "BCH": 47.33,
     "ETC": 56.44,
-    "LINK": 34.29,
-    "AAVE": 38.17,
-    "INJ": 56.13,
-    "FET": 44.73,
-    "ALGO": 44.68,
-    "XLM": 48.96,
-    "TRX": 82.26,
-    "DOGE": 63.04,
-    "SHIB": 46.15,
+    "LINK": 28.87,
+    "AAVE": 33.01,
+    "INJ": 55.21,
+    "FET": 42.32,
+    "ALGO": 42.73,
+    "XLM": 46.1,
+    "TRX": 84.91,
+    "DOGE": 62.01,
+    "SHIB": 53.33,
     "BONK": 43.75,
     "FLOKI": 50.0,
-    "FIL": 49.43,
-    "ICP": 42.6
+    "FIL": 47.86,
+    "ICP": 39.93
   }
 }
