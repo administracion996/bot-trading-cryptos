@@ -15,7 +15,7 @@ st.set_page_config(
     page_title="Crypto Trading Dashboard", page_icon="🎯", layout="wide"
 )
 
-# Estilos CSS (sin inyectar reglas sobre las pestañas para no romper la tipografía nativa)
+# Estilos CSS generales y selector de navegación robusto
 st.markdown(
     """
     <style>
@@ -26,6 +26,34 @@ st.markdown(
             padding-left: 1rem !important;
             padding-right: 1rem !important;
             max-width: 100% !important;
+        }
+        
+        /* Navegación por pestañas a prueba de fallos (Selector Horizontal) */
+        div[data-testid="stRadio"] > div {
+            flex-direction: row !important;
+            gap: 12px !important;
+            margin-bottom: 1rem !important;
+        }
+        div[data-testid="stRadio"] label {
+            background-color: #1e222d !important;
+            padding: 10px 24px !important;
+            border-radius: 8px !important;
+            border: 1px solid #363a45 !important;
+            cursor: pointer !important;
+            transition: all 0.2s ease-in-out;
+        }
+        div[data-testid="stRadio"] label:hover {
+            border-color: #ff4b4b !important;
+        }
+        div[data-testid="stRadio"] label p {
+            color: #ffffff !important;
+            font-weight: 800 !important;
+            font-size: 1.15rem !important;
+            margin: 0 !important;
+        }
+        div[data-testid="stRadio"] label[data-checked="true"] {
+            background-color: #ff4b4b !important;
+            border-color: #ff4b4b !important;
         }
         
         /* Permitir salto de línea en celdas para que no se corte el texto de Log */
@@ -668,18 +696,20 @@ def color_rsi(val, inverso=False):
 
 
 # ==========================================
-# ESTRUCTURA DE PESTAÑAS PRINCIPALES
+# ESTRUCTURA DE NAVEGACIÓN GARANTIZADA
 # ==========================================
-tab1, tab2, tab3 = st.tabs([
-    "🎯 SNIPER",
-    "⚡ CAZADOR",
-    "💀 REAPER",
-])
+bot_seleccionado = st.radio(
+    "Navegación",
+    ["🎯 SNIPER", "⚡ CAZADOR", "💀 REAPER"],
+    horizontal=True,
+    label_visibility="collapsed",
+    key="nav_bot_principal",
+)
 
 # ------------------------------------------
-# TAB 1: BOT FRANCOTIRADOR (SNIPER)
+# BOT 1: SNIPER
 # ------------------------------------------
-with tab1:
+if bot_seleccionado == "🎯 SNIPER":
     cartera = cargar_cartera("cartera.json")
     st.title("🎯 Dashboard Crypto Sniper")
     if cartera:
@@ -759,9 +789,9 @@ with tab1:
         st.warning("Cargando datos de Francotirador...")
 
 # ------------------------------------------
-# TAB 2: BOT CAZADOR
+# BOT 2: CAZADOR
 # ------------------------------------------
-with tab2:
+elif bot_seleccionado == "⚡ CAZADOR":
     cartera_c = cargar_cartera("cartera_cazador.json")
     st.title("⚡ Dashboard Bot Cazador")
     if cartera_c:
@@ -825,9 +855,9 @@ with tab2:
         st.warning("Cargando datos de Cazador...")
 
 # ------------------------------------------
-# TAB 3: BOT REAPER SHORT
+# BOT 3: REAPER
 # ------------------------------------------
-with tab3:
+elif bot_seleccionado == "💀 REAPER":
     cartera_r = cargar_cartera("cartera_reaper.json")
     st.title("💀 Dashboard Bot Reaper Short Scalper")
     if cartera_r:
