@@ -1,24 +1,7 @@
 {
-  "efectivo_disponible": 68.802399118428,
+  "efectivo_disponible": 97.796637456755,
   "vault_reservado": 4.95,
-  "posiciones": {
-    "SHIB-USD": {
-      "unidades": 2819985.2096314323,
-      "precio_compra": 5.21458e-06,
-      "coste_total": 14.743371239663,
-      "max_precio_alcanzado": 5.21458e-06,
-      "confianza_gemini": 82,
-      "fecha_entrada": "2026-09-25T13:17:42.518743+02:00"
-    },
-    "FLOKI-USD": {
-      "unidades": 579983.1316041142,
-      "precio_compra": 2.5354252e-05,
-      "coste_total": 14.743371239663,
-      "max_precio_alcanzado": 2.5354252e-05,
-      "confianza_gemini": 76,
-      "fecha_entrada": "2026-09-25T13:17:42.638098+02:00"
-    }
-  },
+  "posiciones": {},
   "historial": [
     {
       "ticker": "AVAX-USD",
@@ -129,6 +112,28 @@
       "pnl_pct": 21.58,
       "motivo_salida": "Trailing Stop ATR (0.22372654\u20ac)",
       "fecha_salida": "2026-09-22T22:12:27.008269+02:00"
+    },
+    {
+      "ticker": "SHIB-USD",
+      "precio_entrada": 5.21458e-06,
+      "precio_salida": 5.146229e-06,
+      "monto_invertido": 14.743371239663,
+      "ingreso_obtenido": 14.474557712246,
+      "beneficio_neto": -0.268813527417,
+      "pnl_pct": -1.31,
+      "motivo_salida": "Time-Stop (2h sin despegue)",
+      "fecha_salida": "2026-09-25T15:21:00.365126+02:00"
+    },
+    {
+      "ticker": "FLOKI-USD",
+      "precio_entrada": 2.5354252e-05,
+      "precio_salida": 2.509992e-05,
+      "monto_invertido": 14.743371239663,
+      "ingreso_obtenido": 14.519680626081,
+      "beneficio_neto": -0.223690613582,
+      "pnl_pct": -1.0,
+      "motivo_salida": "Time-Stop (2h sin despegue)",
+      "fecha_salida": "2026-09-25T15:21:00.365126+02:00"
     }
   ],
   "capital_base_dia": 98.289141597754,
