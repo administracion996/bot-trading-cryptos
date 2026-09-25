@@ -15,7 +15,7 @@ st.set_page_config(
     page_title="Crypto Trading Dashboard", page_icon="🎯", layout="wide"
 )
 
-# Estilos CSS inyectados para compactar interfaz y destacar pestañas
+# Estilos CSS inyectados
 st.markdown(
     """
     <style>
@@ -28,27 +28,15 @@ st.markdown(
             max-width: 100% !important;
         }
         
-        /* Pestañas (Tabs) visibilidad garantizada */
-        .stTabs [data-baseweb="tab-list"] {
-            gap: 10px !important;
-            border-bottom: 2px solid #262730 !important;
-            margin-bottom: 1rem !important;
+        /* Pestañas (Tabs): Texto 100% visible y estilizado */
+        button[data-baseweb="tab"] {
+            font-size: 1.1rem !important;
+            font-weight: 800 !important;
+            padding: 10px 24px !important;
         }
-        .stTabs [data-baseweb="tab"] {
-            height: 42px !important;
-            background-color: #1e222d !important;
-            border-radius: 8px 8px 0px 0px !important;
-            padding: 8px 20px !important;
-            border: 1px solid #363a45 !important;
-        }
-        .stTabs [data-baseweb="tab"] p {
-            color: #ffffff !important;
-            font-weight: 700 !important;
-            font-size: 1.05rem !important;
-        }
-        .stTabs [aria-selected="true"] {
-            background-color: #ff4b4b !important;
-            border-color: #ff4b4b !important;
+        button[data-baseweb="tab"] * {
+            font-size: 1.1rem !important;
+            font-weight: 800 !important;
         }
         
         /* Permitir salto de línea en celdas para que no se corte el texto de Log */
@@ -653,7 +641,7 @@ def mostrar_historial_con_filtros(df_historial, key_prefix):
             "%Y-%m-%d %H:%M:%S"
         )
 
-        # Ocultar la columna Score_Gemini si no hay valores válidos en la tabla
+        # Ocultar la columna Score_Gemini si no hay valores válidos
         if "Score_Gemini" in df_display.columns:
             scores_validos = (
                 df_display["Score_Gemini"]
@@ -694,13 +682,13 @@ def color_rsi(val, inverso=False):
 # ESTRUCTURA DE PESTAÑAS PRINCIPALES
 # ==========================================
 tab1, tab2, tab3 = st.tabs([
-    "🎯 Bot 1: Francotirador",
-    "⚡ Bot 2: Cazador Memecoins",
-    "💀 Bot 3: Reaper Short",
+    "🎯 SNIPER",
+    "⚡ CAZADOR",
+    "💀 REAPER",
 ])
 
 # ------------------------------------------
-# TAB 1: BOT FRANCOTIRADOR
+# TAB 1: BOT FRANCOTIRADOR (SNIPER)
 # ------------------------------------------
 with tab1:
     cartera = cargar_cartera("cartera.json")
