@@ -15,7 +15,7 @@ st.set_page_config(
     page_title="Crypto Trading Dashboard", page_icon="🎯", layout="wide"
 )
 
-# Estilos CSS con contraste fuerte garantizado para las pestañas
+# Estilos CSS corregidos para evitar que Streamlit recorte el texto de las pestañas
 st.markdown(
     """
     <style>
@@ -28,29 +28,31 @@ st.markdown(
             max-width: 100% !important;
         }
         
-        /* Pestañas (Tabs) con estilo e visibilidad 100% garantizada */
-        .stTabs [data-baseweb="tab-list"] button {
-            background-color: #e2e8f0 !important;
-            border-radius: 8px 8px 0px 0px !important;
-            padding: 10px 24px !important;
-            margin-right: 8px !important;
-            border: 1px solid #cbd5e1 !important;
+        /* Pestañas (Tabs) con texto 100% visible en modo claro y oscuro */
+        div[data-baseweb="tab-list"] {
+            gap: 16px !important;
         }
-        .stTabs [data-baseweb="tab-list"] button p,
-        .stTabs [data-baseweb="tab-list"] button div,
-        .stTabs [data-baseweb="tab-list"] button span {
-            color: #1e293b !important;
+        
+        button[data-baseweb="tab"] {
+            background-color: transparent !important;
+            border: none !important;
+            padding: 4px 12px !important;
+        }
+        
+        button[data-baseweb="tab"] p, 
+        button[data-baseweb="tab"] div, 
+        button[data-baseweb="tab"] span {
+            font-size: 1.2rem !important;
             font-weight: 800 !important;
-            font-size: 1.1rem !important;
+            line-height: 1.5 !important;
+            opacity: 0.8;
         }
-        .stTabs [data-baseweb="tab-list"] button[aria-selected="true"] {
-            background-color: #ff4b4b !important;
-            border-color: #ff4b4b !important;
-        }
-        .stTabs [data-baseweb="tab-list"] button[aria-selected="true"] p,
-        .stTabs [data-baseweb="tab-list"] button[aria-selected="true"] div,
-        .stTabs [data-baseweb="tab-list"] button[aria-selected="true"] span {
-            color: #ffffff !important;
+        
+        button[aria-selected="true"][data-baseweb="tab"] p,
+        button[aria-selected="true"][data-baseweb="tab"] div,
+        button[aria-selected="true"][data-baseweb="tab"] span {
+            color: #ff4b4b !important;
+            opacity: 1.0 !important;
         }
         
         /* Permitir salto de línea en celdas para que no se corte el texto de Log */
