@@ -15,7 +15,7 @@ st.set_page_config(
     page_title="Crypto Trading Dashboard", page_icon="🎯", layout="wide"
 )
 
-# Estilos CSS inyectados
+# Estilos CSS inyectados para solución definitiva de visibilidad
 st.markdown(
     """
     <style>
@@ -138,7 +138,38 @@ CONFIG_HISTORIAL = {
 }
 
 
-# --- FUNCIONES DE LIMPIEZA Y PROCESAMIENTO RADAR ---
+# --- FUNCIONES DE LIMPIEZA Y NORMALIZACIÓN ---
+def normalizar_fecha(fecha_raw):
+    if not fecha_raw:
+        return datetime.now(tz_madrid)
+    if isinstance(fecha_raw, datetime):
+        if fecha_raw.tzinfo is None:
+            return tz_madrid.localize(fecha_raw)
+        return fecha_raw.astimezone(tz_madrid)
+    if isinstance(fecha_raw, (int, float)):
+        try:
+            if fecha_raw > 1e11:
+                fecha_raw = fecha_raw / 1000.0
+            return datetime.fromtimestamp(fecha_raw, tz=tz_madrid)
+        except Exception:
+            pass
+    s_fecha = str(fecha_raw).strip()
+    try:
+        dt = datetime.fromisoformat(s_fecha)
+        if dt.tzinfo is None:
+            return tz_madrid.localize(dt)
+        return dt.astimezone(tz_madrid)
+    except Exception:
+        pass
+    for fmt in ("%Y-%m-%d %H:%M:%S", "%Y-%m-%dT%H:%M:%S", "%Y-%m-%d"):
+        try:
+            dt = datetime.strptime(s_fecha.split(".")[0], fmt)
+            return tz_madrid.localize(dt)
+        except Exception:
+            pass
+    return datetime.now(tz_madrid)
+
+
 def procesar_radar_reaper(radar_data):
     filas = []
     if not isinstance(radar_data, dict):
@@ -169,7 +200,6 @@ def procesar_radar_reaper(radar_data):
                 info.get("soporte") or info.get("soporte_2h"), 0.0
             )
 
-            # Lógica de Estado para "El Verdugo"
             if (precio > 0 and soporte > 0 and precio < soporte and rsi < 45) or info.get("rotura") is True or info.get("estado") == "ROTURA":
                 estado = "🔴 ROTURA (SHORT)"
             elif dist_sop < 0.8:
@@ -177,7 +207,6 @@ def procesar_radar_reaper(radar_data):
             else:
                 estado = "⚪ NEUTRAL"
         else:
-            # Si el JSON contiene solo un entero/float (RSI)
             rsi = safe_float(info, 50.0)
             dist_sop = round(max(0.1, (rsi - 20) / 30.0), 2)
             vol_ratio = 1.0
@@ -209,7 +238,6 @@ def procesar_radar_reaper(radar_data):
         )
 
     df = pd.DataFrame(filas)
-    # Ordenar de menor a mayor RSI (Monedas más débiles primero)
     df = df.sort_values(by="_rsi_num", ascending=True)
     return df.drop(columns=["_rsi_num"])
 
@@ -388,20 +416,18 @@ def parsear_historial(historial_raw, es_short=False):
                 fecha_raw = (
                     log.get("fecha_salida")
                     or log.get("fecha_entrada")
+                    or log.get("fecha_compra")
+                    or log.get("fecha_apertura")
+                    or log.get("timestamp_entrada")
+                    or log.get("timestamp_compra")
                     or log.get("fecha")
                     or log.get("Fecha")
                     or log.get("timestamp")
+                    or log.get("time")
+                    or log.get("created_at")
                     or ""
                 )
-                try:
-                    fecha_dt = datetime.fromisoformat(str(fecha_raw))
-                except Exception:
-                    try:
-                        fecha_dt = datetime.strptime(
-                            str(fecha_raw), "%Y-%m-%d %H:%M:%S"
-                        )
-                    except Exception:
-                        fecha_dt = datetime.now(tz_madrid)
+                fecha_dt = normalizar_fecha(fecha_raw)
 
                 ticker = str(
                     log.get("ticker")
@@ -409,11 +435,13 @@ def parsear_historial(historial_raw, es_short=False):
                     or log.get("moneda")
                     or "DESCONOCIDO"
                 ).replace("-USD", "")
+
                 valor = safe_float(
                     log.get("monto_invertido")
                     or log.get("valor")
                     or log.get("importe")
                     or log.get("monto")
+                    or log.get("inversion")
                     or log.get("precio", 0.0)
                 )
 
@@ -422,6 +450,7 @@ def parsear_historial(historial_raw, es_short=False):
                     or log.get("pnl")
                     or log.get("PnL (€)")
                     or log.get("pnl_eur")
+                    or log.get("beneficio")
                     or 0.0
                 )
 
@@ -466,12 +495,7 @@ def parsear_historial(historial_raw, es_short=False):
             m_fecha = REGEX_FECHA.search(log)
             if not m_fecha:
                 continue
-            try:
-                fecha_dt = datetime.strptime(
-                    m_fecha.group(1), "%Y-%m-%d %H:%M:%S"
-                )
-            except Exception:
-                fecha_dt = datetime.now(tz_madrid)
+            fecha_dt = normalizar_fecha(m_fecha.group(1))
 
             m_ticker = REGEX_TICKER.search(log)
             ticker = (
@@ -526,6 +550,65 @@ def parsear_historial(historial_raw, es_short=False):
             ]
         )
     return pd.DataFrame(registros)
+
+
+def incluir_posiciones_abiertas(df_historial, posiciones, es_short=False):
+    """Inserta las posiciones activas en el historial para que las compras/aperturas se reflejen de inmediato."""
+    if not isinstance(posiciones, dict) or not posiciones:
+        return df_historial
+
+    registros_abiertos = []
+    for ticker_raw, pos in posiciones.items():
+        if not isinstance(pos, dict):
+            continue
+        ticker = str(ticker_raw).replace("-USD", "")
+        timestamp = (
+            pos.get("timestamp_entrada")
+            or pos.get("fecha_entrada")
+            or pos.get("fecha_compra")
+            or pos.get("timestamp")
+            or pos.get("fecha")
+        )
+        fecha_dt = normalizar_fecha(timestamp)
+        cant = safe_float(pos.get("cantidad") or pos.get("unidades") or 0)
+        p_ent = safe_float(
+            pos.get("precio_entrada")
+            or pos.get("precio_compra")
+            or pos.get("precio")
+            or 0
+        )
+        inversion = round(cant * p_ent, 2)
+
+        tipo = "COMPRA 🔴" if es_short else "COMPRA 🟢"
+        log = "Posición activa (Abierta)"
+
+        # Evitar duplicar si ya existe exactamente en el historial
+        ya_existe = False
+        if not df_historial.empty:
+            coincidencias = df_historial[
+                (df_historial["Ticker"] == ticker)
+                & (df_historial["Tipo"] == tipo)
+            ]
+            if not coincidencias.empty:
+                ya_existe = True
+
+        if not ya_existe:
+            registros_abiertos.append({
+                "Fecha": fecha_dt,
+                "Tipo": tipo,
+                "Ticker": ticker,
+                "Valor (€)": inversion,
+                "PnL (€)": 0.0,
+                "Score_Gemini": pos.get("confianza_gemini") or pos.get("score"),
+                "Log": log,
+            })
+
+    if registros_abiertos:
+        df_abiertas = pd.DataFrame(registros_abiertos)
+        if df_historial.empty:
+            return df_abiertas
+        return pd.concat([df_historial, df_abiertas], ignore_index=True)
+    return df_historial
 
 
 def calcular_metricas_live(
@@ -612,9 +695,7 @@ def generar_tabla_posiciones(posiciones, precios_live, es_short=False):
         )
         if timestamp:
             try:
-                f_ent = datetime.fromisoformat(str(timestamp))
-                if f_ent.tzinfo is None:
-                    f_ent = tz_madrid.localize(f_ent)
+                f_ent = normalizar_fecha(timestamp)
                 mins = (ahora - f_ent).total_seconds() / 60
                 mins_restantes = max(0, 240 - mins)
                 t_restante = f"{int(mins_restantes)} min"
@@ -826,6 +907,7 @@ with tab1:
         meta_dia = obtener_campo_num(cartera, ["meta_eur_dia"], 5.0)
         posiciones = cartera.get("posiciones_abiertas", {})
         df_hist = parsear_historial(cartera.get("historial_operaciones", []))
+        df_hist = incluir_posiciones_abiertas(df_hist, posiciones, es_short=False)
 
         precios_live, _ = obtener_precios_posiciones(
             tuple(posiciones.keys()) if isinstance(posiciones, dict) else ()
@@ -919,6 +1001,7 @@ with tab2:
             or []
         )
         df_hist_c = parsear_historial(raw_hist_c)
+        df_hist_c = incluir_posiciones_abiertas(df_hist_c, posiciones_c, es_short=False)
 
         precios_live_c, _ = obtener_precios_posiciones(
             tuple(posiciones_c.keys()) if isinstance(posiciones_c, dict) else ()
@@ -978,6 +1061,7 @@ with tab3:
         df_hist_r = parsear_historial(
             cartera_r.get("historial_operaciones", []), es_short=True
         )
+        df_hist_r = incluir_posiciones_abiertas(df_hist_r, posiciones_r, es_short=True)
 
         precios_live_r, _ = obtener_precios_posiciones(
             tuple(posiciones_r.keys()) if isinstance(posiciones_r, dict) else ()
