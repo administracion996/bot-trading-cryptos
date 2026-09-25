@@ -15,11 +15,11 @@ st.set_page_config(
     page_title="Crypto Trading Dashboard", page_icon="🎯", layout="wide"
 )
 
-# Estilos CSS inyectados para solución definitiva de visibilidad
+# Estilos CSS inyectados
 st.markdown(
     """
     <style>
-        /* 1. Ocultar la barra superior flotante de Streamlit que tapaba las pestañas */
+        /* 1. Ocultar la barra superior flotante de Streamlit */
         header[data-testid="stHeader"] {
             display: none !important;
         }
@@ -33,7 +33,7 @@ st.markdown(
             max-width: 100% !important;
         }
         
-        /* 3. Estilo de Pestañas (Tabs) con visibilidad y alto contraste 100% garantizados */
+        /* 3. Estilo de Pestañas (Tabs) con visibilidad y alto contraste */
         .stTabs [data-baseweb="tab-list"] {
             gap: 8px !important;
             margin-bottom: 1rem !important;
@@ -66,7 +66,7 @@ st.markdown(
             color: #ffffff !important;
         }
         
-        /* 4. Tablas compactas con salto de línea en celdas para que no se corte el texto de Log */
+        /* 4. Tablas compactas con salto de línea en celdas */
         [data-testid="stDataFrame"] div[role="gridcell"] {
             white-space: normal !important;
             word-break: break-word !important;
@@ -119,6 +119,14 @@ CONFIG_RADAR = {
     "RSI": st.column_config.NumberColumn("RSI", width=80),
 }
 
+CONFIG_RADAR_REAPER = {
+    "Activo": st.column_config.TextColumn("Activo", width=80),
+    "RSI (1m)": st.column_config.NumberColumn("RSI (1m)", width=85),
+    "Dist. Soporte (%)": st.column_config.TextColumn("Dist. Soporte (%)", width=115),
+    "Volumen (Ratio)": st.column_config.TextColumn("Volumen (Ratio)", width=105),
+    "Estado": st.column_config.TextColumn("Estado", width=145),
+}
+
 CONFIG_HISTORIAL = {
     "Fecha": st.column_config.TextColumn("Fecha", width=140),
     "Tipo": st.column_config.TextColumn("Tipo", width=100),
@@ -130,17 +138,106 @@ CONFIG_HISTORIAL = {
 }
 
 
-# --- FUNCIONES DE LIMPIEZA Y SEGURIDAD ---
+# --- FUNCIONES DE LIMPIEZA Y PROCESAMIENTO RADAR ---
+def procesar_radar_reaper(radar_data):
+    filas = []
+    if not isinstance(radar_data, dict):
+        return pd.DataFrame(filas)
+
+    for ticker, info in radar_data.items():
+        activo = str(ticker).replace("-USD", "")
+
+        if isinstance(info, dict):
+            rsi = safe_float(
+                info.get("rsi") or info.get("rsi_1m") or info.get("RSI"), 50.0
+            )
+            dist_sop = safe_float(
+                info.get("distancia_soporte")
+                or info.get("dist_soporte")
+                or info.get("dist_soporte_pct")
+                or info.get("dist_soporte_2h"),
+                1.0,
+            )
+            vol_ratio = safe_float(
+                info.get("volumen_ratio")
+                or info.get("vol_ratio")
+                or info.get("volumen"),
+                1.0,
+            )
+            precio = safe_float(info.get("precio"), 0.0)
+            soporte = safe_float(
+                info.get("soporte") or info.get("soporte_2h"), 0.0
+            )
+
+            # Lógica de Estado para "El Verdugo"
+            if (precio > 0 and soporte > 0 and precio < soporte and rsi < 45) or info.get("rotura") is True or info.get("estado") == "ROTURA":
+                estado = "🔴 ROTURA (SHORT)"
+            elif dist_sop < 0.8:
+                estado = "⚠️ CERCA DEL SUELO"
+            else:
+                estado = "⚪ NEUTRAL"
+        else:
+            # Si el JSON contiene solo un entero/float (RSI)
+            rsi = safe_float(info, 50.0)
+            dist_sop = round(max(0.1, (rsi - 20) / 30.0), 2)
+            vol_ratio = 1.0
+            if rsi < 35:
+                estado = "🔴 ROTURA (SHORT)"
+            elif rsi < 45:
+                estado = "⚠️ CERCA DEL SUELO"
+            else:
+                estado = "⚪ NEUTRAL"
+
+        filas.append({
+            "Activo": activo,
+            "RSI (1m)": round(rsi, 1),
+            "Dist. Soporte (%)": f"{dist_sop:.2f}%",
+            "Volumen (Ratio)": f"{vol_ratio:.1f}x",
+            "Estado": estado,
+            "_rsi_num": rsi,
+        })
+
+    if not filas:
+        return pd.DataFrame(
+            columns=[
+                "Activo",
+                "RSI (1m)",
+                "Dist. Soporte (%)",
+                "Volumen (Ratio)",
+                "Estado",
+            ]
+        )
+
+    df = pd.DataFrame(filas)
+    # Ordenar de menor a mayor RSI (Monedas más débiles primero)
+    df = df.sort_values(by="_rsi_num", ascending=True)
+    return df.drop(columns=["_rsi_num"])
+
+
+def color_radar_reaper(row):
+    rsi = safe_float(row.get("RSI (1m)"), 50.0)
+    estado = str(row.get("Estado", ""))
+
+    if "ROTURA" in estado or rsi < 40:
+        return [
+            "background-color: rgba(255, 75, 75, 0.25); color: #ff4b4b;"
+            " font-weight: bold;"
+        ] * len(row)
+    elif "CERCA" in estado or rsi < 45:
+        return [
+            "background-color: rgba(255, 165, 0, 0.2); color: #ffa500;"
+            " font-weight: bold;"
+        ] * len(row)
+    return [""] * len(row)
+
+
 def limpiar_log(log_str):
     if not isinstance(log_str, str):
         return str(log_str)
-    
-    # Quitar fecha/hora [YYYY-MM-DD HH:MM:SS]
+
     txt = re.sub(r"\[\d{4}-\d{2}-\d{2}\s+\d{2}:\d{2}:\d{2}\]", "", log_str)
-    # Quitar emojis sobrantes
     txt = re.sub(r"[🟢🔴⚪]", "", txt).strip()
-    
-    # Extraer la razón limpia
+
     if " por " in txt:
         txt = txt.split(" por ", 1)[1].strip()
     elif "Motivo:" in txt:
@@ -152,8 +249,7 @@ def limpiar_log(log_str):
         m_rsi = re.search(r"RSI:\s*([\d\.]+)", txt)
         rsi_str = f" (RSI: {m_rsi.group(1)})" if m_rsi else ""
         txt = f"Entrada por sobreventa{rsi_str}"
-    
-    # Quitar etiquetas iniciales o corchetes residuales
+
     txt = re.sub(r"^\[.*?\]\s*", "", txt).strip()
     return txt if txt else log_str
 
@@ -908,29 +1004,22 @@ with tab3:
         )
 
         st.divider()
-        col_radar, col_pos = st.columns([1, 2.2])
+        col_radar, col_pos = st.columns([1.2, 2])
 
         with col_radar:
-            st.subheader("👁️ Radar Reaper (RSI >= 60)")
-            radar_r = cartera_r.get("radar_rsi", {})
+            st.subheader("🎯 Radar REAPER - Debilidad & Roturas de Soporte (1m)")
+            radar_r = cartera_r.get("radar_rsi") or cartera_r.get("radar", {})
             if radar_r and isinstance(radar_r, dict):
-                df_radar_r = pd.DataFrame(
-                    list(radar_r.items()), columns=["Activo", "RSI"]
-                )
-                df_radar_r = df_radar_r[df_radar_r["RSI"] >= 50].sort_values(
-                    by="RSI", ascending=False
-                )
+                df_radar_r = procesar_radar_reaper(radar_r)
                 st.dataframe(
-                    df_radar_r.style.map(
-                        lambda x: color_rsi(x, True), subset=["RSI"]
-                    ),
+                    df_radar_r.style.apply(color_radar_reaper, axis=1),
                     use_container_width=True,
-                    height=220,
-                    column_config=CONFIG_RADAR,
+                    height=240,
+                    column_config=CONFIG_RADAR_REAPER,
                     hide_index=True,
                 )
             else:
-                st.info("Sin sobrecompra detectada.")
+                st.info("Sin datos de debilidad / radar en REAPER.")
 
         with col_pos:
             st.subheader("📌 Posiciones Cortas Activas (Shorts)")
@@ -940,7 +1029,7 @@ with tab3:
                         posiciones_r, precios_live_r, es_short=True
                     ),
                     use_container_width=True,
-                    height=220,
+                    height=240,
                     column_config=CONFIG_POSICIONES,
                     hide_index=True,
                 )
