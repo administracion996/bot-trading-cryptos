@@ -15,7 +15,7 @@ st.set_page_config(
     page_title="Crypto Trading Dashboard", page_icon="🎯", layout="wide"
 )
 
-# Estilos CSS corregidos para evitar que Streamlit recorte el texto de las pestañas
+# Estilos CSS (sin inyectar reglas sobre las pestañas para no romper la tipografía nativa)
 st.markdown(
     """
     <style>
@@ -26,33 +26,6 @@ st.markdown(
             padding-left: 1rem !important;
             padding-right: 1rem !important;
             max-width: 100% !important;
-        }
-        
-        /* Pestañas (Tabs) con texto 100% visible en modo claro y oscuro */
-        div[data-baseweb="tab-list"] {
-            gap: 16px !important;
-        }
-        
-        button[data-baseweb="tab"] {
-            background-color: transparent !important;
-            border: none !important;
-            padding: 4px 12px !important;
-        }
-        
-        button[data-baseweb="tab"] p, 
-        button[data-baseweb="tab"] div, 
-        button[data-baseweb="tab"] span {
-            font-size: 1.2rem !important;
-            font-weight: 800 !important;
-            line-height: 1.5 !important;
-            opacity: 0.8;
-        }
-        
-        button[aria-selected="true"][data-baseweb="tab"] p,
-        button[aria-selected="true"][data-baseweb="tab"] div,
-        button[aria-selected="true"][data-baseweb="tab"] span {
-            color: #ff4b4b !important;
-            opacity: 1.0 !important;
         }
         
         /* Permitir salto de línea en celdas para que no se corte el texto de Log */
