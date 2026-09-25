@@ -15,7 +15,7 @@ st.set_page_config(
     page_title="Crypto Trading Dashboard", page_icon="🎯", layout="wide"
 )
 
-# Estilos CSS inyectados para compactar interfaz y permitir salto de línea en logs
+# Estilos CSS inyectados para compactar interfaz y destacar pestañas
 st.markdown(
     """
     <style>
@@ -28,11 +28,27 @@ st.markdown(
             max-width: 100% !important;
         }
         
-        /* Destacar claramente las pestañas principales */
-        button[data-baseweb="tab"] {
-            font-size: 1.1rem !important;
-            font-weight: 700 !important;
+        /* Pestañas (Tabs) visibilidad garantizada */
+        .stTabs [data-baseweb="tab-list"] {
+            gap: 10px !important;
+            border-bottom: 2px solid #262730 !important;
+            margin-bottom: 1rem !important;
+        }
+        .stTabs [data-baseweb="tab"] {
+            height: 42px !important;
+            background-color: #1e222d !important;
+            border-radius: 8px 8px 0px 0px !important;
             padding: 8px 20px !important;
+            border: 1px solid #363a45 !important;
+        }
+        .stTabs [data-baseweb="tab"] p {
+            color: #ffffff !important;
+            font-weight: 700 !important;
+            font-size: 1.05rem !important;
+        }
+        .stTabs [aria-selected="true"] {
+            background-color: #ff4b4b !important;
+            border-color: #ff4b4b !important;
         }
         
         /* Permitir salto de línea en celdas para que no se corte el texto de Log */
@@ -70,7 +86,6 @@ REGEX_TICKER = re.compile(r"([A-Z0-9]{2,10}-USD)")
 REGEX_VALOR = re.compile(r"(\d+(?:\.\d+)?)\s*€")
 REGEX_SCORE = re.compile(r"Score Gemini:\s*(\d+)", re.IGNORECASE)
 REGEX_PNL = re.compile(r"PnL:\s*([+-]?\d+(?:\.\d+)?)\s*€")
-REGEX_CLEAN_LOG = re.compile(r"^\[.*?\]\s*(?:\[.*?\])?\s*[A-Z0-9\-]+\s*\|\s*")
 
 # Configuración de anchos de columna
 CONFIG_POSICIONES = {
@@ -91,7 +106,7 @@ CONFIG_RADAR = {
 
 CONFIG_HISTORIAL = {
     "Fecha": st.column_config.TextColumn("Fecha", width=140),
-    "Tipo": st.column_config.TextColumn("Tipo", width=110),
+    "Tipo": st.column_config.TextColumn("Tipo", width=100),
     "Ticker": st.column_config.TextColumn("Ticker", width=75),
     "Valor (€)": st.column_config.NumberColumn("Valor (€)", width=90),
     "PnL (€)": st.column_config.NumberColumn("PnL (€)", width=80),
@@ -100,7 +115,34 @@ CONFIG_HISTORIAL = {
 }
 
 
-# --- FUNCIONES DE SEGURIDAD Y EXTRACCIÓN ---
+# --- FUNCIONES DE LIMPIEZA Y SEGURIDAD ---
+def limpiar_log(log_str):
+    if not isinstance(log_str, str):
+        return str(log_str)
+    
+    # Quitar fecha/hora [YYYY-MM-DD HH:MM:SS]
+    txt = re.sub(r"\[\d{4}-\d{2}-\d{2}\s+\d{2}:\d{2}:\d{2}\]", "", log_str)
+    # Quitar emojis sobrantes
+    txt = re.sub(r"[🟢🔴⚪]", "", txt).strip()
+    
+    # Extraer la razón limpia
+    if " por " in txt:
+        txt = txt.split(" por ", 1)[1].strip()
+    elif "Motivo:" in txt:
+        parts = txt.split("Motivo:", 1)[1]
+        txt = parts.split("|")[0].strip()
+    elif "ROTURA SOPORTE" in txt:
+        txt = "Apertura por Rotura de Soporte"
+    elif "COMPRA" in txt and "Importe:" in txt:
+        m_rsi = re.search(r"RSI:\s*([\d\.]+)", txt)
+        rsi_str = f" (RSI: {m_rsi.group(1)})" if m_rsi else ""
+        txt = f"Entrada por sobreventa{rsi_str}"
+    
+    # Quitar etiquetas iniciales o corchetes residuales
+    txt = re.sub(r"^\[.*?\]\s*", "", txt).strip()
+    return txt if txt else log_str
+
+
 def safe_float(val, default=0.0):
     if val is None:
         return default
@@ -281,19 +323,20 @@ def parsear_historial(historial_raw, es_short=False):
                 motivo = str(log.get("motivo_salida") or "").upper()
                 tipo_bruto = str(log.get("tipo") or log.get("Tipo") or "").upper()
 
-                if motivo:
-                    tipo = "VENTA 🔴" if not es_short else "CIERRE SHORT 🟢"
-                elif tipo_bruto:
-                    if "COMPRA" in tipo_bruto:
+                if es_short:
+                    if motivo or "VENTA" in tipo_bruto or "CIERRE" in tipo_bruto:
+                        tipo = "VENTA 🟢"
+                    else:
+                        tipo = "COMPRA 🔴"
+                else:
+                    if motivo or "VENTA" in tipo_bruto:
+                        tipo = "VENTA 🔴"
+                    elif "COMPRA" in tipo_bruto:
                         tipo = "COMPRA 🟢"
-                    elif "VENTA" in tipo_bruto:
-                        tipo = "VENTA 🔴" if not es_short else "CIERRE SHORT 🟢"
-                    elif "SHORT" in tipo_bruto:
-                        tipo = "APERTURA SHORT 🔴"
                     else:
                         tipo = "OTRO ⚪"
-                else:
-                    tipo = "VENTA 🔴" if not es_short else "CIERRE SHORT 🟢"
+
+                log_limpio = limpiar_log(str(motivo) if motivo else str(log))
 
                 registros.append({
                     "Fecha": fecha_dt,
@@ -302,7 +345,7 @@ def parsear_historial(historial_raw, es_short=False):
                     "Valor (€)": valor,
                     "PnL (€)": round(pnl_eur, 2),
                     "Score_Gemini": score_gemini,
-                    "Log": str(motivo) if motivo else str(log),
+                    "Log": log_limpio,
                 })
                 continue
 
@@ -332,18 +375,20 @@ def parsear_historial(historial_raw, es_short=False):
             m_pnl = REGEX_PNL.search(log)
             pnl_eur = float(m_pnl.group(1)) if m_pnl else 0.0
 
-            tipo = "OTRO ⚪"
-            if "COMPRA" in log:
-                tipo = "COMPRA 🟢"
-            elif "VENTA" in log and not es_short:
-                tipo = "VENTA 🔴"
-            elif "APERTURA SHORT" in log:
-                tipo = "APERTURA SHORT 🔴"
-            elif "CIERRE SHORT" in log:
-                tipo = "CIERRE SHORT 🟢"
+            if es_short:
+                if "CIERRE SHORT" in log or "VENTA" in log or "por " in log:
+                    tipo = "VENTA 🟢"
+                else:
+                    tipo = "COMPRA 🔴"
+            else:
+                if "COMPRA" in log:
+                    tipo = "COMPRA 🟢"
+                elif "VENTA" in log:
+                    tipo = "VENTA 🔴"
+                else:
+                    tipo = "OTRO ⚪"
 
-            # Limpieza de prefijos redundantes en el log
-            log_limpio = REGEX_CLEAN_LOG.sub("", log)
+            log_limpio = limpiar_log(log)
 
             registros.append({
                 "Fecha": fecha_dt,
@@ -607,6 +652,20 @@ def mostrar_historial_con_filtros(df_historial, key_prefix):
         df_display["Fecha"] = df_display["Fecha"].dt.strftime(
             "%Y-%m-%d %H:%M:%S"
         )
+
+        # Ocultar la columna Score_Gemini si no hay valores válidos en la tabla
+        if "Score_Gemini" in df_display.columns:
+            scores_validos = (
+                df_display["Score_Gemini"]
+                .dropna()
+                .apply(lambda x: str(x).strip())
+            )
+            scores_validos = scores_validos[
+                ~scores_validos.isin(["None", "nan", "", "null", "NoneType"])
+            ]
+            if scores_validos.empty:
+                df_display = df_display.drop(columns=["Score_Gemini"])
+
         st.dataframe(
             df_display.sort_values(by="Fecha", ascending=False),
             use_container_width=True,
@@ -681,7 +740,6 @@ with tab1:
             f"🟢 **Estado:** {obtener_estado(cartera, 'Vigilando mercado')}"
         )
 
-        # Organización en 2 columnas: Radar (Izquierda) + Posiciones (Derecha)
         st.divider()
         col_radar, col_pos = st.columns([1, 2.2])
 
@@ -834,7 +892,6 @@ with tab3:
             f"🟢 **Estado:** {obtener_estado(cartera_r, 'Escaneando Bull Traps 5m')}"
         )
 
-        # Organización en 2 columnas: Radar (Izquierda) + Posiciones Cortas (Derecha)
         st.divider()
         col_radar, col_pos = st.columns([1, 2.2])
 
