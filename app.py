@@ -15,55 +15,65 @@ st.set_page_config(
     page_title="Crypto Trading Dashboard", page_icon="🎯", layout="wide"
 )
 
-# Estilos CSS generales y selector de navegación robusto
+# Estilos CSS inyectados para solución definitiva de visibilidad
 st.markdown(
     """
     <style>
-        /* Contenedor principal ultracompacto */
+        /* 1. Ocultar la barra superior flotante de Streamlit que tapaba las pestañas */
+        header[data-testid="stHeader"] {
+            display: none !important;
+        }
+        
+        /* 2. Margen de pantalla ultracompacto */
         .block-container {
-            padding-top: 1rem !important;
+            padding-top: 1.2rem !important;
             padding-bottom: 1rem !important;
             padding-left: 1rem !important;
             padding-right: 1rem !important;
             max-width: 100% !important;
         }
         
-        /* Navegación por pestañas a prueba de fallos (Selector Horizontal) */
-        div[data-testid="stRadio"] > div {
-            flex-direction: row !important;
-            gap: 12px !important;
+        /* 3. Estilo de Pestañas (Tabs) con visibilidad y alto contraste 100% garantizados */
+        .stTabs [data-baseweb="tab-list"] {
+            gap: 8px !important;
             margin-bottom: 1rem !important;
         }
-        div[data-testid="stRadio"] label {
-            background-color: #1e222d !important;
+        
+        .stTabs [data-baseweb="tab"] {
+            background-color: #e2e8f0 !important;
+            border-radius: 8px 8px 0 0 !important;
             padding: 10px 24px !important;
-            border-radius: 8px !important;
-            border: 1px solid #363a45 !important;
-            cursor: pointer !important;
-            transition: all 0.2s ease-in-out;
+            border: 1px solid #cbd5e1 !important;
         }
-        div[data-testid="stRadio"] label:hover {
-            border-color: #ff4b4b !important;
-        }
-        div[data-testid="stRadio"] label p {
-            color: #ffffff !important;
-            font-weight: 800 !important;
+        
+        .stTabs [data-baseweb="tab"] p,
+        .stTabs [data-baseweb="tab"] span,
+        .stTabs [data-baseweb="tab"] div {
+            color: #0f172a !important;
             font-size: 1.15rem !important;
+            font-weight: 800 !important;
             margin: 0 !important;
         }
-        div[data-testid="stRadio"] label[data-checked="true"] {
+        
+        .stTabs [data-baseweb="tab"][aria-selected="true"] {
             background-color: #ff4b4b !important;
             border-color: #ff4b4b !important;
         }
         
-        /* Permitir salto de línea en celdas para que no se corte el texto de Log */
+        .stTabs [data-baseweb="tab"][aria-selected="true"] p,
+        .stTabs [data-baseweb="tab"][aria-selected="true"] span,
+        .stTabs [data-baseweb="tab"][aria-selected="true"] div {
+            color: #ffffff !important;
+        }
+        
+        /* 4. Tablas compactas con salto de línea en celdas para que no se corte el texto de Log */
         [data-testid="stDataFrame"] div[role="gridcell"] {
             white-space: normal !important;
             word-break: break-word !important;
             font-size: 0.85rem !important;
         }
         
-        /* Ajustar métricas */
+        /* 5. Métricas e interlineados */
         [data-testid="stMetricValue"] {
             font-size: 1.4rem !important;
         }
@@ -696,20 +706,18 @@ def color_rsi(val, inverso=False):
 
 
 # ==========================================
-# ESTRUCTURA DE NAVEGACIÓN GARANTIZADA
+# ESTRUCTURA DE PESTAÑAS PRINCIPALES
 # ==========================================
-bot_seleccionado = st.radio(
-    "Navegación",
-    ["🎯 SNIPER", "⚡ CAZADOR", "💀 REAPER"],
-    horizontal=True,
-    label_visibility="collapsed",
-    key="nav_bot_principal",
-)
+tab1, tab2, tab3 = st.tabs([
+    "🎯 SNIPER",
+    "⚡ CAZADOR",
+    "💀 REAPER",
+])
 
 # ------------------------------------------
-# BOT 1: SNIPER
+# TAB 1: BOT FRANCOTIRADOR (SNIPER)
 # ------------------------------------------
-if bot_seleccionado == "🎯 SNIPER":
+with tab1:
     cartera = cargar_cartera("cartera.json")
     st.title("🎯 Dashboard Crypto Sniper")
     if cartera:
@@ -789,9 +797,9 @@ if bot_seleccionado == "🎯 SNIPER":
         st.warning("Cargando datos de Francotirador...")
 
 # ------------------------------------------
-# BOT 2: CAZADOR
+# TAB 2: BOT CAZADOR
 # ------------------------------------------
-elif bot_seleccionado == "⚡ CAZADOR":
+with tab2:
     cartera_c = cargar_cartera("cartera_cazador.json")
     st.title("⚡ Dashboard Bot Cazador")
     if cartera_c:
@@ -855,9 +863,9 @@ elif bot_seleccionado == "⚡ CAZADOR":
         st.warning("Cargando datos de Cazador...")
 
 # ------------------------------------------
-# BOT 3: REAPER
+# TAB 3: BOT REAPER SHORT
 # ------------------------------------------
-elif bot_seleccionado == "💀 REAPER":
+with tab3:
     cartera_r = cargar_cartera("cartera_reaper.json")
     st.title("💀 Dashboard Bot Reaper Short Scalper")
     if cartera_r:
