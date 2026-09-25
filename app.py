@@ -15,7 +15,7 @@ st.set_page_config(
     page_title="Crypto Trading Dashboard", page_icon="🎯", layout="wide"
 )
 
-# Estilos CSS inyectados
+# Estilos CSS con contraste fuerte garantizado para las pestañas
 st.markdown(
     """
     <style>
@@ -28,15 +28,29 @@ st.markdown(
             max-width: 100% !important;
         }
         
-        /* Pestañas (Tabs): Texto 100% visible y estilizado */
-        button[data-baseweb="tab"] {
-            font-size: 1.1rem !important;
-            font-weight: 800 !important;
+        /* Pestañas (Tabs) con estilo e visibilidad 100% garantizada */
+        .stTabs [data-baseweb="tab-list"] button {
+            background-color: #e2e8f0 !important;
+            border-radius: 8px 8px 0px 0px !important;
             padding: 10px 24px !important;
+            margin-right: 8px !important;
+            border: 1px solid #cbd5e1 !important;
         }
-        button[data-baseweb="tab"] * {
-            font-size: 1.1rem !important;
+        .stTabs [data-baseweb="tab-list"] button p,
+        .stTabs [data-baseweb="tab-list"] button div,
+        .stTabs [data-baseweb="tab-list"] button span {
+            color: #1e293b !important;
             font-weight: 800 !important;
+            font-size: 1.1rem !important;
+        }
+        .stTabs [data-baseweb="tab-list"] button[aria-selected="true"] {
+            background-color: #ff4b4b !important;
+            border-color: #ff4b4b !important;
+        }
+        .stTabs [data-baseweb="tab-list"] button[aria-selected="true"] p,
+        .stTabs [data-baseweb="tab-list"] button[aria-selected="true"] div,
+        .stTabs [data-baseweb="tab-list"] button[aria-selected="true"] span {
+            color: #ffffff !important;
         }
         
         /* Permitir salto de línea en celdas para que no se corte el texto de Log */
