@@ -1,5 +1,5 @@
 {
-  "efectivo_disponible": 184.5,
+  "efectivo_disponible": 204.6,
   "total_cartera": 1097.87,
   "posiciones_abiertas": {
     "BTC-USD": {
@@ -44,12 +44,6 @@
       "timestamp_entrada": "2026-09-25 15:46:58",
       "score_gemini": 80
     },
-    "XLM-USD": {
-      "cantidad": 378.11215668104046,
-      "precio_entrada": 0.19245760474553109,
-      "timestamp_entrada": "2026-09-25 15:46:58",
-      "score_gemini": 80
-    },
     "SHIB-USD": {
       "cantidad": 11408333.00715445,
       "precio_entrada": 5.102975865403913e-06,
@@ -78,6 +72,12 @@
       "cantidad": 29.701804528996682,
       "precio_entrada": 1.5529038350020414,
       "timestamp_entrada": "2026-09-25 16:05:48",
+      "score_gemini": 80
+    },
+    "XLM-USD": {
+      "cantidad": 271.45519644847104,
+      "precio_entrada": 0.18842607864341154,
+      "timestamp_entrada": "2026-09-25 16:28:47",
       "score_gemini": 80
     }
   },
@@ -972,7 +972,9 @@
     "[2026-09-25 15:46:58] [COMPRA \ud83d\udfe2] FLOKI-USD | Importe: 37.26 \u20ac | RSI: 16.9 | Score Gemini: 80",
     "[2026-09-25 16:05:48] [VENTA \ud83d\udd34] AVAX-USD | Motivo: STOP LOSS (-2.03%) | PnL: -2.88 \u20ac | Score Gemini: 80",
     "[2026-09-25 16:05:48] [COMPRA \ud83d\udfe2] AVAX-USD | Importe: 57.66 \u20ac | RSI: 17.3 | Score Gemini: 80",
-    "[2026-09-25 16:05:48] [COMPRA \ud83d\udfe2] ATOM-USD | Importe: 46.12 \u20ac | RSI: 21.9 | Score Gemini: 80"
+    "[2026-09-25 16:05:48] [COMPRA \ud83d\udfe2] ATOM-USD | Importe: 46.12 \u20ac | RSI: 21.9 | Score Gemini: 80",
+    "[2026-09-25 16:28:46] [VENTA \ud83d\udd34] XLM-USD | Motivo: STOP LOSS (-2.09%) | PnL: -1.52 \u20ac | Score Gemini: 80",
+    "[2026-09-25 16:28:47] [COMPRA \ud83d\udfe2] XLM-USD | Importe: 51.15 \u20ac | RSI: 22.2 | Score Gemini: 80"
   ],
   "reserva_intocable": 0.0,
   "fecha_control_diario": "2026-09-21",
@@ -980,35 +982,35 @@
   "meta_eur_dia": 53.56,
   "barrido_realizado": false,
   "telemetria": {
-    "ultima_actualizacion": "2026-09-25 16:26:40",
+    "ultima_actualizacion": "2026-09-25 16:28:47",
     "estado": "Vigilando Scalping 5m (Local Active)"
   },
   "radar_rsi": {
-    "BTC": 36.55,
-    "ETH": 37.3,
-    "SOL": 48.43,
-    "BNB": 43.98,
-    "XRP": 35.5,
-    "ADA": 39.6,
-    "AVAX": 36.2,
-    "DOT": 43.82,
-    "NEAR": 47.08,
-    "ATOM": 34.85,
-    "LTC": 34.98,
-    "BCH": 31.03,
-    "ETC": 39.82,
-    "LINK": 37.64,
-    "AAVE": 43.15,
-    "INJ": 45.2,
-    "FET": 45.04,
-    "ALGO": 43.05,
-    "XLM": 23.54,
-    "TRX": 46.61,
-    "DOGE": 42.47,
+    "BTC": 34.27,
+    "ETH": 35.58,
+    "SOL": 45.2,
+    "BNB": 41.21,
+    "XRP": 35.17,
+    "ADA": 37.29,
+    "AVAX": 34.83,
+    "DOT": 42.48,
+    "NEAR": 47.84,
+    "ATOM": 33.98,
+    "LTC": 32.89,
+    "BCH": 29.71,
+    "ETC": 37.67,
+    "LINK": 35.51,
+    "AAVE": 42.29,
+    "INJ": 45.03,
+    "FET": 44.11,
+    "ALGO": 41.71,
+    "XLM": 22.15,
+    "TRX": 43.59,
+    "DOGE": 39.92,
     "SHIB": 42.42,
-    "BONK": 48.15,
-    "FLOKI": 37.42,
-    "FIL": 40.75,
-    "ICP": 38.15
+    "BONK": 46.15,
+    "FLOKI": 36.48,
+    "FIL": 39.83,
+    "ICP": 35.06
   }
 }
