@@ -15,11 +15,11 @@ st.set_page_config(
     page_title="Crypto Trading Dashboard", page_icon="🎯", layout="wide"
 )
 
-# Estilos CSS inyectados para compactar tablas, reducir márgenes y destacar pestañas
+# Estilos CSS inyectados para compactar interfaz y permitir salto de línea en logs
 st.markdown(
     """
     <style>
-        /* Reducir espacio superior y lateral global */
+        /* Contenedor principal ultracompacto */
         .block-container {
             padding-top: 1rem !important;
             padding-bottom: 1rem !important;
@@ -28,29 +28,31 @@ st.markdown(
             max-width: 100% !important;
         }
         
-        /* Destacar visibilidad de las pestañas (Tabs) */
+        /* Destacar claramente las pestañas principales */
         button[data-baseweb="tab"] {
-            font-size: 1.05rem !important;
+            font-size: 1.1rem !important;
             font-weight: 700 !important;
             padding: 8px 20px !important;
         }
         
-        /* Compactar fuentes y espaciado de las celdas en las tablas */
-        [data-testid="stDataFrame"] div[role="grid"] {
+        /* Permitir salto de línea en celdas para que no se corte el texto de Log */
+        [data-testid="stDataFrame"] div[role="gridcell"] {
+            white-space: normal !important;
+            word-break: break-word !important;
             font-size: 0.85rem !important;
         }
         
-        /* Ajustar contenedor de métricas */
+        /* Ajustar métricas */
         [data-testid="stMetricValue"] {
-            font-size: 1.5rem !important;
+            font-size: 1.4rem !important;
         }
         [data-testid="stMetricLabel"] {
             font-size: 0.85rem !important;
         }
         
         hr {
-            margin-top: 0.5rem !important;
-            margin-bottom: 0.5rem !important;
+            margin-top: 0.6rem !important;
+            margin-bottom: 0.6rem !important;
         }
     </style>
 """,
@@ -68,32 +70,33 @@ REGEX_TICKER = re.compile(r"([A-Z0-9]{2,10}-USD)")
 REGEX_VALOR = re.compile(r"(\d+(?:\.\d+)?)\s*€")
 REGEX_SCORE = re.compile(r"Score Gemini:\s*(\d+)", re.IGNORECASE)
 REGEX_PNL = re.compile(r"PnL:\s*([+-]?\d+(?:\.\d+)?)\s*€")
+REGEX_CLEAN_LOG = re.compile(r"^\[.*?\]\s*(?:\[.*?\])?\s*[A-Z0-9\-]+\s*\|\s*")
 
-# Configuración de columnas con anchos ajustados al contenido
+# Configuración de anchos de columna
 CONFIG_POSICIONES = {
-    "Activo": st.column_config.TextColumn("Activo", width=90),
-    "Unidades": st.column_config.NumberColumn("Unidades", width=110),
-    "Entrada (€)": st.column_config.NumberColumn("Entrada (€)", width=110),
-    "Actual (€)": st.column_config.NumberColumn("Actual (€)", width=110),
-    "Inversión (€)": st.column_config.NumberColumn("Inversión (€)", width=110),
-    "PnL Flotante (€)": st.column_config.NumberColumn("PnL Flotante (€)", width=120),
-    "Rentabilidad (%)": st.column_config.TextColumn("Rentabilidad (%)", width=120),
-    "⏱️ Time Stop": st.column_config.TextColumn("⏱️ Time Stop", width=100),
+    "Activo": st.column_config.TextColumn("Activo", width=80),
+    "Unidades": st.column_config.NumberColumn("Unidades", width=95),
+    "Entrada (€)": st.column_config.NumberColumn("Entrada (€)", width=100),
+    "Actual (€)": st.column_config.NumberColumn("Actual (€)", width=100),
+    "Inversión (€)": st.column_config.NumberColumn("Inversión (€)", width=100),
+    "PnL Flotante (€)": st.column_config.NumberColumn("PnL Flotante (€)", width=110),
+    "Rentabilidad (%)": st.column_config.TextColumn("Rentabilidad (%)", width=110),
+    "⏱️ Time Stop": st.column_config.TextColumn("⏱️ Time Stop", width=90),
 }
 
 CONFIG_RADAR = {
-    "Activo": st.column_config.TextColumn("Activo", width=100),
-    "RSI": st.column_config.NumberColumn("RSI", width=100),
+    "Activo": st.column_config.TextColumn("Activo", width=80),
+    "RSI": st.column_config.NumberColumn("RSI", width=80),
 }
 
 CONFIG_HISTORIAL = {
-    "Fecha": st.column_config.TextColumn("Fecha", width=150),
+    "Fecha": st.column_config.TextColumn("Fecha", width=140),
     "Tipo": st.column_config.TextColumn("Tipo", width=110),
-    "Ticker": st.column_config.TextColumn("Ticker", width=90),
-    "Valor (€)": st.column_config.NumberColumn("Valor (€)", width=100),
-    "PnL (€)": st.column_config.NumberColumn("PnL (€)", width=100),
-    "Score_Gemini": st.column_config.TextColumn("Score Gemini", width=100),
-    "Log": st.column_config.TextColumn("Log", width="large"),
+    "Ticker": st.column_config.TextColumn("Ticker", width=75),
+    "Valor (€)": st.column_config.NumberColumn("Valor (€)", width=90),
+    "PnL (€)": st.column_config.NumberColumn("PnL (€)", width=80),
+    "Score_Gemini": st.column_config.TextColumn("Score Gemini", width=95),
+    "Log": st.column_config.TextColumn("Detalle / Log", width="large"),
 }
 
 
@@ -339,6 +342,9 @@ def parsear_historial(historial_raw, es_short=False):
             elif "CIERRE SHORT" in log:
                 tipo = "CIERRE SHORT 🟢"
 
+            # Limpieza de prefijos redundantes en el log
+            log_limpio = REGEX_CLEAN_LOG.sub("", log)
+
             registros.append({
                 "Fecha": fecha_dt,
                 "Tipo": tipo,
@@ -346,7 +352,7 @@ def parsear_historial(historial_raw, es_short=False):
                 "Valor (€)": valor,
                 "PnL (€)": round(pnl_eur, 2),
                 "Score_Gemini": score_gemini,
-                "Log": log,
+                "Log": log_limpio,
             })
         except Exception:
             continue
@@ -591,6 +597,7 @@ def mostrar_historial_con_filtros(df_historial, key_prefix):
             fig.update_layout(
                 title=f"📈 PnL por Crypto ({seleccion})",
                 margin=dict(l=0, r=0, t=30, b=0),
+                height=220,
                 plot_bgcolor="rgba(0,0,0,0)",
                 yaxis=dict(gridcolor="rgba(255,255,255,0.1)"),
             )
@@ -674,11 +681,14 @@ with tab1:
             f"🟢 **Estado:** {obtener_estado(cartera, 'Vigilando mercado')}"
         )
 
-        radar = cartera.get("radar_rsi", {})
-        if radar and isinstance(radar, dict):
-            with st.expander(
-                "👁️ Radar Sniper (Sobreventa RSI <= 25)", expanded=True
-            ):
+        # Organización en 2 columnas: Radar (Izquierda) + Posiciones (Derecha)
+        st.divider()
+        col_radar, col_pos = st.columns([1, 2.2])
+
+        with col_radar:
+            st.subheader("👁️ Radar RSI (<= 25)")
+            radar = cartera.get("radar_rsi", {})
+            if radar and isinstance(radar, dict):
                 df_radar = pd.DataFrame(
                     list(radar.items()), columns=["Activo", "RSI"]
                 ).sort_values(by="RSI", ascending=True)
@@ -686,23 +696,26 @@ with tab1:
                     df_radar.style.map(
                         lambda x: color_rsi(x, False), subset=["RSI"]
                     ),
-                    use_container_width=False,
-                    height=200,
+                    use_container_width=True,
+                    height=220,
                     column_config=CONFIG_RADAR,
                     hide_index=True,
                 )
+            else:
+                st.info("Sin alertas de radar.")
 
-        st.divider()
-        st.subheader("📌 Posiciones Actuales")
-        if posiciones and isinstance(posiciones, dict):
-            st.dataframe(
-                generar_tabla_posiciones(posiciones, precios_live),
-                use_container_width=False,
-                column_config=CONFIG_POSICIONES,
-                hide_index=True,
-            )
-        else:
-            st.info("100% liquidez disponible.")
+        with col_pos:
+            st.subheader("📌 Posiciones Actuales")
+            if posiciones and isinstance(posiciones, dict):
+                st.dataframe(
+                    generar_tabla_posiciones(posiciones, precios_live),
+                    use_container_width=True,
+                    height=220,
+                    column_config=CONFIG_POSICIONES,
+                    hide_index=True,
+                )
+            else:
+                st.info("100% liquidez disponible.")
 
         st.divider()
         st.subheader("📜 Historial y Gráficos")
@@ -763,7 +776,7 @@ with tab2:
         if posiciones_c and isinstance(posiciones_c, dict):
             st.dataframe(
                 generar_tabla_posiciones(posiciones_c, precios_live_c),
-                use_container_width=False,
+                use_container_width=True,
                 column_config=CONFIG_POSICIONES,
                 hide_index=True,
             )
@@ -821,11 +834,14 @@ with tab3:
             f"🟢 **Estado:** {obtener_estado(cartera_r, 'Escaneando Bull Traps 5m')}"
         )
 
-        radar_r = cartera_r.get("radar_rsi", {})
-        if radar_r and isinstance(radar_r, dict):
-            with st.expander(
-                "👁️ Radar Reaper (Sobrecompra RSI >= 60)", expanded=True
-            ):
+        # Organización en 2 columnas: Radar (Izquierda) + Posiciones Cortas (Derecha)
+        st.divider()
+        col_radar, col_pos = st.columns([1, 2.2])
+
+        with col_radar:
+            st.subheader("👁️ Radar Reaper (RSI >= 60)")
+            radar_r = cartera_r.get("radar_rsi", {})
+            if radar_r and isinstance(radar_r, dict):
                 df_radar_r = pd.DataFrame(
                     list(radar_r.items()), columns=["Activo", "RSI"]
                 )
@@ -836,25 +852,28 @@ with tab3:
                     df_radar_r.style.map(
                         lambda x: color_rsi(x, True), subset=["RSI"]
                     ),
-                    use_container_width=False,
-                    height=200,
+                    use_container_width=True,
+                    height=220,
                     column_config=CONFIG_RADAR,
                     hide_index=True,
                 )
+            else:
+                st.info("Sin sobrecompra detectada.")
 
-        st.divider()
-        st.subheader("📌 Posiciones Cortas Activas (Shorts)")
-        if posiciones_r and isinstance(posiciones_r, dict):
-            st.dataframe(
-                generar_tabla_posiciones(
-                    posiciones_r, precios_live_r, es_short=True
-                ),
-                use_container_width=False,
-                column_config=CONFIG_POSICIONES,
-                hide_index=True,
-            )
-        else:
-            st.info("100% liquidez disponible.")
+        with col_pos:
+            st.subheader("📌 Posiciones Cortas Activas (Shorts)")
+            if posiciones_r and isinstance(posiciones_r, dict):
+                st.dataframe(
+                    generar_tabla_posiciones(
+                        posiciones_r, precios_live_r, es_short=True
+                    ),
+                    use_container_width=True,
+                    height=220,
+                    column_config=CONFIG_POSICIONES,
+                    hide_index=True,
+                )
+            else:
+                st.info("100% liquidez disponible.")
 
         st.divider()
         st.subheader("📜 Historial y Gráficos")
