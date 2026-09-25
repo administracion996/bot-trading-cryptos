@@ -1,77 +1,11 @@
 {
-  "efectivo_disponible": 267.83,
+  "efectivo_disponible": 938.84,
   "total_cartera": 1097.87,
   "posiciones_abiertas": {
-    "BTC-USD": {
-      "cantidad": 0.0018707386071956825,
-      "precio_entrada": 73684.5432972163,
-      "timestamp_entrada": "2026-09-24 05:56:52",
-      "score_gemini": 80
-    },
-    "ETH-USD": {
-      "cantidad": 0.015391071792618406,
-      "precio_entrada": 2347.7247385286028,
-      "timestamp_entrada": "2026-09-24 06:11:30",
-      "score_gemini": 80
-    },
     "TRX-USD": {
-      "cantidad": 313.3406455985927,
-      "precio_entrada": 0.30150535651408106,
-      "timestamp_entrada": "2026-09-24 06:59:34",
-      "score_gemini": 80
-    },
-    "BCH-USD": {
-      "cantidad": 0.44891984032376814,
-      "precio_entrada": 295.4380450290337,
-      "timestamp_entrada": "2026-09-24 08:02:23",
-      "score_gemini": 80
-    },
-    "NEAR-USD": {
-      "cantidad": 28.250188604296806,
-      "precio_entrada": 3.755797934172449,
-      "timestamp_entrada": "2026-09-24 08:06:34",
-      "score_gemini": 80
-    },
-    "ETC-USD": {
-      "cantidad": 11.652605451100708,
-      "precio_entrada": 8.110086602415095,
-      "timestamp_entrada": "2026-09-24 08:10:44",
-      "score_gemini": 80
-    },
-    "FET-USD": {
-      "cantidad": 433.90323997480203,
-      "precio_entrada": 0.17423910336818693,
-      "timestamp_entrada": "2026-09-24 08:10:44",
-      "score_gemini": 80
-    },
-    "ALGO-USD": {
-      "cantidad": 654.4411771251893,
-      "precio_entrada": 0.09241828188607215,
-      "timestamp_entrada": "2026-09-24 08:10:44",
-      "score_gemini": 80
-    },
-    "AVAX-USD": {
-      "cantidad": 5.376345476976333,
-      "precio_entrada": 8.999793671595,
-      "timestamp_entrada": "2026-09-24 08:17:02",
-      "score_gemini": 80
-    },
-    "SHIB-USD": {
-      "cantidad": 7705844.660518011,
-      "precio_entrada": 5.0233039602173705e-06,
-      "timestamp_entrada": "2026-09-24 08:17:02",
-      "score_gemini": 80
-    },
-    "DOT-USD": {
-      "cantidad": 31.360426187756048,
-      "precio_entrada": 0.9874865798887242,
-      "timestamp_entrada": "2026-09-24 08:19:07",
-      "score_gemini": 80
-    },
-    "ICP-USD": {
-      "cantidad": 9.542561929385384,
-      "precio_entrada": 2.596158157874868,
-      "timestamp_entrada": "2026-09-24 08:21:13",
+      "cantidad": 788.889902081799,
+      "precio_entrada": 0.2975177944448433,
+      "timestamp_entrada": "2026-09-25 06:51:50",
       "score_gemini": 80
     }
   },
@@ -923,7 +857,20 @@
     "[2026-09-24 08:17:02] [COMPRA \ud83d\udfe2] SHIB-USD | Importe: 38.71 \u20ac | RSI: 23.1 | Score Gemini: 80",
     "[2026-09-24 08:19:07] [COMPRA \ud83d\udfe2] DOT-USD | Importe: 30.97 \u20ac | RSI: 23.4 | Score Gemini: 80",
     "[2026-09-24 08:21:13] [COMPRA \ud83d\udfe2] ICP-USD | Importe: 24.77 \u20ac | RSI: 24.9 | Score Gemini: 80",
-    "[2026-09-24 08:29:34] [VENTA \ud83d\udd34] LTC-USD | Motivo: TAKE PROFIT (+1.78%) | PnL: +2.94 \u20ac | Score Gemini: 80"
+    "[2026-09-24 08:29:34] [VENTA \ud83d\udd34] LTC-USD | Motivo: TAKE PROFIT (+1.78%) | PnL: +2.94 \u20ac | Score Gemini: 80",
+    "[2026-09-25 06:51:50] [VENTA \ud83d\udd34] BTC-USD | Motivo: TIME STOP (1495m) | PnL: +0.60 \u20ac | Score Gemini: 80",
+    "[2026-09-25 06:51:50] [VENTA \ud83d\udd34] ETH-USD | Motivo: TIME STOP (1480m) | PnL: +0.13 \u20ac | Score Gemini: 80",
+    "[2026-09-25 06:51:50] [VENTA \ud83d\udd34] TRX-USD | Motivo: TIME STOP (1432m) | PnL: -1.25 \u20ac | Score Gemini: 80",
+    "[2026-09-25 06:51:50] [VENTA \ud83d\udd34] BCH-USD | Motivo: TIME STOP (1369m) | PnL: +0.21 \u20ac | Score Gemini: 80",
+    "[2026-09-25 06:51:50] [VENTA \ud83d\udd34] NEAR-USD | Motivo: TAKE PROFIT (+4.68%) | PnL: +4.97 \u20ac | Score Gemini: 80",
+    "[2026-09-25 06:51:50] [VENTA \ud83d\udd34] ETC-USD | Motivo: TAKE PROFIT (+2.17%) | PnL: +2.06 \u20ac | Score Gemini: 80",
+    "[2026-09-25 06:51:50] [VENTA \ud83d\udd34] FET-USD | Motivo: TAKE PROFIT (+15.32%) | PnL: +11.59 \u20ac | Score Gemini: 80",
+    "[2026-09-25 06:51:50] [VENTA \ud83d\udd34] ALGO-USD | Motivo: TAKE PROFIT (+7.82%) | PnL: +4.73 \u20ac | Score Gemini: 80",
+    "[2026-09-25 06:51:50] [VENTA \ud83d\udd34] AVAX-USD | Motivo: TIME STOP (1355m) | PnL: +0.09 \u20ac | Score Gemini: 80",
+    "[2026-09-25 06:51:50] [VENTA \ud83d\udd34] SHIB-USD | Motivo: TIME STOP (1355m) | PnL: +0.38 \u20ac | Score Gemini: 80",
+    "[2026-09-25 06:51:50] [VENTA \ud83d\udd34] DOT-USD | Motivo: TAKE PROFIT (+1.78%) | PnL: +0.55 \u20ac | Score Gemini: 80",
+    "[2026-09-25 06:51:50] [VENTA \ud83d\udd34] ICP-USD | Motivo: TAKE PROFIT (+4.26%) | PnL: +1.05 \u20ac | Score Gemini: 80",
+    "[2026-09-25 06:51:50] [COMPRA \ud83d\udfe2] TRX-USD | Importe: 234.71 \u20ac | RSI: 12.1 | Score Gemini: 80"
   ],
   "reserva_intocable": 0.0,
   "fecha_control_diario": "2026-09-21",
@@ -931,35 +878,35 @@
   "meta_eur_dia": 53.56,
   "barrido_realizado": false,
   "telemetria": {
-    "ultima_actualizacion": "2026-09-24 08:52:34",
+    "ultima_actualizacion": "2026-09-25 06:51:50",
     "estado": "Vigilando Scalping 5m (Local Active)"
   },
   "radar_rsi": {
-    "BTC": 45.31,
-    "ETH": 36.24,
-    "SOL": 29.58,
-    "BNB": 41.01,
-    "XRP": 27.31,
-    "ADA": 43.84,
-    "AVAX": 38.06,
-    "DOT": 46.85,
-    "NEAR": 28.15,
-    "ATOM": 46.19,
-    "LTC": 51.68,
-    "BCH": 41.94,
-    "ETC": 44.27,
-    "LINK": 39.73,
-    "AAVE": 48.26,
-    "INJ": 37.87,
-    "FET": 54.99,
-    "ALGO": 54.35,
-    "XLM": 36.61,
-    "TRX": 26.35,
-    "DOGE": 44.36,
-    "SHIB": 33.33,
+    "BTC": 48.69,
+    "ETH": 55.87,
+    "SOL": 54.37,
+    "BNB": 50.69,
+    "XRP": 56.41,
+    "ADA": 58.75,
+    "AVAX": 69.09,
+    "DOT": 64.97,
+    "NEAR": 52.87,
+    "ATOM": 54.99,
+    "LTC": 56.5,
+    "BCH": 41.75,
+    "ETC": 56.52,
+    "LINK": 52.69,
+    "AAVE": 54.71,
+    "INJ": 68.11,
+    "FET": 74.85,
+    "ALGO": 63.36,
+    "XLM": 67.28,
+    "TRX": 12.08,
+    "DOGE": 57.89,
+    "SHIB": 58.33,
     "BONK": 46.15,
-    "FLOKI": 59.32,
-    "FIL": 72.56,
-    "ICP": 42.27
+    "FLOKI": 54.12,
+    "FIL": 60.64,
+    "ICP": 54.45
   }
 }
