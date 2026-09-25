@@ -1,7 +1,24 @@
 {
-  "efectivo_disponible": 98.289141597754,
+  "efectivo_disponible": 68.802399118428,
   "vault_reservado": 4.95,
-  "posiciones": {},
+  "posiciones": {
+    "SHIB-USD": {
+      "unidades": 2819985.2096314323,
+      "precio_compra": 5.21458e-06,
+      "coste_total": 14.743371239663,
+      "max_precio_alcanzado": 5.21458e-06,
+      "confianza_gemini": 82,
+      "fecha_entrada": "2026-09-25T13:17:42.518743+02:00"
+    },
+    "FLOKI-USD": {
+      "unidades": 579983.1316041142,
+      "precio_compra": 2.5354252e-05,
+      "coste_total": 14.743371239663,
+      "max_precio_alcanzado": 2.5354252e-05,
+      "confianza_gemini": 76,
+      "fecha_entrada": "2026-09-25T13:17:42.638098+02:00"
+    }
+  },
   "historial": [
     {
       "ticker": "AVAX-USD",
