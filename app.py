@@ -15,6 +15,32 @@ st.set_page_config(
     page_title="Crypto Trading Dashboard", page_icon="🎯", layout="wide"
 )
 
+# Estilos CSS para hacer el dashboard más compacto y ajustado a la pantalla
+st.markdown(
+    """
+    <style>
+        .block-container {
+            padding-top: 1.2rem !important;
+            padding-bottom: 1.2rem !important;
+            padding-left: 1.5rem !important;
+            padding-right: 1.5rem !important;
+            max-width: 100% !important;
+        }
+        [data-testid="stMetricValue"] {
+            font-size: 1.6rem !important;
+        }
+        [data-testid="stMetricLabel"] {
+            font-size: 0.85rem !important;
+        }
+        hr {
+            margin-top: 0.8rem !important;
+            margin-bottom: 0.8rem !important;
+        }
+    </style>
+""",
+    unsafe_allow_html=True,
+)
+
 # Configuración GitHub
 REPO = "administracion996/bot-trading-cryptos"
 GITHUB_TOKEN = st.secrets.get("GITHUB_TOKEN", "")
@@ -26,6 +52,33 @@ REGEX_TICKER = re.compile(r"([A-Z0-9]{2,10}-USD)")
 REGEX_VALOR = re.compile(r"(\d+(?:\.\d+)?)\s*€")
 REGEX_SCORE = re.compile(r"Score Gemini:\s*(\d+)", re.IGNORECASE)
 REGEX_PNL = re.compile(r"PnL:\s*([+-]?\d+(?:\.\d+)?)\s*€")
+
+# Configuración de anchos para tablas
+CONFIG_POSICIONES = {
+    "Activo": st.column_config.TextColumn("Activo", width="small"),
+    "Unidades": st.column_config.NumberColumn("Unidades", width="small"),
+    "Entrada (€)": st.column_config.NumberColumn("Entrada (€)", width="small"),
+    "Actual (€)": st.column_config.NumberColumn("Actual (€)", width="small"),
+    "Inversión (€)": st.column_config.NumberColumn("Inversión (€)", width="small"),
+    "PnL Flotante (€)": st.column_config.NumberColumn("PnL Flotante (€)", width="small"),
+    "Rentabilidad (%)": st.column_config.TextColumn("Rentabilidad (%)", width="small"),
+    "⏱️ Time Stop": st.column_config.TextColumn("⏱️ Time Stop", width="small"),
+}
+
+CONFIG_RADAR = {
+    "Activo": st.column_config.TextColumn("Activo", width="small"),
+    "RSI": st.column_config.NumberColumn("RSI", width="small"),
+}
+
+CONFIG_HISTORIAL = {
+    "Fecha": st.column_config.TextColumn("Fecha", width="medium"),
+    "Tipo": st.column_config.TextColumn("Tipo", width="small"),
+    "Ticker": st.column_config.TextColumn("Ticker", width="small"),
+    "Valor (€)": st.column_config.NumberColumn("Valor (€)", width="small"),
+    "PnL (€)": st.column_config.NumberColumn("PnL (€)", width="small"),
+    "Score_Gemini": st.column_config.TextColumn("Score Gemini", width="small"),
+    "Log": st.column_config.TextColumn("Log", width="large"),
+}
 
 
 # --- FUNCIONES DE SEGURIDAD Y EXTRACCIÓN ---
@@ -92,10 +145,14 @@ def obtener_estado(cartera_data, estado_defecto="Activo"):
 @st.cache_data(ttl=5)
 def cargar_cartera(file_path="cartera.json"):
     url = f"https://api.github.com/repos/{REPO}/contents/{file_path}?v={int(datetime.now().timestamp())}"
-    headers = {
-        "Authorization": f"token {GITHUB_TOKEN}",
-        "Cache-Control": "no-cache",
-    } if GITHUB_TOKEN else {"Cache-Control": "no-cache"}
+    headers = (
+        {
+            "Authorization": f"token {GITHUB_TOKEN}",
+            "Cache-Control": "no-cache",
+        }
+        if GITHUB_TOKEN
+        else {"Cache-Control": "no-cache"}
+    )
     try:
         res = requests.get(url, headers=headers, timeout=5)
         if res.status_code == 200:
@@ -156,7 +213,6 @@ def parsear_historial(historial_raw, es_short=False):
     for log in historial_raw:
         try:
             if isinstance(log, dict):
-                # Soporte específico para las fechas del Cazador (fecha_salida / fecha_entrada)
                 fecha_raw = (
                     log.get("fecha_salida")
                     or log.get("fecha_entrada")
@@ -166,7 +222,6 @@ def parsear_historial(historial_raw, es_short=False):
                     or ""
                 )
                 try:
-                    # Ajuste para fechas ISO con zona horaria (ej: 2026-09-18T14:28:39.198387+02:00)
                     fecha_dt = datetime.fromisoformat(str(fecha_raw))
                 except Exception:
                     try:
@@ -189,8 +244,7 @@ def parsear_historial(historial_raw, es_short=False):
                     or log.get("monto")
                     or log.get("precio", 0.0)
                 )
-                
-                # Soporte específico para el PnL del Cazador (beneficio_neto)
+
                 pnl_eur = safe_float(
                     log.get("beneficio_neto")
                     or log.get("pnl")
@@ -198,13 +252,16 @@ def parsear_historial(historial_raw, es_short=False):
                     or log.get("pnl_eur")
                     or 0.0
                 )
-                
-                score_gemini = log.get("confianza_gemini") or log.get("score") or log.get("score_gemini")
 
-                # Determinar el tipo de operación basándose en el motivo o pnl
+                score_gemini = (
+                    log.get("confianza_gemini")
+                    or log.get("score")
+                    or log.get("score_gemini")
+                )
+
                 motivo = str(log.get("motivo_salida") or "").upper()
                 tipo_bruto = str(log.get("tipo") or log.get("Tipo") or "").upper()
-                
+
                 if motivo:
                     tipo = "VENTA 🔴" if not es_short else "CIERRE SHORT 🟢"
                 elif tipo_bruto:
@@ -217,8 +274,7 @@ def parsear_historial(historial_raw, es_short=False):
                     else:
                         tipo = "OTRO ⚪"
                 else:
-                     tipo = "VENTA 🔴" if not es_short else "CIERRE SHORT 🟢"
-
+                    tipo = "VENTA 🔴" if not es_short else "CIERRE SHORT 🟢"
 
                 registros.append({
                     "Fecha": fecha_dt,
@@ -313,7 +369,10 @@ def calcular_metricas_live(
                 continue
             cant = safe_float(pos.get("cantidad") or pos.get("unidades") or 0)
             p_ent = safe_float(
-                pos.get("precio_entrada") or pos.get("precio_compra") or pos.get("precio") or 0
+                pos.get("precio_entrada")
+                or pos.get("precio_compra")
+                or pos.get("precio")
+                or 0
             )
             p_act = precios_live.get(t, p_ent)
             inv_inicial = cant * p_ent
@@ -345,7 +404,10 @@ def generar_tabla_posiciones(posiciones, precios_live, es_short=False):
             continue
         cant = safe_float(pos.get("cantidad") or pos.get("unidades") or 0)
         p_ent = safe_float(
-            pos.get("precio_entrada") or pos.get("precio_compra") or pos.get("precio") or 0
+            pos.get("precio_entrada")
+            or pos.get("precio_compra")
+            or pos.get("precio")
+            or 0
         )
         p_act = precios_live.get(ticker, p_ent)
         inversion = cant * p_ent
@@ -356,17 +418,25 @@ def generar_tabla_posiciones(posiciones, precios_live, es_short=False):
         pct_pnl = (
             ((p_ent - p_act) / p_ent * 100)
             if es_short and p_ent > 0
-            else (((p_act - p_ent) / p_ent * 100) if not es_short and p_ent > 0 else 0.0)
+            else (
+                ((p_act - p_ent) / p_ent * 100)
+                if not es_short and p_ent > 0
+                else 0.0
+            )
         )
 
         t_restante = "N/A"
-        timestamp = pos.get("timestamp_entrada") or pos.get("fecha_entrada") or pos.get("fecha") or pos.get("timestamp")
+        timestamp = (
+            pos.get("timestamp_entrada")
+            or pos.get("fecha_entrada")
+            or pos.get("fecha")
+            or pos.get("timestamp")
+        )
         if timestamp:
             try:
-                 # Ajuste para fechas ISO
                 f_ent = datetime.fromisoformat(str(timestamp))
                 if f_ent.tzinfo is None:
-                     f_ent = tz_madrid.localize(f_ent)
+                    f_ent = tz_madrid.localize(f_ent)
                 mins = (ahora - f_ent).total_seconds() / 60
                 mins_restantes = max(0, 240 - mins)
                 t_restante = f"{int(mins_restantes)} min"
@@ -486,18 +556,22 @@ def mostrar_historial_con_filtros(df_historial, key_prefix):
                 .reset_index()
                 .sort_values("PnL (€)", ascending=False)
             )
-            fig = go.Figure(data=[
-                go.Bar(
-                    x=pnl_agrupado["Ticker"],
-                    y=pnl_agrupado["PnL (€)"],
-                    marker_color=[
-                        "#2ecc71" if val > 0 else "#e74c3c"
-                        for val in pnl_agrupado["PnL (€)"]
-                    ],
-                    text=[f"{val:+.2f}€" for val in pnl_agrupado["PnL (€)"]],
-                    textposition="auto",
-                )
-            ])
+            fig = go.Figure(
+                data=[
+                    go.Bar(
+                        x=pnl_agrupado["Ticker"],
+                        y=pnl_agrupado["PnL (€)"],
+                        marker_color=[
+                            "#2ecc71" if val > 0 else "#e74c3c"
+                            for val in pnl_agrupado["PnL (€)"]
+                        ],
+                        text=[
+                            f"{val:+.2f}€" for val in pnl_agrupado["PnL (€)"]
+                        ],
+                        textposition="auto",
+                    )
+                ]
+            )
             fig.update_layout(
                 title=f"📈 PnL por Crypto ({seleccion})",
                 margin=dict(l=0, r=0, t=30, b=0),
@@ -506,12 +580,15 @@ def mostrar_historial_con_filtros(df_historial, key_prefix):
             )
             st.plotly_chart(fig, use_container_width=True)
 
-        # Formatear la columna Fecha para visualización
         df_display = df_filtrado.copy()
-        df_display["Fecha"] = df_display["Fecha"].dt.strftime("%Y-%m-%d %H:%M:%S")
+        df_display["Fecha"] = df_display["Fecha"].dt.strftime(
+            "%Y-%m-%d %H:%M:%S"
+        )
         st.dataframe(
             df_display.sort_values(by="Fecha", ascending=False),
             use_container_width=True,
+            column_config=CONFIG_HISTORIAL,
+            hide_index=True,
         )
 
 
@@ -520,14 +597,14 @@ def color_rsi(val, inverso=False):
         return ""
     if inverso:
         if val >= 70:
-            return 'background-color: #ff4b4b; color: white; font-weight: bold;'
+            return "background-color: #ff4b4b; color: white; font-weight: bold;"
         elif val >= 60:
-            return 'background-color: #ffa500; color: black; font-weight: bold;'
+            return "background-color: #ffa500; color: black; font-weight: bold;"
     else:
         if val <= 25:
-            return 'background-color: #ff4b4b; color: white; font-weight: bold;'
+            return "background-color: #ff4b4b; color: white; font-weight: bold;"
         elif val <= 32:
-            return 'background-color: #ffa500; color: black; font-weight: bold;'
+            return "background-color: #ffa500; color: black; font-weight: bold;"
     return ""
 
 
@@ -577,11 +654,15 @@ with tab1:
 
         c_t1, c_t2 = st.columns(2)
         c_t1.info(f"⏱️ **Última sincro:** {obtener_sincro(cartera)}")
-        c_t2.caption(f"🟢 **Estado:** {obtener_estado(cartera, 'Vigilando mercado')}")
+        c_t2.caption(
+            f"🟢 **Estado:** {obtener_estado(cartera, 'Vigilando mercado')}"
+        )
 
         radar = cartera.get("radar_rsi", {})
         if radar and isinstance(radar, dict):
-            with st.expander("👁️ Radar Sniper (Sobreventa RSI <= 25)", expanded=True):
+            with st.expander(
+                "👁️ Radar Sniper (Sobreventa RSI <= 25)", expanded=True
+            ):
                 df_radar = pd.DataFrame(
                     list(radar.items()), columns=["Activo", "RSI"]
                 ).sort_values(by="RSI", ascending=True)
@@ -591,6 +672,8 @@ with tab1:
                     ),
                     use_container_width=True,
                     height=200,
+                    column_config=CONFIG_RADAR,
+                    hide_index=True,
                 )
 
         st.divider()
@@ -599,6 +682,8 @@ with tab1:
             st.dataframe(
                 generar_tabla_posiciones(posiciones, precios_live),
                 use_container_width=True,
+                column_config=CONFIG_POSICIONES,
+                hide_index=True,
             )
         else:
             st.info("100% liquidez disponible.")
@@ -653,7 +738,9 @@ with tab2:
 
         c_t1, c_t2 = st.columns(2)
         c_t1.info(f"⏱️ **Última sincro:** {obtener_sincro(cartera_c)}")
-        c_t2.caption(f"🟢 **Estado:** {obtener_estado(cartera_c, 'Buscando oportunidades')}")
+        c_t2.caption(
+            f"🟢 **Estado:** {obtener_estado(cartera_c, 'Buscando oportunidades')}"
+        )
 
         st.divider()
         st.subheader("📌 Posiciones Actuales")
@@ -661,6 +748,8 @@ with tab2:
             st.dataframe(
                 generar_tabla_posiciones(posiciones_c, precios_live_c),
                 use_container_width=True,
+                column_config=CONFIG_POSICIONES,
+                hide_index=True,
             )
         else:
             st.info("100% liquidez disponible.")
@@ -712,11 +801,15 @@ with tab3:
 
         c_t1, c_t2 = st.columns(2)
         c_t1.info(f"⏱️ **Última sincro:** {obtener_sincro(cartera_r)}")
-        c_t2.caption(f"🟢 **Estado:** {obtener_estado(cartera_r, 'Escaneando Bull Traps 5m')}")
+        c_t2.caption(
+            f"🟢 **Estado:** {obtener_estado(cartera_r, 'Escaneando Bull Traps 5m')}"
+        )
 
         radar_r = cartera_r.get("radar_rsi", {})
         if radar_r and isinstance(radar_r, dict):
-            with st.expander("👁️ Radar Reaper (Sobrecompra RSI >= 60)", expanded=True):
+            with st.expander(
+                "👁️ Radar Reaper (Sobrecompra RSI >= 60)", expanded=True
+            ):
                 df_radar_r = pd.DataFrame(
                     list(radar_r.items()), columns=["Activo", "RSI"]
                 )
@@ -729,6 +822,8 @@ with tab3:
                     ),
                     use_container_width=True,
                     height=200,
+                    column_config=CONFIG_RADAR,
+                    hide_index=True,
                 )
 
         st.divider()
@@ -739,6 +834,8 @@ with tab3:
                     posiciones_r, precios_live_r, es_short=True
                 ),
                 use_container_width=True,
+                column_config=CONFIG_POSICIONES,
+                hide_index=True,
             )
         else:
             st.info("100% liquidez disponible.")
