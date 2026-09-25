@@ -15,26 +15,42 @@ st.set_page_config(
     page_title="Crypto Trading Dashboard", page_icon="🎯", layout="wide"
 )
 
-# Estilos CSS para hacer el dashboard más compacto y ajustado a la pantalla
+# Estilos CSS inyectados para compactar tablas, reducir márgenes y destacar pestañas
 st.markdown(
     """
     <style>
+        /* Reducir espacio superior y lateral global */
         .block-container {
-            padding-top: 1.2rem !important;
-            padding-bottom: 1.2rem !important;
-            padding-left: 1.5rem !important;
-            padding-right: 1.5rem !important;
+            padding-top: 1rem !important;
+            padding-bottom: 1rem !important;
+            padding-left: 1rem !important;
+            padding-right: 1rem !important;
             max-width: 100% !important;
         }
+        
+        /* Destacar visibilidad de las pestañas (Tabs) */
+        button[data-baseweb="tab"] {
+            font-size: 1.05rem !important;
+            font-weight: 700 !important;
+            padding: 8px 20px !important;
+        }
+        
+        /* Compactar fuentes y espaciado de las celdas en las tablas */
+        [data-testid="stDataFrame"] div[role="grid"] {
+            font-size: 0.85rem !important;
+        }
+        
+        /* Ajustar contenedor de métricas */
         [data-testid="stMetricValue"] {
-            font-size: 1.6rem !important;
+            font-size: 1.5rem !important;
         }
         [data-testid="stMetricLabel"] {
             font-size: 0.85rem !important;
         }
+        
         hr {
-            margin-top: 0.8rem !important;
-            margin-bottom: 0.8rem !important;
+            margin-top: 0.5rem !important;
+            margin-bottom: 0.5rem !important;
         }
     </style>
 """,
@@ -53,30 +69,30 @@ REGEX_VALOR = re.compile(r"(\d+(?:\.\d+)?)\s*€")
 REGEX_SCORE = re.compile(r"Score Gemini:\s*(\d+)", re.IGNORECASE)
 REGEX_PNL = re.compile(r"PnL:\s*([+-]?\d+(?:\.\d+)?)\s*€")
 
-# Configuración de anchos para tablas
+# Configuración de columnas con anchos ajustados al contenido
 CONFIG_POSICIONES = {
-    "Activo": st.column_config.TextColumn("Activo", width="small"),
-    "Unidades": st.column_config.NumberColumn("Unidades", width="small"),
-    "Entrada (€)": st.column_config.NumberColumn("Entrada (€)", width="small"),
-    "Actual (€)": st.column_config.NumberColumn("Actual (€)", width="small"),
-    "Inversión (€)": st.column_config.NumberColumn("Inversión (€)", width="small"),
-    "PnL Flotante (€)": st.column_config.NumberColumn("PnL Flotante (€)", width="small"),
-    "Rentabilidad (%)": st.column_config.TextColumn("Rentabilidad (%)", width="small"),
-    "⏱️ Time Stop": st.column_config.TextColumn("⏱️ Time Stop", width="small"),
+    "Activo": st.column_config.TextColumn("Activo", width=90),
+    "Unidades": st.column_config.NumberColumn("Unidades", width=110),
+    "Entrada (€)": st.column_config.NumberColumn("Entrada (€)", width=110),
+    "Actual (€)": st.column_config.NumberColumn("Actual (€)", width=110),
+    "Inversión (€)": st.column_config.NumberColumn("Inversión (€)", width=110),
+    "PnL Flotante (€)": st.column_config.NumberColumn("PnL Flotante (€)", width=120),
+    "Rentabilidad (%)": st.column_config.TextColumn("Rentabilidad (%)", width=120),
+    "⏱️ Time Stop": st.column_config.TextColumn("⏱️ Time Stop", width=100),
 }
 
 CONFIG_RADAR = {
-    "Activo": st.column_config.TextColumn("Activo", width="small"),
-    "RSI": st.column_config.NumberColumn("RSI", width="small"),
+    "Activo": st.column_config.TextColumn("Activo", width=100),
+    "RSI": st.column_config.NumberColumn("RSI", width=100),
 }
 
 CONFIG_HISTORIAL = {
-    "Fecha": st.column_config.TextColumn("Fecha", width="medium"),
-    "Tipo": st.column_config.TextColumn("Tipo", width="small"),
-    "Ticker": st.column_config.TextColumn("Ticker", width="small"),
-    "Valor (€)": st.column_config.NumberColumn("Valor (€)", width="small"),
-    "PnL (€)": st.column_config.NumberColumn("PnL (€)", width="small"),
-    "Score_Gemini": st.column_config.TextColumn("Score Gemini", width="small"),
+    "Fecha": st.column_config.TextColumn("Fecha", width=150),
+    "Tipo": st.column_config.TextColumn("Tipo", width=110),
+    "Ticker": st.column_config.TextColumn("Ticker", width=90),
+    "Valor (€)": st.column_config.NumberColumn("Valor (€)", width=100),
+    "PnL (€)": st.column_config.NumberColumn("PnL (€)", width=100),
+    "Score_Gemini": st.column_config.TextColumn("Score Gemini", width=100),
     "Log": st.column_config.TextColumn("Log", width="large"),
 }
 
@@ -609,7 +625,7 @@ def color_rsi(val, inverso=False):
 
 
 # ==========================================
-# ESTRUCTURA DE PESTAÑAS (3 BOTS)
+# ESTRUCTURA DE PESTAÑAS PRINCIPALES
 # ==========================================
 tab1, tab2, tab3 = st.tabs([
     "🎯 Bot 1: Francotirador",
@@ -670,7 +686,7 @@ with tab1:
                     df_radar.style.map(
                         lambda x: color_rsi(x, False), subset=["RSI"]
                     ),
-                    use_container_width=True,
+                    use_container_width=False,
                     height=200,
                     column_config=CONFIG_RADAR,
                     hide_index=True,
@@ -681,7 +697,7 @@ with tab1:
         if posiciones and isinstance(posiciones, dict):
             st.dataframe(
                 generar_tabla_posiciones(posiciones, precios_live),
-                use_container_width=True,
+                use_container_width=False,
                 column_config=CONFIG_POSICIONES,
                 hide_index=True,
             )
@@ -747,7 +763,7 @@ with tab2:
         if posiciones_c and isinstance(posiciones_c, dict):
             st.dataframe(
                 generar_tabla_posiciones(posiciones_c, precios_live_c),
-                use_container_width=True,
+                use_container_width=False,
                 column_config=CONFIG_POSICIONES,
                 hide_index=True,
             )
@@ -820,7 +836,7 @@ with tab3:
                     df_radar_r.style.map(
                         lambda x: color_rsi(x, True), subset=["RSI"]
                     ),
-                    use_container_width=True,
+                    use_container_width=False,
                     height=200,
                     column_config=CONFIG_RADAR,
                     hide_index=True,
@@ -833,7 +849,7 @@ with tab3:
                 generar_tabla_posiciones(
                     posiciones_r, precios_live_r, es_short=True
                 ),
-                use_container_width=True,
+                use_container_width=False,
                 column_config=CONFIG_POSICIONES,
                 hide_index=True,
             )
