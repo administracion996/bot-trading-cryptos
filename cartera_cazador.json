@@ -1,7 +1,16 @@
 {
-  "efectivo_disponible": 97.541287100847,
+  "efectivo_disponible": 82.91009403572,
   "vault_reservado": 4.95,
-  "posiciones": {},
+  "posiciones": {
+    "PEOPLE-USD": {
+      "unidades": 1727.255302555761,
+      "precio_compra": 0.008448752157,
+      "coste_total": 14.631193065127,
+      "max_precio_alcanzado": 0.008448752157,
+      "confianza_gemini": 82,
+      "fecha_entrada": "2026-09-26T17:54:55.645460+02:00"
+    }
+  },
   "historial": [
     {
       "ticker": "AVAX-USD",
