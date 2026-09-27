@@ -1,7 +1,16 @@
 {
-  "efectivo_disponible": 97.437079747082,
+  "efectivo_disponible": 82.82151778502,
   "vault_reservado": 4.95,
-  "posiciones": {},
+  "posiciones": {
+    "MOG-USD": {
+      "unidades": 127643811.57533066,
+      "precio_compra": 1.14205e-07,
+      "coste_total": 14.615561962062,
+      "max_precio_alcanzado": 1.14205e-07,
+      "confianza_gemini": 82,
+      "fecha_entrada": "2026-09-28T00:34:23.187032+02:00"
+    }
+  },
   "historial": [
     {
       "ticker": "AVAX-USD",
