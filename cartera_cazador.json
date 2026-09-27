@@ -1,16 +1,7 @@
 {
-  "efectivo_disponible": 82.82151778502,
+  "efectivo_disponible": 96.242742253689,
   "vault_reservado": 4.95,
-  "posiciones": {
-    "MOG-USD": {
-      "unidades": 127643811.57533066,
-      "precio_compra": 1.14205e-07,
-      "coste_total": 14.615561962062,
-      "max_precio_alcanzado": 1.14205e-07,
-      "confianza_gemini": 82,
-      "fecha_entrada": "2026-09-28T00:34:23.187032+02:00"
-    }
-  },
+  "posiciones": {},
   "historial": [
     {
       "ticker": "AVAX-USD",
@@ -165,6 +156,17 @@
       "pnl_pct": -0.19,
       "motivo_salida": "Time-Stop (2h sin despegue)",
       "fecha_salida": "2026-09-26T19:58:03.992657+02:00"
+    },
+    {
+      "ticker": "MOG-USD",
+      "precio_entrada": 1.14205e-07,
+      "precio_salida": 1.0542e-07,
+      "monto_invertido": 14.615561962062,
+      "ingreso_obtenido": 13.421224468669,
+      "beneficio_neto": -1.194337493393,
+      "pnl_pct": -7.69,
+      "motivo_salida": "Hard Stop-Loss (-5%)",
+      "fecha_salida": "2026-09-28T00:39:27.870568+02:00"
     }
   ],
   "capital_base_dia": 97.437079747082,
