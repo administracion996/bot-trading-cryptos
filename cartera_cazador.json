@@ -1,7 +1,16 @@
 {
-  "efectivo_disponible": 96.242742253689,
+  "efectivo_disponible": 81.806330915636,
   "vault_reservado": 4.95,
-  "posiciones": {},
+  "posiciones": {
+    "TURBO-USD": {
+      "unidades": 14990.213722472394,
+      "precio_compra": 0.000960551793,
+      "coste_total": 14.436411338053,
+      "max_precio_alcanzado": 0.000960551793,
+      "confianza_gemini": 78,
+      "fecha_entrada": "2026-09-28T02:37:27.637322+02:00"
+    }
+  },
   "historial": [
     {
       "ticker": "AVAX-USD",
